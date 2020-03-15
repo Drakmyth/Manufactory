@@ -14,7 +14,7 @@ import net.minecraft.fluid.FlowingFluid;
 
 public class ManufactoryFlowingFluidBlock extends FlowingFluidBlock {
 
-    public ManufactoryFlowingFluidBlock(String registryName, Supplier<? extends FlowingFluid> fluid, Properties properties) {
+    public ManufactoryFlowingFluidBlock(final String registryName, final Supplier<? extends FlowingFluid> fluid, final Properties properties) {
         super(fluid, properties);
         setRegistryName(Reference.MOD_ID, registryName);
     }

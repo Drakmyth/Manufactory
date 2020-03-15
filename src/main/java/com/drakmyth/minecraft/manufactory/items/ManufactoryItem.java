@@ -12,7 +12,7 @@ import net.minecraft.item.Item;
 
 public class ManufactoryItem extends Item {
 
-    public ManufactoryItem(String registryName, int stackSize, Properties properties) {
+    public ManufactoryItem(final String registryName, final int stackSize, final Properties properties) {
         super(properties.maxStackSize(stackSize).group(ModItemGroups.MANUFACTORY));
         setRegistryName(Reference.MOD_ID, registryName);
     }

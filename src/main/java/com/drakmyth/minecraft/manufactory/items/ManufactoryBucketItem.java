@@ -16,7 +16,7 @@ import net.minecraft.item.Items;
 
 public class ManufactoryBucketItem extends BucketItem {
 
-    public ManufactoryBucketItem(String registryName, Supplier<? extends Fluid> fluid, Properties properties) {
+    public ManufactoryBucketItem(final String registryName, final Supplier<? extends Fluid> fluid, final Properties properties) {
         super(fluid, properties.maxStackSize(1).containerItem(Items.BUCKET).group(ModItemGroups.MANUFACTORY));
         setRegistryName(Reference.MOD_ID, registryName);
     }

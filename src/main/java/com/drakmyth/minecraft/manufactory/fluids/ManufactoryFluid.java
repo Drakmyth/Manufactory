@@ -27,7 +27,7 @@ public abstract class ManufactoryFluid {
         FLOWING = new ManufactoryFlowingFluid(registryName, fluidProps);
     }
 
-    private ForgeFlowingFluid.Properties createFluidProperties(final String registryName, final Supplier<? extends FlowingFluidBlock> block, Supplier<? extends Item> bucket) {
+    private ForgeFlowingFluid.Properties createFluidProperties(final String registryName, final Supplier<? extends FlowingFluidBlock> block, final Supplier<? extends Item> bucket) {
         ResourceLocation stillRL = new ResourceLocation(Reference.MOD_ID, "fluid/" + registryName + "_still");
         ResourceLocation flowingRL = new ResourceLocation(Reference.MOD_ID, "fluid/" + registryName + "_flow");
         FluidAttributes.Builder fluidBuilder = FluidAttributes.builder(stillRL, flowingRL);
@@ -36,7 +36,7 @@ public abstract class ManufactoryFluid {
 
     private class ManufactoryStillFluid extends ForgeFlowingFluid.Source {
 
-        public ManufactoryStillFluid(String registryName, Properties properties) {
+        public ManufactoryStillFluid(final String registryName, final Properties properties) {
             super(properties);
             setRegistryName(Reference.MOD_ID, registryName);
         }
@@ -44,7 +44,7 @@ public abstract class ManufactoryFluid {
 
     private class ManufactoryFlowingFluid extends ForgeFlowingFluid.Flowing {
 
-        public ManufactoryFlowingFluid(String registryName, Properties properties) {
+        public ManufactoryFlowingFluid(final String registryName, final Properties properties) {
             super(properties);
             setRegistryName(Reference.MOD_ID, registryName + "_flowing");
         }
