@@ -10,6 +10,7 @@ import com.drakmyth.minecraft.manufactory.Reference;
 import net.minecraftforge.registries.ObjectHolder;
 
 public abstract class ModBlocks {
+
     @ObjectHolder(Reference.MOD_ID + ":" + LatexFluidBlock.REGISTRY_NAME)
     public static LatexFluidBlock LATEX;
 }

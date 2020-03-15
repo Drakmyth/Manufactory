@@ -16,5 +16,4 @@ public abstract class ManufactoryItem extends Item {
         super(properties.maxStackSize(stackSize).group(ModItemGroups.MANUFACTORY));
         setRegistryName(Reference.MOD_ID, registryName);
     }
-
 }

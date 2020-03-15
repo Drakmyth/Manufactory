@@ -11,6 +11,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
 public abstract class ModItemGroups {
+
     public static ItemGroup MANUFACTORY = new ItemGroup("manufactory") {
         @Override
         public ItemStack createIcon() {

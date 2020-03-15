@@ -16,5 +16,4 @@ public class LatexBucketItem extends ManufactoryBucketItem {
     public LatexBucketItem() {
         super(REGISTRY_NAME, () -> ModFluids.LATEX, new BucketItem.Properties());
     }
-
 }

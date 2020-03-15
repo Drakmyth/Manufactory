@@ -18,5 +18,4 @@ public abstract class ManufactoryFlowingFluidBlock extends FlowingFluidBlock {
         super(fluid, properties);
         setRegistryName(Reference.MOD_ID, registryName);
     }
-
 }

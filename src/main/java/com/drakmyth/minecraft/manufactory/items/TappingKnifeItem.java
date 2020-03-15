@@ -14,5 +14,4 @@ public class TappingKnifeItem extends ManufactoryItem {
     public TappingKnifeItem() {
         super(REGISTRY_NAME, 1, new Item.Properties());
     }
-
 }

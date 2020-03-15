@@ -20,5 +20,4 @@ public abstract class ManufactoryBucketItem extends BucketItem {
         super(fluid, properties.maxStackSize(1).containerItem(Items.BUCKET).group(ModItemGroups.MANUFACTORY));
         setRegistryName(Reference.MOD_ID, registryName);
     }
-
 }

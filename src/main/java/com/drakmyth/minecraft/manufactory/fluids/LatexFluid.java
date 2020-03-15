@@ -15,5 +15,4 @@ public class LatexFluid extends ManufactoryFluid {
     public LatexFluid() {
         super(REGISTRY_NAME, () -> ModBlocks.LATEX, () -> ModItems.LATEX_BUCKET);
     }
-
 }

@@ -14,5 +14,4 @@ public class LatexCollectorItem extends ManufactoryItem {
     public LatexCollectorItem() {
         super(REGISTRY_NAME, 1, new Item.Properties());
     }
-
 }

@@ -17,5 +17,4 @@ public class LatexFluidBlock extends ManufactoryFlowingFluidBlock {
     public LatexFluidBlock() {
         super(REGISTRY_NAME, () -> ModFluids.LATEX, Block.Properties.create(Material.WATER));
     }
-
 }

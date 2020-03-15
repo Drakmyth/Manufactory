@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.ObjectHolder;
 
 public abstract class ModFluids {
+
     @ObjectHolder(Reference.MOD_ID + ":" + LatexFluid.REGISTRY_NAME)
     public static ForgeFlowingFluid.Source LATEX;
 
