@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory;
 
+import com.drakmyth.minecraft.manufactory.items.LatexCollectorItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +40,7 @@ public class ManufactoryMod {
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
+            event.getRegistry().register(new LatexCollectorItem());
             event.getRegistry().register(new TappingKnifeItem());
         }
     }
