@@ -9,7 +9,7 @@ import com.drakmyth.minecraft.manufactory.Reference;
 
 import net.minecraftforge.registries.ObjectHolder;
 
-public class ModItems {
+public abstract class ModItems {
     @ObjectHolder(Reference.MOD_ID + ":" + LatexCollectorItem.REGISTRY_NAME)
     public static LatexCollectorItem LATEX_COLLECTOR;
 

@@ -14,7 +14,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Items;
 
-public class ManufactoryBucketItem extends BucketItem {
+public abstract class ManufactoryBucketItem extends BucketItem {
 
     public ManufactoryBucketItem(final String registryName, final Supplier<? extends Fluid> fluid, final Properties properties) {
         super(fluid, properties.maxStackSize(1).containerItem(Items.BUCKET).group(ModItemGroups.MANUFACTORY));

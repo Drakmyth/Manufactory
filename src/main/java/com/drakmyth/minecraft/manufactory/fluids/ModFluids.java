@@ -10,7 +10,7 @@ import com.drakmyth.minecraft.manufactory.Reference;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.ObjectHolder;
 
-public class ModFluids {
+public abstract class ModFluids {
     @ObjectHolder(Reference.MOD_ID + ":" + LatexFluid.REGISTRY_NAME)
     public static ForgeFlowingFluid.Source LATEX;
 
