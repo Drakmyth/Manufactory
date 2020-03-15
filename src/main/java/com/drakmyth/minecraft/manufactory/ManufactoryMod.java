@@ -40,21 +40,18 @@ public class ManufactoryMod {
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> event) {
-            event.getRegistry().register(new LatexFluidBlock());
+            event.getRegistry().registerAll(new LatexFluidBlock());
         }
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-            event.getRegistry().register(new LatexCollectorItem());
-            event.getRegistry().register(new TappingKnifeItem());
-            event.getRegistry().register(new LatexBucketItem());
+            event.getRegistry().registerAll(new LatexCollectorItem(), new TappingKnifeItem(), new LatexBucketItem());
         }
 
         @SubscribeEvent
         public static void onFlowingFluidsRegistry(final RegistryEvent.Register<Fluid> event) {
             ManufactoryFluid latex = new LatexFluid();
-            event.getRegistry().register(latex.SOURCE);
-            event.getRegistry().register(latex.FLOWING);
+            event.getRegistry().registerAll(latex.SOURCE, latex.FLOWING);
         }
     }
 }
