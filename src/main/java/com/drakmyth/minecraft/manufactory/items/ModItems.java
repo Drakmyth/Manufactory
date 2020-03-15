@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.items;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 
+import net.minecraft.item.BucketItem;
 import net.minecraftforge.registries.ObjectHolder;
 
 public class ModItems {
@@ -15,4 +16,7 @@ public class ModItems {
 
     @ObjectHolder(Reference.MOD_ID + ":" + TappingKnifeItem.REGISTRY_NAME)
     public static TappingKnifeItem TAPPING_KNIFE;
+
+    @ObjectHolder(Reference.MOD_ID + ":latex_bucket")
+    public static BucketItem LATEX_BUCKET;
 }

@@ -5,6 +5,10 @@
 
 package com.drakmyth.minecraft.manufactory;
 
+import com.drakmyth.minecraft.manufactory.blocks.LatexFluidBlock;
+import com.drakmyth.minecraft.manufactory.fluids.LatexFluid;
+import com.drakmyth.minecraft.manufactory.fluids.ManufactoryFluid;
+import com.drakmyth.minecraft.manufactory.items.LatexBucketItem;
 import com.drakmyth.minecraft.manufactory.items.LatexCollectorItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
@@ -12,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,13 +40,21 @@ public class ManufactoryMod {
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> event) {
-            LOGGER.info("HELLO from Register Block");
+            event.getRegistry().register(new LatexFluidBlock());
         }
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
             event.getRegistry().register(new LatexCollectorItem());
             event.getRegistry().register(new TappingKnifeItem());
+            event.getRegistry().register(new LatexBucketItem());
+        }
+
+        @SubscribeEvent
+        public static void onFlowingFluidsRegistry(final RegistryEvent.Register<Fluid> event) {
+            ManufactoryFluid latex = new LatexFluid();
+            event.getRegistry().register(latex.SOURCE);
+            event.getRegistry().register(latex.FLOWING);
         }
     }
 }
