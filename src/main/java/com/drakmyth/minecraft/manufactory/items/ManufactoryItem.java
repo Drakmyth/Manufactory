@@ -5,15 +5,15 @@
 
 package com.drakmyth.minecraft.manufactory.items;
 
+import com.drakmyth.minecraft.manufactory.ModItemGroups;
 import com.drakmyth.minecraft.manufactory.Reference;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 
 public class ManufactoryItem extends Item {
 
     public ManufactoryItem(String registryName, int stackSize, Properties properties) {
-        super(properties.maxStackSize(stackSize).group(ItemGroup.MISC));
+        super(properties.maxStackSize(stackSize).group(ModItemGroups.MANUFACTORY));
         setRegistryName(Reference.MOD_ID, registryName);
     }
 
