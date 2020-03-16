@@ -13,4 +13,7 @@ public abstract class ModBlocks {
 
     @ObjectHolder(Reference.MOD_ID + ":" + LatexFluidBlock.REGISTRY_NAME)
     public static LatexFluidBlock LATEX;
+
+    @ObjectHolder(Reference.MOD_ID + ":" + LatexCollectorBlock.REGISTRY_NAME)
+    public static LatexCollectorBlock LATEX_COLLECTOR;
 }

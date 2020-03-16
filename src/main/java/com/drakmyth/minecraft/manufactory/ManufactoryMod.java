@@ -5,11 +5,12 @@
 
 package com.drakmyth.minecraft.manufactory;
 
+import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexFluidBlock;
+import com.drakmyth.minecraft.manufactory.blocks.ModBlocks;
 import com.drakmyth.minecraft.manufactory.fluids.LatexFluid;
 import com.drakmyth.minecraft.manufactory.fluids.ManufactoryFluid;
 import com.drakmyth.minecraft.manufactory.items.LatexBucketItem;
-import com.drakmyth.minecraft.manufactory.items.LatexCollectorItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import org.apache.logging.log4j.LogManager;
@@ -40,12 +41,12 @@ public class ManufactoryMod {
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> event) {
-            event.getRegistry().registerAll(new LatexFluidBlock());
+            event.getRegistry().registerAll(new LatexFluidBlock(), new LatexCollectorBlock());
         }
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-            event.getRegistry().registerAll(new LatexCollectorItem(), new TappingKnifeItem(), new LatexBucketItem());
+            event.getRegistry().registerAll(ModBlocks.LATEX_COLLECTOR.BLOCK_ITEM, new TappingKnifeItem(), new LatexBucketItem());
         }
 
         @SubscribeEvent

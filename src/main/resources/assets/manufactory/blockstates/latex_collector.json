@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "manufactory:block/latex_collector"
+        }
+    }
+}

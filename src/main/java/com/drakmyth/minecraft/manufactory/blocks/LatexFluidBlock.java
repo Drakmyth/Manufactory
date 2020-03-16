@@ -7,14 +7,11 @@ package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.fluids.ModFluids;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-
 public class LatexFluidBlock extends ManufactoryFlowingFluidBlock {
 
     public static final String REGISTRY_NAME = "latex";
 
     public LatexFluidBlock() {
-        super(REGISTRY_NAME, () -> ModFluids.LATEX, Block.Properties.create(Material.WATER));
+        super(REGISTRY_NAME, () -> ModFluids.LATEX, defaultProperties());
     }
 }

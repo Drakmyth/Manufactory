@@ -7,13 +7,11 @@ package com.drakmyth.minecraft.manufactory.items;
 
 import com.drakmyth.minecraft.manufactory.fluids.ModFluids;
 
-import net.minecraft.item.BucketItem;
-
 public class LatexBucketItem extends ManufactoryBucketItem {
 
     public static final String REGISTRY_NAME = "latex_bucket";
 
     public LatexBucketItem() {
-        super(REGISTRY_NAME, () -> ModFluids.LATEX, new BucketItem.Properties());
+        super(REGISTRY_NAME, () -> ModFluids.LATEX, defaultProperties());
     }
 }
