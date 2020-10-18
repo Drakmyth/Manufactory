@@ -1,6 +1,3 @@
-@rem SPDX-License-Identifier: LGPL-3.0-only
-@rem Copyright (c) 2020 Drakmyth. All rights reserved.
-
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem
