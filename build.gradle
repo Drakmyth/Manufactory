@@ -15,9 +15,10 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'net.minecraftforge.gradle'
 
-sourceCompatibility = project.javaversion
+sourceCompatibility = targetCompatibility = project.javaversion
 
 group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).replace('/', '.')
 archivesBaseName = project.modid
@@ -34,6 +35,12 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
             mods {
                 manufactory {
                     source sourceSets.main
@@ -44,8 +51,32 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
             mods {
                 manufactory {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', project.modid, '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                examplemod {
                     source sourceSets.main
                 }
             }
