@@ -1,7 +1,5 @@
 {
     "block.manufactory.latex_collector": "Latex Collector",
-    "fluid.manufactory.latex": "Latex",
-    "item.manufactory.latex_bucket": "Latex Bucket",
     "item.manufactory.tapping_knife": "Tapping Knife",
     "itemGroup.manufactory": "Manufactory"
 }
