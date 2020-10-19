@@ -16,6 +16,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Plane;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 
 public class LatexCollectorBlock extends Block {
     public static final DirectionProperty HORIZONTAL_FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -32,6 +33,18 @@ public class LatexCollectorBlock extends Block {
         }
 
         return this.getDefaultState().with(HORIZONTAL_FACING, face.getOpposite());
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighbor, BlockPos neighborPos, boolean isMoving) {
+        Direction facing = state.get(HORIZONTAL_FACING);
+        if (!pos.offset(facing).equals(neighborPos)) {
+            return;
+        }
+
+        if (!isBlockLog(world, neighborPos)) {
+            world.destroyBlock(pos, true);
+        }
     }
 
     private boolean isFaceHorizontal(Direction direction) {
