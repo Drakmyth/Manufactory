@@ -1,7 +1,19 @@
 {
     "variants": {
-        "": {
-            "model": "manufactory:block/latex_collector"
-        }
+      "facing=east": {
+        "model": "manufactory:block/latex_collector",
+        "y": 90
+      },
+      "facing=north": {
+        "model": "manufactory:block/latex_collector"
+      },
+      "facing=south": {
+        "model": "manufactory:block/latex_collector",
+        "y": 180
+      },
+      "facing=west": {
+        "model": "manufactory:block/latex_collector",
+        "y": 270
+      }
     }
-}
+  }

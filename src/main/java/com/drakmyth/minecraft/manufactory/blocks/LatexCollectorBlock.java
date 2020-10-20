@@ -15,14 +15,36 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Plane;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class LatexCollectorBlock extends Block {
     public static final DirectionProperty HORIZONTAL_FACING = HorizontalBlock.HORIZONTAL_FACING;
+    protected static final VoxelShape AABB_NORTH = Block.makeCuboidShape(5.0D, 2.0D, 0.0D, 11.0D, 5.0D, 6.0D);
+    protected static final VoxelShape AABB_SOUTH = Block.makeCuboidShape(5.0D, 2.0D, 10.0D, 11.0D, 5.0D, 16.0D);
+    protected static final VoxelShape AABB_WEST = Block.makeCuboidShape(0.0D, 2.0D, 5.0D, 6.0D, 5.0D, 11.0D);
+    protected static final VoxelShape AABB_EAST = Block.makeCuboidShape(10.0D, 2.0D, 5.0D, 16.0D, 5.0D, 11.0D);
 
     public LatexCollectorBlock(Properties properties) {
         super(properties);
+    }
+
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        Direction direction = state.get(HORIZONTAL_FACING);
+        switch (direction) {
+            case EAST:
+                return AABB_EAST;
+            case WEST:
+                return AABB_WEST;
+            case SOUTH:
+                return AABB_SOUTH;
+            case NORTH:
+            default:
+                return AABB_NORTH;
+        }
     }
 
     @Override
