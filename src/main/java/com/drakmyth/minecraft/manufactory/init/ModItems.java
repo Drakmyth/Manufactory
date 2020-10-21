@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -15,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
-    public static final RegistryObject<Item> TAPPING_KNIFE = ITEMS.register("tapping_knife", () -> new Item(defaultProperties().maxStackSize(1)));
+    public static final RegistryObject<Item> TAPPING_KNIFE = ITEMS.register("tapping_knife", () -> new TappingKnifeItem(defaultProperties().maxStackSize(1)));
 
     private static Item.Properties defaultProperties() {
         return new Item.Properties().maxStackSize(64).group(ModItemGroups.MANUFACTORY_ITEM_GROUP);
