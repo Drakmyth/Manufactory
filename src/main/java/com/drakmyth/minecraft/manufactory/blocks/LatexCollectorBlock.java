@@ -5,23 +5,29 @@
 
 package com.drakmyth.minecraft.manufactory.blocks;
 
+import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Direction.Plane;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -47,6 +53,22 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
             .with(FULL, false)
             .with(WATERLOGGED, false);
         this.setDefaultState(defaultState);
+    }
+
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (world.isRemote) return ActionResultType.SUCCESS;
+        if (state.get(FULL)) {
+            ItemStack holdingItem = player.getHeldItem(hand);
+            ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get());
+            if (holdingItem.isEmpty()) {
+               player.setHeldItem(hand, latexItemStack);
+            } else if (!player.addItemStackToInventory(latexItemStack)) {
+               player.dropItem(latexItemStack, false);
+            }
+            world.setBlockState(pos, state.with(FULL, false));
+        }
+        return ActionResultType.SUCCESS;
     }
 
     @Override

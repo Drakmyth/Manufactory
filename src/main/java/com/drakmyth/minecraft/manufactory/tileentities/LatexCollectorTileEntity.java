@@ -19,7 +19,6 @@ import net.minecraft.world.World;
 public class LatexCollectorTileEntity extends TileEntity implements ITickableTileEntity {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private boolean full = false;
     private int ticksRemaining = 0;
     private boolean filling = false;
 
@@ -33,28 +32,30 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
             LOGGER.debug("Tapped, but waterlogged");
             return;
         }
-        if (full || filling) {
-            LOGGER.debug(String.format("Tapped, but filling: %s, full: %s", filling, full));
+        if (isFull(state)) {
+            LOGGER.debug("Tapped, but full");
+            return;
+        }
+        if (filling) {
+            LOGGER.debug("Tapped, but already filling");
             return;
         }
         LOGGER.debug("Tapped, starting countdown...");
         filling = true;
-        ticksRemaining = 20 * 60;
+        ticksRemaining = 20 * 60; // TODO: Read fill time from config
     }
 
     private void reset() {
-        full = false;
         filling = false;
         ticksRemaining = 0;
     }
 
-    private void setFull() {
-        reset();
-        full = true;
-    }
-
     private boolean isWaterlogged(BlockState state) {
         return state.get(LatexCollectorBlock.WATERLOGGED);
+    }
+
+    private boolean isFull(BlockState state) {
+        return state.get(LatexCollectorBlock.FULL);
     }
 
     @Override
@@ -66,10 +67,10 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         World world = this.getWorld();
         if (world.isRemote) return;
         ticksRemaining--;
-        LOGGER.debug(String.format("filling: %s, full: %s, ticks: %d", filling, full, ticksRemaining));
+        LOGGER.debug(String.format("filling: %s, ticks: %d", filling, ticksRemaining));
         if (ticksRemaining > 0) return;
-        setFull();
         world.setBlockState(getPos(), state.with(LatexCollectorBlock.FULL, true));
+        reset();
         markDirty();
     }
 }
