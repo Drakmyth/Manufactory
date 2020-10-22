@@ -28,17 +28,39 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     }
 
     public void onTap() {
+        BlockState state = getBlockState();
+        if (isWaterlogged(state)) {
+            LOGGER.debug("Tapped, but waterlogged");
+            return;
+        }
         if (full || filling) {
             LOGGER.debug(String.format("Tapped, but filling: %s, full: %s", filling, full));
             return;
         }
-        LOGGER.debug(String.format("Tapped, starting countdown..."));
+        LOGGER.debug("Tapped, starting countdown...");
         filling = true;
         ticksRemaining = 20 * 60;
     }
 
+    private void reset() {
+        full = false;
+        filling = false;
+        ticksRemaining = 0;
+    }
+
+    private void setFull() {
+        reset();
+        full = true;
+    }
+
+    private boolean isWaterlogged(BlockState state) {
+        return state.get(LatexCollectorBlock.WATERLOGGED);
+    }
+
     @Override
     public void tick() {
+        BlockState state = getBlockState();
+        if (isWaterlogged(state)) reset();
         if (!filling) return;
         if (!this.hasWorld()) return;
         World world = this.getWorld();
@@ -46,10 +68,8 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         ticksRemaining--;
         LOGGER.debug(String.format("filling: %s, full: %s, ticks: %d", filling, full, ticksRemaining));
         if (ticksRemaining > 0) return;
-        filling = false;
-        full = true;
-        BlockState bs = getBlockState().with(LatexCollectorBlock.FULL, true);
-        world.setBlockState(getPos(), bs);
+        setFull();
+        world.setBlockState(getPos(), state.with(LatexCollectorBlock.FULL, true));
         markDirty();
     }
 }
