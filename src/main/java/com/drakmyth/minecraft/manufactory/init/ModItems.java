@@ -16,6 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
+    public static final RegistryObject<Item> COAGULATED_LATEX = ITEMS.register("coagulated_latex", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> TAPPING_KNIFE = ITEMS.register("tapping_knife", () -> new TappingKnifeItem(defaultProperties().maxStackSize(1)));
 
     private static Item.Properties defaultProperties() {
