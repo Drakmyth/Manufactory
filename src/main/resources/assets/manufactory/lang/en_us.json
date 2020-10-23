@@ -1,6 +1,7 @@
 {
     "block.manufactory.latex_collector": "Latex Collector",
-    "item.manufactory.tapping_knife": "Tapping Knife",
     "item.manufactory.coagulated_latex": "Coagulated Latex",
+    "item.manufactory.rubber": "Rubber",
+    "item.manufactory.tapping_knife": "Tapping Knife",
     "itemGroup.manufactory": "Manufactory"
 }

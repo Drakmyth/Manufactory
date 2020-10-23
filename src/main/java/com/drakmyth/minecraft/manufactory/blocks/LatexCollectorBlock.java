@@ -60,7 +60,7 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
         if (world.isRemote) return ActionResultType.SUCCESS;
         if (state.get(FULL)) {
             ItemStack holdingItem = player.getHeldItem(hand);
-            ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get());
+            ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get(), 1);  // TODO: Read count from config
             if (holdingItem.isEmpty()) {
                player.setHeldItem(hand, latexItemStack);
             } else if (!player.addItemStackToInventory(latexItemStack)) {

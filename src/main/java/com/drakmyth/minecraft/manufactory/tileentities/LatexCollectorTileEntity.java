@@ -42,7 +42,7 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         }
         LOGGER.debug("Tapped, starting countdown...");
         filling = true;
-        ticksRemaining = 20 * 60; // TODO: Read fill time from config
+        ticksRemaining = 20 * 60;  // TODO: Read fill time from config
     }
 
     private void reset() {
