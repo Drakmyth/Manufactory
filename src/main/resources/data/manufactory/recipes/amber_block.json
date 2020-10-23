@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "aaa",
+        "aaa",
+        "aaa"
+    ],
+    "key": {
+        "a": [
+            {
+                "item": "manufactory:amber"
+            }
+        ]
+    },
+    "result": {
+        "item": "manufactory:amber_block",
+        "count": 1
+    }
+}
