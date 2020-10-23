@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory;
 
-public class Reference {
+public abstract class Reference {
+
     public static final String MOD_ID = "@MOD_ID@";
 }
