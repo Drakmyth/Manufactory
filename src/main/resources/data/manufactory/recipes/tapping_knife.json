@@ -1,24 +1,18 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "   ",
-        "ii ",
-        "  s"
-    ],
-    "key": {
-        "i": [
-            {
-                "tag": "forge:ingots/iron"
-            }
-        ],
-        "s": [
-            {
-                "item": "minecraft:stick"
-            }
-        ]
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ii ",
+    "  s"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
     },
-    "result": {
-        "item": "manufactory:tapping_knife",
-        "count": 1
+    "s": {
+      "item": "minecraft:stick"
     }
+  },
+  "result": {
+    "item": "manufactory:tapping_knife"
+  }
 }

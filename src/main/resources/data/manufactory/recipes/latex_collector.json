@@ -1,15 +1,14 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:bowl"
-        },
-        {
-            "item": "minecraft:string"
-        }
-    ],
-    "result": {
-        "item": "manufactory:latex_collector",
-        "count": 1
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:bowl"
     }
+  ],
+  "result": {
+    "item": "manufactory:latex_collector"
+  }
 }
