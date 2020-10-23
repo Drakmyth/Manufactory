@@ -8,12 +8,12 @@ package com.drakmyth.minecraft.manufactory.config;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonConfig {
-    public final ForgeConfigSpec.IntValue Test2;
+    // public final ForgeConfigSpec.IntValue Field;
 
     CommonConfig(ForgeConfigSpec.Builder builder) {
-        builder.push("extra");
-        Test2 = builder.comment("This is a comment for the Test2 field")
-        .defineInRange("test2", 13, 0, 20);
-        builder.pop();
+        // builder.push("general");
+        // Field = builder.comment("This is a comment for the field")
+        // .defineInRange("field", 13, 0, 20);
+        // builder.pop();
     }
 }

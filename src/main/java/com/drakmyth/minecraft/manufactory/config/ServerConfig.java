@@ -8,12 +8,21 @@ package com.drakmyth.minecraft.manufactory.config;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ServerConfig {
-    public final ForgeConfigSpec.BooleanValue Test1;
+    public final ForgeConfigSpec.DoubleValue AmberChance;
+    public final ForgeConfigSpec.IntValue AmberTapSpawnCount;
+    public final ForgeConfigSpec.IntValue LatexFillSeconds;
+    public final ForgeConfigSpec.IntValue FullLatexSpawnCount;
 
     ServerConfig(ForgeConfigSpec.Builder builder) {
         builder.push("general");
-        Test1 = builder.comment("This is a comment for the Test1 field")
-        .define("test1", true);
+        AmberChance = builder.comment("Chance to get Amber after a successful latex tap")
+        .defineInRange("amberChance", 0.1, 0.0, 1.0);
+        AmberTapSpawnCount = builder.comment("Number of Amber player receives if chance succeeds")
+        .defineInRange("amberTapSpawnCount", 1, 0, Integer.MAX_VALUE);
+        LatexFillSeconds = builder.comment("Time in seconds for Latex Collector to fill")
+        .defineInRange("latexFillSeconds", 60, 1, Integer.MAX_VALUE);
+        FullLatexSpawnCount = builder.comment("Number of Coagulated Latex player receives from a full Latex Collector")
+        .defineInRange("fullLatexSpawnCount", 1, 0, Integer.MAX_VALUE);
         builder.pop();
     }
 }

@@ -1,5 +1,6 @@
 package com.drakmyth.minecraft.manufactory.items;
 
+import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
 
@@ -43,10 +44,13 @@ public class TappingKnifeItem extends Item {
     }
 
     private void tryGiveAmber(PlayerEntity player, Hand hand) {
-        if (random.nextDouble() >= 0.1 ) return;  // TODO: Read rate from config
+        double configAmberSpawnChance = ConfigData.SERVER.AmberChance.get();
+        if (configAmberSpawnChance <= 0) return;
+        if (random.nextDouble() >= configAmberSpawnChance ) return;
 
+        int configAmberSpawnCount = ConfigData.SERVER.AmberTapSpawnCount.get();
         ItemStack holdingItem = player.getHeldItem(hand);
-        ItemStack amberItemStack = new ItemStack(ModItems.AMBER.get(), 1);  // TODO: Read count from config
+        ItemStack amberItemStack = new ItemStack(ModItems.AMBER.get(), configAmberSpawnCount);
         if (holdingItem.isEmpty()) {
            player.setHeldItem(hand, amberItemStack);
         } else if (!player.addItemStackToInventory(amberItemStack)) {
