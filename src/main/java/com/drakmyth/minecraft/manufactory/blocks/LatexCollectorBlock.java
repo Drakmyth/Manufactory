@@ -144,7 +144,7 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
     }
 
     private boolean isBlockLog(IWorldReader world, BlockPos pos) {
-        return world.getBlockState(pos).func_235714_a_(BlockTags.LOGS);
+        return world.getBlockState(pos).isIn(BlockTags.LOGS);
     }
 
     @Override
