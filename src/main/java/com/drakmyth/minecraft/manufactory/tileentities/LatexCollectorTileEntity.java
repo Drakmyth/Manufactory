@@ -26,23 +26,24 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         super(ModTileEntityTypes.LATEX_COLLECTOR.get());
     }
 
-    public void onTap() {
+    public boolean onTap() {
         BlockState state = getBlockState();
         if (isWaterlogged(state)) {
             LOGGER.debug("Tapped, but waterlogged");
-            return;
+            return false;
         }
         if (isFull(state)) {
             LOGGER.debug("Tapped, but full");
-            return;
+            return false;
         }
         if (filling) {
             LOGGER.debug("Tapped, but already filling");
-            return;
+            return false;
         }
         LOGGER.debug("Tapped, starting countdown...");
         filling = true;
         ticksRemaining = 20 * 60;  // TODO: Read fill time from config
+        return true;
     }
 
     private void reset() {
