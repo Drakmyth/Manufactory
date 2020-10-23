@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -20,7 +21,6 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     private static final Logger LOGGER = LogManager.getLogger();
 
     private int ticksRemaining = 0;
-    private boolean filling = false;
 
     public LatexCollectorTileEntity() {
         super(ModTileEntityTypes.LATEX_COLLECTOR.get());
@@ -36,19 +36,13 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
             LOGGER.debug("Tapped, but full");
             return false;
         }
-        if (filling) {
+        if (ticksRemaining > 0) {
             LOGGER.debug("Tapped, but already filling");
             return false;
         }
         LOGGER.debug("Tapped, starting countdown...");
-        filling = true;
         ticksRemaining = 20 * 60;  // TODO: Read fill time from config
         return true;
-    }
-
-    private void reset() {
-        filling = false;
-        ticksRemaining = 0;
     }
 
     private boolean isWaterlogged(BlockState state) {
@@ -60,18 +54,34 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     }
 
     @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        super.write(compound);
+        compound.putInt("ticksRemaining", ticksRemaining);
+        return compound;
+    }
+
+    @Override
+    public void read(BlockState state, CompoundNBT nbt) {
+        super.read(state, nbt);
+        ticksRemaining = nbt.getInt("ticksRemaining");
+    }
+
+    private void reset() {
+        ticksRemaining = 0;
+        markDirty();
+    }
+
+    @Override
     public void tick() {
         BlockState state = getBlockState();
-        if (isWaterlogged(state)) reset();
-        if (!filling) return;
+        if (isWaterlogged(state) && ticksRemaining > 0) reset();
+        if (ticksRemaining <= 0) return;
         if (!this.hasWorld()) return;
         World world = this.getWorld();
         if (world.isRemote) return;
         ticksRemaining--;
-        LOGGER.debug(String.format("filling: %s, ticks: %d", filling, ticksRemaining));
         if (ticksRemaining > 0) return;
         world.setBlockState(getPos(), state.with(LatexCollectorBlock.FULL, true));
         reset();
-        markDirty();
     }
 }
