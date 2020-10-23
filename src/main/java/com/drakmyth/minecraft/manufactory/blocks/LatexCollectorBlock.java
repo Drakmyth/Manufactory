@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.blocks;
 
+import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 
@@ -59,8 +60,9 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) return ActionResultType.SUCCESS;
         if (state.get(FULL)) {
+            int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
             ItemStack holdingItem = player.getHeldItem(hand);
-            ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get(), 1);  // TODO: Read count from config
+            ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get(), configLatexSpawnCount);
             if (holdingItem.isEmpty()) {
                player.setHeldItem(hand, latexItemStack);
             } else if (!player.addItemStackToInventory(latexItemStack)) {

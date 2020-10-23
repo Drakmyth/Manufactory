@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory.tileentities;
 
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
+import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +42,9 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
             return false;
         }
         LOGGER.debug("Tapped, starting countdown...");
-        ticksRemaining = 20 * 60;  // TODO: Read fill time from config
+
+        int configFillTimeSeconds = ConfigData.SERVER.LatexFillSeconds.get();
+        ticksRemaining = 20 * configFillTimeSeconds;
         return true;
     }
 
