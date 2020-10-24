@@ -6,13 +6,16 @@
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -27,7 +30,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile amberBlockModel = cubeAllWithTexture(ModBlocks.AMBER_BLOCK.get(), new ResourceLocation("minecraft", "block/yellow_terracotta"));
         simpleBlock(ModBlocks.AMBER_BLOCK.get(), amberBlockModel);
         itemModels().getBuilder("amber_block").parent(amberBlockModel);
-        generateLatexCollectorModel();
+
+        ModelFile latexCollectorModel = generateLatexCollectorModel();
+        generateLatexCollectorBlockState(latexCollectorModel);
+
         itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", "manufactory:item/latex_collector");
         itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", "minecraft:item/bone_meal");
@@ -39,7 +45,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         return models().cubeAll(block.getRegistryName().getPath(), texture);
     }
 
-    private void generateLatexCollectorModel() {
+    private ModelFile generateLatexCollectorModel() {
         BlockModelBuilder builder = models().getBuilder("latex_collector");
 
         // bottom
@@ -54,6 +60,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(10, 3, 1).to(11, 5, 5).allFaces((dir, face) -> face.texture("#0")).end();
         builder.texture("0", "minecraft:block/dirt");
         builder.texture("particle", "minecraft:block/dirt");
+        return builder;
+    }
 
+    private void generateLatexCollectorBlockState(ModelFile latexCollectorModel) {
+        getVariantBuilder(ModBlocks.LATEX_COLLECTOR.get())
+            .forAllStatesExcept(state -> {
+                Direction dir = state.get(LatexCollectorBlock.HORIZONTAL_FACING);
+                return ConfiguredModel.builder()
+                    .modelFile(latexCollectorModel)
+                    .rotationY((int)dir.rotateY().rotateY().getHorizontalAngle())
+                    .build();
+            }, LatexCollectorBlock.WATERLOGGED);
     }
 }
