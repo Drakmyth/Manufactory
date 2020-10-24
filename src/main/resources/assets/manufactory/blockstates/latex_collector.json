@@ -38,6 +38,45 @@
     {
       "when": {
         "facing": "north",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
         "fill_status": "full"
       },
       "apply": {
