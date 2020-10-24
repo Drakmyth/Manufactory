@@ -16,33 +16,33 @@
       "y": 90
     },
     "facing=north,fill_status=filling": {
-      "model": "manufactory:block/latex_collector"
+      "model": "manufactory:block/latex_collector_filling"
     },
     "facing=south,fill_status=filling": {
-      "model": "manufactory:block/latex_collector",
+      "model": "manufactory:block/latex_collector_filling",
       "y": 180
     },
     "facing=west,fill_status=filling": {
-      "model": "manufactory:block/latex_collector",
+      "model": "manufactory:block/latex_collector_filling",
       "y": 270
     },
     "facing=east,fill_status=filling": {
-      "model": "manufactory:block/latex_collector",
+      "model": "manufactory:block/latex_collector_filling",
       "y": 90
     },
     "facing=north,fill_status=full": {
-      "model": "manufactory:block/latex_collector"
+      "model": "manufactory:block/latex_collector_full"
     },
     "facing=south,fill_status=full": {
-      "model": "manufactory:block/latex_collector",
+      "model": "manufactory:block/latex_collector_full",
       "y": 180
     },
     "facing=west,fill_status=full": {
-      "model": "manufactory:block/latex_collector",
+      "model": "manufactory:block/latex_collector_full",
       "y": 270
     },
     "facing=east,fill_status=full": {
-      "model": "manufactory:block/latex_collector",
+      "model": "manufactory:block/latex_collector_full",
       "y": 90
     }
   }

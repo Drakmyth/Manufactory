@@ -31,8 +31,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.AMBER_BLOCK.get(), amberBlockModel);
         itemModels().getBuilder("amber_block").parent(amberBlockModel);
 
-        ModelFile latexCollectorModel = generateLatexCollectorModel();
-        generateLatexCollectorBlockState(latexCollectorModel);
+        ModelFile latexCollectorEmptyModel = generateLatexCollectorEmptyModel();
+        ModelFile latexCollectorFillingModel = generateLatexCollectorFillingModel(latexCollectorEmptyModel);
+        ModelFile latexCollectorFullModel = generateLatexCollectorFullModel(latexCollectorEmptyModel);
+        generateLatexCollectorBlockState(latexCollectorEmptyModel, latexCollectorFillingModel, latexCollectorFullModel);
 
         itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", "manufactory:item/latex_collector");
         itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
@@ -45,7 +47,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         return models().cubeAll(block.getRegistryName().getPath(), texture);
     }
 
-    private ModelFile generateLatexCollectorModel() {
+    private ModelFile generateLatexCollectorEmptyModel() {
         BlockModelBuilder builder = models().getBuilder("latex_collector");
 
         // bottom
@@ -63,12 +65,40 @@ public class ModBlockStateProvider extends BlockStateProvider {
         return builder;
     }
 
-    private void generateLatexCollectorBlockState(ModelFile latexCollectorModel) {
+    private ModelFile generateLatexCollectorFillingModel(ModelFile emptyModel) {
+        BlockModelBuilder builder = models().getBuilder("latex_collector_filling");
+        builder.parent(emptyModel);
+        // builder.element().from(6, 2, 1).to(10, 3, 5).allFaces((dir, face) -> face.texture("#0")).end();
+        return builder;
+    }
+
+    private ModelFile generateLatexCollectorFullModel(ModelFile emptyModel) {
+        BlockModelBuilder builder = models().getBuilder("latex_collector_full");
+        builder.parent(emptyModel);
+        // builder.element().from(6, 2, 1).to(10, 3, 5).allFaces((dir, face) -> face.texture("#0")).end();
+        return builder;
+    }
+
+    private void generateLatexCollectorBlockState(ModelFile emptyModel, ModelFile fillingModel, ModelFile fullModel) {
         getVariantBuilder(ModBlocks.LATEX_COLLECTOR.get())
             .forAllStatesExcept(state -> {
                 Direction dir = state.get(LatexCollectorBlock.HORIZONTAL_FACING);
+                LatexCollectorBlock.FillStatus fillStatus = state.get(LatexCollectorBlock.FILL_STATUS);
+                ModelFile stateModel;
+                switch (fillStatus) {
+                    default:
+                    case EMPTY:
+                        stateModel = emptyModel;
+                        break;
+                    case FILLING:
+                        stateModel = fillingModel;
+                        break;
+                    case FULL:
+                        stateModel = fullModel;
+                        break;
+                }
                 return ConfiguredModel.builder()
-                    .modelFile(latexCollectorModel)
+                    .modelFile(stateModel)
                     .rotationY((int)dir.rotateY().rotateY().getHorizontalAngle())
                     .build();
             }, LatexCollectorBlock.WATERLOGGED);
