@@ -239,3 +239,6 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/git,java,gradle,eclipse,intellij,forgegradle,visualstudiocode
+
+# Ignore Generated Files
+**/src/generated

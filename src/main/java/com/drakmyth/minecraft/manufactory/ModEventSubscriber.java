@@ -5,17 +5,23 @@
 
 package com.drakmyth.minecraft.manufactory;
 
+import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
@@ -36,5 +42,14 @@ public final class ModEventSubscriber {
                 blockItem.setRegistryName(block.getRegistryName());
                 registry.register(blockItem);
             });
+    }
+
+    @SubscribeEvent
+    public static void gatherData(final GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        generator.addProvider(new ModRecipeProvider(generator));
+        generator.addProvider(new ModLootTableProvider(generator));
+        generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
+        generator.addProvider(new ModLanguageProvider(generator, "en_us"));
     }
 }

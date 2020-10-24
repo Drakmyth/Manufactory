@@ -73,11 +73,11 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', project.modid, '--all', '--output', file('src/generated/resources/')
+            args '--mod', project.modid, '--all', '--existing', file('src/main/resources/'), '--output', file('src/generated/resources/')
 
             mods {
-                examplemod {
-                    source sourceSets.main
+                manufactory {
+                    source sourceSets.main // TODO: Use a dedicated datagen sourceset to exclude non-texture resources
                 }
             }
         }
