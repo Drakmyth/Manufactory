@@ -29,6 +29,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().getBuilder("amber_block").parent(amberBlockModel);
         generateLatexCollectorModel();
         itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", "manufactory:item/latex_collector");
+        itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", "minecraft:item/bone_meal");
+        itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", "minecraft:item/ink_sac");
+        itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", "manufactory:item/tapping_knife");
     }
 
     private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {

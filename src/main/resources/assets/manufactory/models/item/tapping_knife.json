@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "manufactory:item/tapping_knife"
-    }
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/tapping_knife"
+  }
 }
