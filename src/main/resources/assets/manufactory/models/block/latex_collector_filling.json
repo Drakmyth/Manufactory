@@ -1,0 +1,56 @@
+{
+  "textures": {
+    "latex": "minecraft:block/quartz_block_top"
+  },
+  "elements": [
+    {
+      "from": [
+        6,
+        3,
+        1
+      ],
+      "to": [
+        10,
+        4,
+        5
+      ],
+      "faces": {
+        "up": {
+          "texture": "#latex"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        5,
+        0
+      ],
+      "to": [
+        9,
+        12,
+        2
+      ],
+      "faces": {
+        "down": {
+          "texture": "#latex"
+        },
+        "up": {
+          "texture": "#latex"
+        },
+        "north": {
+          "texture": "#latex"
+        },
+        "south": {
+          "texture": "#latex"
+        },
+        "west": {
+          "texture": "#latex"
+        },
+        "east": {
+          "texture": "#latex"
+        }
+      }
+    }
+  ]
+}

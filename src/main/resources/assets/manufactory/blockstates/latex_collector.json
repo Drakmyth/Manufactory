@@ -1,34 +1,117 @@
 {
-  "variants": {
-    "facing=north,full=false": {
-      "model": "manufactory:block/latex_collector"
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector"
+      }
     },
-    "facing=south,full=false": {
-      "model": "manufactory:block/latex_collector",
-      "y": 180
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector",
+        "y": 90
+      }
     },
-    "facing=west,full=false": {
-      "model": "manufactory:block/latex_collector",
-      "y": 270
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector",
+        "y": 180
+      }
     },
-    "facing=east,full=false": {
-      "model": "manufactory:block/latex_collector",
-      "y": 90
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector",
+        "y": 270
+      }
     },
-    "facing=north,full=true": {
-      "model": "manufactory:block/latex_collector"
+    {
+      "when": {
+        "facing": "north",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling"
+      }
     },
-    "facing=south,full=true": {
-      "model": "manufactory:block/latex_collector",
-      "y": 180
+    {
+      "when": {
+        "facing": "east",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling",
+        "y": 90
+      }
     },
-    "facing=west,full=true": {
-      "model": "manufactory:block/latex_collector",
-      "y": 270
+    {
+      "when": {
+        "facing": "south",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling",
+        "y": 180
+      }
     },
-    "facing=east,full=true": {
-      "model": "manufactory:block/latex_collector",
-      "y": 90
+    {
+      "when": {
+        "facing": "west",
+        "fill_status": "filling"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_filling",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "fill_status": "full"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_full"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "fill_status": "full"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_full",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "fill_status": "full"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_full",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "fill_status": "full"
+      },
+      "apply": {
+        "model": "manufactory:block/latex_collector_full",
+        "y": 270
+      }
     }
-  }
+  ]
 }

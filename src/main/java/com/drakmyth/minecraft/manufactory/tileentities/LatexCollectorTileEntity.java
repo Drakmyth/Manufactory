@@ -33,8 +33,8 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
             LOGGER.debug("Tapped, but waterlogged");
             return false;
         }
-        if (isFull(state)) {
-            LOGGER.debug("Tapped, but full");
+        if (!isEmpty(state)) {
+            LOGGER.debug("Tapped, but not empty");
             return false;
         }
         if (ticksRemaining > 0) {
@@ -45,6 +45,11 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
 
         int configFillTimeSeconds = ConfigData.SERVER.LatexFillSeconds.get();
         ticksRemaining = 20 * configFillTimeSeconds;
+
+        World world = getWorld();
+        if (world.isRemote()) return true;
+        world.setBlockState(getPos(), state.with(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING));
+        markDirty();
         return true;
     }
 
@@ -52,8 +57,8 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         return state.get(LatexCollectorBlock.WATERLOGGED);
     }
 
-    private boolean isFull(BlockState state) {
-        return state.get(LatexCollectorBlock.FULL);
+    private boolean isEmpty(BlockState state) {
+        return state.get(LatexCollectorBlock.FILL_STATUS) == LatexCollectorBlock.FillStatus.EMPTY;
     }
 
     @Override
@@ -84,7 +89,7 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         if (world.isRemote) return;
         ticksRemaining--;
         if (ticksRemaining > 0) return;
-        world.setBlockState(getPos(), state.with(LatexCollectorBlock.FULL, true));
+        world.setBlockState(getPos(), state.with(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL));
         reset();
     }
 }

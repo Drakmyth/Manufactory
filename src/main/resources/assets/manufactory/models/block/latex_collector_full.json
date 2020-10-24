@@ -1,0 +1,24 @@
+{
+  "textures": {
+    "latex": "minecraft:block/quartz_block_top"
+  },
+  "elements": [
+    {
+      "from": [
+        6,
+        4,
+        1
+      ],
+      "to": [
+        10,
+        5,
+        5
+      ],
+      "faces": {
+        "up": {
+          "texture": "#latex"
+        }
+      }
+    }
+  ]
+}
