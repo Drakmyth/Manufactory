@@ -1,32 +1,47 @@
 {
   "variants": {
-    "facing=north,full=false": {
+    "facing=north,fill_status=empty": {
       "model": "manufactory:block/latex_collector"
     },
-    "facing=south,full=false": {
+    "facing=south,fill_status=empty": {
       "model": "manufactory:block/latex_collector",
       "y": 180
     },
-    "facing=west,full=false": {
+    "facing=west,fill_status=empty": {
       "model": "manufactory:block/latex_collector",
       "y": 270
     },
-    "facing=east,full=false": {
+    "facing=east,fill_status=empty": {
       "model": "manufactory:block/latex_collector",
       "y": 90
     },
-    "facing=north,full=true": {
+    "facing=north,fill_status=filling": {
       "model": "manufactory:block/latex_collector"
     },
-    "facing=south,full=true": {
+    "facing=south,fill_status=filling": {
       "model": "manufactory:block/latex_collector",
       "y": 180
     },
-    "facing=west,full=true": {
+    "facing=west,fill_status=filling": {
       "model": "manufactory:block/latex_collector",
       "y": 270
     },
-    "facing=east,full=true": {
+    "facing=east,fill_status=filling": {
+      "model": "manufactory:block/latex_collector",
+      "y": 90
+    },
+    "facing=north,fill_status=full": {
+      "model": "manufactory:block/latex_collector"
+    },
+    "facing=south,fill_status=full": {
+      "model": "manufactory:block/latex_collector",
+      "y": 180
+    },
+    "facing=west,fill_status=full": {
+      "model": "manufactory:block/latex_collector",
+      "y": 270
+    },
+    "facing=east,fill_status=full": {
       "model": "manufactory:block/latex_collector",
       "y": 90
     }

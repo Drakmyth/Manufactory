@@ -19,6 +19,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
@@ -26,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Direction.Plane;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -38,7 +40,7 @@ import net.minecraft.world.World;
 
 public class LatexCollectorBlock extends Block implements IWaterLoggable {
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty FULL = BooleanProperty.create("full");
+    public static final EnumProperty<FillStatus> FILL_STATUS = EnumProperty.create("fill_status", FillStatus.class);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected static final VoxelShape AABB_NORTH = Block.makeCuboidShape(5.0D, 2.0D, 0.0D, 11.0D, 5.0D, 6.0D);
@@ -51,7 +53,7 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
 
         BlockState defaultState = this.stateContainer.getBaseState()
             .with(HORIZONTAL_FACING, Direction.NORTH)
-            .with(FULL, false)
+            .with(FILL_STATUS, FillStatus.EMPTY)
             .with(WATERLOGGED, false);
         this.setDefaultState(defaultState);
     }
@@ -59,7 +61,7 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) return ActionResultType.SUCCESS;
-        if (state.get(FULL)) {
+        if (state.get(FILL_STATUS) == FillStatus.FULL) {
             int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
             ItemStack holdingItem = player.getHeldItem(hand);
             ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get(), configLatexSpawnCount);
@@ -68,7 +70,7 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
             } else if (!player.addItemStackToInventory(latexItemStack)) {
                player.dropItem(latexItemStack, false);
             }
-            world.setBlockState(pos, state.with(FULL, false));
+            world.setBlockState(pos, state.with(FILL_STATUS, FillStatus.EMPTY));
         }
         return ActionResultType.SUCCESS;
     }
@@ -151,6 +153,17 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
 
     @Override
     protected void fillStateContainer(Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING, FULL, WATERLOGGED);
+        builder.add(HORIZONTAL_FACING, FILL_STATUS, WATERLOGGED);
+    }
+
+    public enum FillStatus implements IStringSerializable {
+        EMPTY,
+        FILLING,
+        FULL;
+
+        @Override
+        public String getString() {
+            return this.name().toLowerCase();
+        }
     }
 }
