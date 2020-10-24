@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory;
 
 import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
@@ -49,5 +50,6 @@ public final class ModEventSubscriber {
         generator.addProvider(new ModRecipeProvider(generator));
         generator.addProvider(new ModLootTableProvider(generator));
         generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
+        generator.addProvider(new ModLanguageProvider(generator, "en_us"));
     }
 }
