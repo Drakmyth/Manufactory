@@ -1,0 +1,103 @@
+{
+  "textures": {
+    "cable": "minecraft:block/coal_block"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        4,
+        7
+      ],
+      "to": [
+        11,
+        16,
+        9
+      ],
+      "faces": {
+        "down": {
+          "texture": "#cable"
+        },
+        "up": {
+          "texture": "#cable"
+        },
+        "north": {
+          "texture": "#cable"
+        },
+        "south": {
+          "texture": "#cable"
+        },
+        "west": {
+          "texture": "#cable"
+        },
+        "east": {
+          "texture": "#cable"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        4,
+        5
+      ],
+      "to": [
+        9,
+        16,
+        11
+      ],
+      "faces": {
+        "down": {
+          "texture": "#cable"
+        },
+        "up": {
+          "texture": "#cable"
+        },
+        "north": {
+          "texture": "#cable"
+        },
+        "south": {
+          "texture": "#cable"
+        },
+        "west": {
+          "texture": "#cable"
+        },
+        "east": {
+          "texture": "#cable"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        4,
+        6
+      ],
+      "to": [
+        10,
+        16,
+        10
+      ],
+      "faces": {
+        "down": {
+          "texture": "#cable"
+        },
+        "up": {
+          "texture": "#cable"
+        },
+        "north": {
+          "texture": "#cable"
+        },
+        "south": {
+          "texture": "#cable"
+        },
+        "west": {
+          "texture": "#cable"
+        },
+        "east": {
+          "texture": "#cable"
+        }
+      }
+    }
+  ]
+}
