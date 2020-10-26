@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
+import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
 import net.minecraft.block.Block;
@@ -15,7 +16,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -42,6 +42,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", "minecraft:item/bone_meal");
         itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", "minecraft:item/ink_sac");
         itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", "manufactory:item/tapping_knife");
+
+        ModelFile powerCableCenterModel = generatePowerCableCenterModel();
+        ModelFile powerCableSideModel = generatePartialPowerCableSideModel();
+        ModelFile powerCableUpModel = generatePartialPowerCableUpModel();
+        ModelFile powerCableDownModel = generatePartialPowerCableDownModel();
+        generatePowerCableBlockState(powerCableCenterModel, powerCableSideModel, powerCableUpModel, powerCableDownModel);
+        itemModels().getBuilder("power_cable").parent(powerCableCenterModel);
     }
 
     private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {
@@ -98,5 +105,71 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.part().modelFile(fullModel).rotationY(90).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.EAST).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL);
         builder.part().modelFile(fullModel).rotationY(180).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.SOUTH).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL);
         builder.part().modelFile(fullModel).rotationY(270).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.WEST).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL);
+    }
+
+    private ModelFile generatePowerCableCenterModel() {
+        BlockModelBuilder builder = models().getBuilder("power_cable");
+        // x_core
+        builder.element().from(5, 2, 7).to(11, 4, 9).allFaces((dir, face) -> face.texture("#cable")).end();
+        // y_core
+        builder.element().from(7, 0, 7).to(9, 6, 9).allFaces((dir, face) -> face.texture("#cable")).end();
+        // z_core
+        builder.element().from(7, 2, 5).to(9, 4, 11).allFaces((dir, face) -> face.texture("#cable")).end();
+        // x_corners
+        builder.element().from(7, 1, 6).to(9, 5, 10).allFaces((dir, face) -> face.texture("#cable")).end();
+        // y_corners
+        builder.element().from(6, 2, 6).to(10, 4, 10).allFaces((dir, face) -> face.texture("#cable")).end();
+        // z_corners
+        builder.element().from(6, 1, 7).to(10, 5, 9).allFaces((dir, face) -> face.texture("#cable")).end();
+        builder.texture("cable", "minecraft:block/coal_block");
+        builder.texture("particle", "minecraft:block/coal_block");
+        return builder;
+    }
+
+    private ModelFile generatePartialPowerCableSideModel() {
+        BlockModelBuilder builder = models().getBuilder("power_cable_side");
+        // x_core
+        builder.element().from(5, 2, 0).to(11, 4, 7).allFaces((dir, face) -> face.texture("#cable")).end();
+        // y_core
+        builder.element().from(7, 0, 0).to(9, 6, 7).allFaces((dir, face) -> face.texture("#cable")).end();
+        // z_corners
+        builder.element().from(6, 1, 0).to(10, 5, 7).allFaces((dir, face) -> face.texture("#cable")).end();
+        builder.texture("cable", "minecraft:block/coal_block");
+        return builder;
+    }
+
+    private ModelFile generatePartialPowerCableUpModel() {
+        BlockModelBuilder builder = models().getBuilder("power_cable_up");
+        // x_core
+        builder.element().from(5, 4, 7).to(11, 16, 9).allFaces((dir, face) -> face.texture("#cable")).end();
+        // z_core
+        builder.element().from(7, 4, 5).to(9, 16, 11).allFaces((dir, face) -> face.texture("#cable")).end();
+        // y_corners
+        builder.element().from(6, 4, 6).to(10, 16, 10).allFaces((dir, face) -> face.texture("#cable")).end();
+        builder.texture("cable", "minecraft:block/coal_block");
+        return builder;
+    }
+
+    private ModelFile generatePartialPowerCableDownModel() {
+        BlockModelBuilder builder = models().getBuilder("power_cable_down");
+        // x_core
+        builder.element().from(5, 0, 7).to(11, 2, 9).allFaces((dir, face) -> face.texture("#cable")).end();
+        // z_core
+        builder.element().from(7, 0, 5).to(9, 2, 11).allFaces((dir, face) -> face.texture("#cable")).end();
+        // y_corners
+        builder.element().from(6, 0, 6).to(10, 2, 10).allFaces((dir, face) -> face.texture("#cable")).end();
+        builder.texture("cable", "minecraft:block/coal_block");
+        return builder;
+    }
+
+    private void generatePowerCableBlockState(ModelFile centerModel, ModelFile sideModel, ModelFile upModel, ModelFile downModel) {
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(ModBlocks.POWER_CABLE.get());
+        builder.part().modelFile(centerModel).addModel();
+        builder.part().modelFile(sideModel).addModel().condition(PowerCableBlock.NORTH, true);
+        builder.part().modelFile(upModel).addModel().condition(PowerCableBlock.UP, true);
+        builder.part().modelFile(downModel).addModel().condition(PowerCableBlock.DOWN, true);
+        builder.part().modelFile(sideModel).rotationY(90).addModel().condition(PowerCableBlock.EAST, true);
+        builder.part().modelFile(sideModel).rotationY(180).addModel().condition(PowerCableBlock.SOUTH, true);
+        builder.part().modelFile(sideModel).rotationY(270).addModel().condition(PowerCableBlock.WEST, true);
     }
 }

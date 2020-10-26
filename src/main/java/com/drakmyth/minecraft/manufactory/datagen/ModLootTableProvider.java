@@ -49,6 +49,7 @@ public class ModLootTableProvider extends LootTableProvider {
         protected void addTables() {
             registerDropSelfLootTable(ModBlocks.AMBER_BLOCK.get());
             registerDropSelfLootTable(ModBlocks.LATEX_COLLECTOR.get());
+            registerDropSelfLootTable(ModBlocks.POWER_CABLE.get());
         }
 
         @Override
