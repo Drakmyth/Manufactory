@@ -20,6 +20,7 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         addBlock(ModBlocks.AMBER_BLOCK, "Amber Block");
+        addBlock(ModBlocks.GRINDER, "Grinder");
         addBlock(ModBlocks.LATEX_COLLECTOR, "Latex Collector");
         addBlock(ModBlocks.POWER_CABLE, "Power Cable");
         addBlock(ModBlocks.SOLAR_PANEL, "Solar Panel");

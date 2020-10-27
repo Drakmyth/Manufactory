@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
@@ -16,8 +17,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -58,6 +61,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile solarPanelModel = models().getBuilder("solar_panel").parent(daylightDetectorModel);
         simpleBlock(ModBlocks.SOLAR_PANEL.get(), solarPanelModel);
         itemModels().getBuilder("solar_panel").parent(solarPanelModel);
+
+        ResourceLocation furnaceModelLoc = new ResourceLocation("minecraft", "block/furnace");
+        ModelFile furnaceModel = new ExistingModelFile(furnaceModelLoc, exFileHelper);
+        ModelFile grinderModel = models().getBuilder("grinder").parent(furnaceModel);
+        generateGrinderBlockState(grinderModel);
+        itemModels().getBuilder("grinder").parent(grinderModel);
     }
 
     private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {
@@ -180,5 +189,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.part().modelFile(sideModel).rotationY(90).addModel().condition(PowerCableBlock.EAST, true);
         builder.part().modelFile(sideModel).rotationY(180).addModel().condition(PowerCableBlock.SOUTH, true);
         builder.part().modelFile(sideModel).rotationY(270).addModel().condition(PowerCableBlock.WEST, true);
+    }
+
+    private void generateGrinderBlockState(ModelFile grinderModel) {
+        VariantBlockStateBuilder builder = getVariantBuilder(ModBlocks.GRINDER.get());
+        builder.forAllStates(state -> {
+            int yRotation = (int)state.get(GrinderBlock.HORIZONTAL_FACING).getOpposite().getHorizontalAngle();
+            return ConfiguredModel.builder().modelFile(grinderModel).rotationY(yRotation).build();
+        });
     }
 }
