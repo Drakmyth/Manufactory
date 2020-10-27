@@ -12,18 +12,22 @@ import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ModBlockStateProvider extends BlockStateProvider {
+    private ExistingFileHelper exFileHelper;
 
     public ModBlockStateProvider(DataGenerator generator, ExistingFileHelper exFileHelper) {
         super(generator, Reference.MOD_ID, exFileHelper);
+        this.exFileHelper = exFileHelper;
     }
 
     @Override
@@ -49,6 +53,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile powerCableDownModel = generatePartialPowerCableDownModel();
         generatePowerCableBlockState(powerCableCenterModel, powerCableSideModel, powerCableUpModel, powerCableDownModel);
         itemModels().getBuilder("power_cable").parent(powerCableCenterModel);
+
+        ResourceLocation daylightDetectorModelLoc = new ResourceLocation("minecraft", "block/daylight_detector");
+        ModelFile daylightDetectorModel = new ExistingModelFile(daylightDetectorModelLoc, exFileHelper);
+        ModelFile solarPanelModel = models().getBuilder("solar_panel").parent(daylightDetectorModel);
+        simpleBlock(ModBlocks.SOLAR_PANEL.get(), solarPanelModel);
+        itemModels().getBuilder("solar_panel").parent(solarPanelModel);
     }
 
     private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {

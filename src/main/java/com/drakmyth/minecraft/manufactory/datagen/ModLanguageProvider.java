@@ -22,6 +22,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.AMBER_BLOCK, "Amber Block");
         addBlock(ModBlocks.LATEX_COLLECTOR, "Latex Collector");
         addBlock(ModBlocks.POWER_CABLE, "Power Cable");
+        addBlock(ModBlocks.SOLAR_PANEL, "Solar Panel");
 
         addItem(ModItems.AMBER, "Amber");
         addItem(ModItems.COAGULATED_LATEX, "Coagulated Latex");

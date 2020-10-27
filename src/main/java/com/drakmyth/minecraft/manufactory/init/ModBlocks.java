@@ -28,6 +28,7 @@ public final class ModBlocks {
     public static final RegistryObject<Block> AMBER_BLOCK = BLOCKS.register("amber_block", () -> new Block(Block.Properties.create(Material.IRON, MaterialColor.YELLOW)));
     public static final RegistryObject<Block> LATEX_COLLECTOR = BLOCKS.register("latex_collector", () -> new LatexCollectorBlock(Block.Properties.create(Material.MISCELLANEOUS)));
     public static final RegistryObject<Block> POWER_CABLE = BLOCKS.register("power_cable", () -> new PowerCableBlock(Block.Properties.create(Material.IRON, MaterialColor.BLACK)));
+    public static final RegistryObject<Block> SOLAR_PANEL = BLOCKS.register("solar_panel", () -> new Block(Block.Properties.create(Material.IRON, MaterialColor.BLACK)));
 
     public static final Map<RegistryObject<Block>, Item.Properties> BLOCKITEM_PROPS = Stream.of(
         new SimpleEntry<>(LATEX_COLLECTOR, defaultBlockItemProps().maxStackSize(16))
