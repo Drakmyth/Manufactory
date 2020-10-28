@@ -1,19 +1,19 @@
 {
   "variants": {
     "facing=north": {
+      "model": "manufactory:block/grinder"
+    },
+    "facing=south": {
       "model": "manufactory:block/grinder",
       "y": 180
     },
-    "facing=south": {
-      "model": "manufactory:block/grinder"
-    },
     "facing=west": {
       "model": "manufactory:block/grinder",
-      "y": 90
+      "y": 270
     },
     "facing=east": {
       "model": "manufactory:block/grinder",
-      "y": 270
+      "y": 90
     }
   }
 }
