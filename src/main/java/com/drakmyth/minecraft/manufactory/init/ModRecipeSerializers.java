@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
+import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeSerializer;
 
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
@@ -16,5 +17,5 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class ModRecipeSerializers {
     public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
 
-    public static final RegistryObject<IRecipeSerializer<?>> GRINDER = RECIPE_SERIALIZERS.register("grinder", () -> GrinderRecipe.serializer);
+    public static final RegistryObject<IRecipeSerializer<?>> GRINDER = RECIPE_SERIALIZERS.register("grinder", ManufactoryRecipeSerializer<GrinderRecipe>::new);
 }
