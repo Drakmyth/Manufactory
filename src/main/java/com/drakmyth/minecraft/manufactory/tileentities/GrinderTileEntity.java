@@ -15,19 +15,23 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Inventory grinderInventory;
+    private boolean firstTick;
+    private ItemStackHandler grinderInventory;
     private GrinderRecipe currentRecipe;
     private float powerRequired;
     private float powerRemaining; // 25 power, defined by recipe
@@ -36,15 +40,21 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     public GrinderTileEntity() {
         super(ModTileEntityTypes.GRINDER.get());
 
-        grinderInventory = new Inventory(2);
+        firstTick = true;
+        grinderInventory = createNewInventory();
     }
 
-    public Inventory getInventory() {
+    public ItemStackHandler getInventory() {
         return grinderInventory;
     }
 
     public float getProgress() {
+        if (powerRequired <= 0) return 0;
         return (powerRequired - powerRemaining) / powerRequired;
+    }
+
+    private ItemStackHandler createNewInventory() {
+        return new ItemStackHandler(2);
     }
 
     @Override
@@ -54,22 +64,31 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
 
     @Override
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
-        return new GrinderContainer(windowId, playerInventory, player, getPos());
+        return new GrinderContainer(windowId, new InvWrapper(playerInventory), player, getPos());
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
+        compound.put("inventory", grinderInventory.serializeNBT());
+        compound.putFloat("powerRequired", powerRequired);
+        compound.putFloat("powerRemaining", powerRemaining);
+        compound.putFloat("maxPowerPerTick", maxPowerPerTick);
         return compound;
     }
 
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
+        grinderInventory = createNewInventory();
+        grinderInventory.deserializeNBT(nbt.getCompound("inventory"));
+        powerRequired = nbt.getFloat("powerRequired");
+        powerRemaining = nbt.getFloat("powerRemaining");
+        maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
     }
 
     private boolean tryStartRecipe() {
-        GrinderRecipe recipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, grinderInventory, world).orElse(null);
+        GrinderRecipe recipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
         if (recipe == null) return false;
         powerRequired = recipe.getPowerRequired();
         powerRemaining = recipe.getPowerRequired();
@@ -82,6 +101,14 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     @Override
     public void tick() {
         if (world.isRemote) return;
+
+        if (firstTick) {
+            firstTick = false;
+            if (!grinderInventory.getStackInSlot(0).isEmpty()) {
+                currentRecipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
+            }
+        }
+
         if (currentRecipe == null) {
             boolean recipeStarted = tryStartRecipe();
             if (!recipeStarted) return;
@@ -92,18 +119,27 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;
+            markDirty();
             return;
         }
 
         float power = maxPowerPerTick; // TODO: Get from power network
         powerRemaining -= power;
         if (powerRemaining <= 0) {
-            grinderInventory.decrStackSize(0, 1);
-            grinderInventory.setInventorySlotContents(1, currentRecipe.getResults().get(0).getA().copy());
+            grinderInventory.extractItem(0, 1, false);
+            ItemStack outputStack = grinderInventory.getStackInSlot(1).copy();
+            ItemStack recipeResultStack = currentRecipe.getResults().get(0).getA();
+            // TODO: Account for additional results
+            if (!outputStack.isItemEqual(recipeResultStack)) {
+                outputStack = recipeResultStack.copy();
+            }
+            grinderInventory.insertItem(1, outputStack, false);
             currentRecipe = null;
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;
         }
+
+        markDirty();
     }
 }
