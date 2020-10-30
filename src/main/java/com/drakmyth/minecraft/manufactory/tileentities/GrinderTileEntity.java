@@ -7,6 +7,9 @@ package com.drakmyth.minecraft.manufactory.tileentities;
 
 import com.drakmyth.minecraft.manufactory.containers.GrinderContainer;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
+import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
+import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,11 +26,14 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider, IMachineProgressListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
@@ -56,6 +62,13 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     @Override
     public ITextComponent getDisplayName() {
         return new StringTextComponent("Grinder");
+    }
+
+    @Override
+    public void onProgressUpdate(float progress, float total) {
+        if (!world.isRemote) return;
+        powerRequired = total;
+        powerRemaining = progress;
     }
 
     @Override
@@ -95,6 +108,12 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         return true;
     }
 
+    private void updateClientGui() {
+        MachineProgressPacket msg = new MachineProgressPacket(powerRemaining, powerRequired, getPos());
+        Chunk chunk = world.getChunkAt(getPos());
+        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
+    }
+
     @Override
     public void tick() {
         if (world.isRemote) return;
@@ -116,6 +135,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;
+            updateClientGui();
             markDirty();
             return;
         }
@@ -132,6 +152,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             maxPowerPerTick = 0;
         }
 
+        updateClientGui();
         markDirty();
     }
 }
