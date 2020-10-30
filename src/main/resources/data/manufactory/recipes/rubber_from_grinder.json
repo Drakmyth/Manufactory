@@ -1,0 +1,20 @@
+{
+  "type": "manufactory:grinder",
+  "ingredient": {
+    "item": "manufactory:coagulated_latex"
+  },
+  "results": [
+    {
+      "item": "manufactory:rubber",
+      "amount": 5,
+      "chance": 1.0
+    },
+    {
+      "item": "manufactory:rubber",
+      "amount": 5,
+      "chance": 0.5
+    }
+  ],
+  "powerRequired": 25,
+  "processTime": 200
+}

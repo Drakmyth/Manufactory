@@ -5,25 +5,12 @@
 
 package com.drakmyth.minecraft.manufactory.init;
 
-import java.util.Map;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
-import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
-import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
-import com.drakmyth.minecraft.manufactory.blocks.SolarPanelBlock;
 import com.drakmyth.minecraft.manufactory.containers.GrinderContainer;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
