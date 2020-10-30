@@ -42,7 +42,8 @@ public class MachineProgressPacket {
     public void handle(Supplier<Context> contextSupplier) {
         Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> {
-            World world = Minecraft.getInstance().world;
+            Minecraft minecraft = Minecraft.getInstance();
+            World world = minecraft.world;
             if (!world.isAreaLoaded(pos, 1)) return;
             TileEntity te = world.getTileEntity(pos);
             if (!(te instanceof IMachineProgressListener)) return;
