@@ -64,9 +64,9 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         return new StringTextComponent("Grinder");
     }
 
+    // Client-Side Only
     @Override
     public void onProgressUpdate(float progress, float total) {
-        if (!world.isRemote) return;
         powerRequired = total;
         powerRemaining = progress;
     }
@@ -144,7 +144,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         powerRemaining -= power;
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);
-            ItemStack resultStack = currentRecipe.getResults().get(0).getA(); // TODO: Account for additional results
+            ItemStack resultStack = currentRecipe.getResults().get(0).getA().copy(); // TODO: Account for additional results
             grinderInventory.insertItem(1, resultStack, false);
             currentRecipe = null;
             powerRequired = 0;

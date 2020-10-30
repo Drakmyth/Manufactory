@@ -8,6 +8,7 @@ package com.drakmyth.minecraft.manufactory.network;
 import com.drakmyth.minecraft.manufactory.Reference;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -17,6 +18,10 @@ public class ModPacketHandler {
 
     public static void registerMessages() {
         int messageId = 0;
-        INSTANCE.registerMessage(messageId++, MachineProgressPacket.class, MachineProgressPacket::encode, MachineProgressPacket::decode, MachineProgressPacket::handle);
+        INSTANCE.messageBuilder(MachineProgressPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(MachineProgressPacket::encode)
+            .decoder(MachineProgressPacket::decode)
+            .consumer(MachineProgressPacket::handle)
+            .add();
     }
 }

@@ -43,7 +43,6 @@ public class MachineProgressPacket {
         Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> {
             World world = Minecraft.getInstance().world;
-            if (!world.isRemote) return;
             if (!world.isAreaLoaded(pos, 1)) return;
             TileEntity te = world.getTileEntity(pos);
             if (!(te instanceof IMachineProgressListener)) return;
