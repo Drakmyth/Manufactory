@@ -17,25 +17,33 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 public class MachineProgressPacket {
     private float progress;
     private float total;
+    private float powerAmount;
+    private float powerExpected;
     private BlockPos pos;
 
-    public MachineProgressPacket(float progress, float total, BlockPos pos) {
+    public MachineProgressPacket(float progress, float total, float powerAmount, float powerExpected, BlockPos pos) {
         this.progress = progress;
         this.total = total;
+        this.powerAmount = powerAmount;
+        this.powerExpected = powerExpected;
         this.pos = pos;
     }
 
     public void encode(PacketBuffer data) {
         data.writeFloat(progress);
         data.writeFloat(total);
+        data.writeFloat(powerAmount);
+        data.writeFloat(powerExpected);
         data.writeBlockPos(pos);
     }
 
     public static MachineProgressPacket decode(PacketBuffer data) {
         float progress = data.readFloat();
         float total = data.readFloat();
+        float powerAmount = data.readFloat();
+        float powerExpected = data.readFloat();
         BlockPos pos = data.readBlockPos();
-        return new MachineProgressPacket(progress, total, pos);
+        return new MachineProgressPacket(progress, total, powerAmount, powerExpected, pos);
     }
 
     public void handle(Supplier<Context> contextSupplier) {
@@ -46,7 +54,9 @@ public class MachineProgressPacket {
             if (!world.isAreaLoaded(pos, 1)) return;
             TileEntity te = world.getTileEntity(pos);
             if (!(te instanceof IMachineProgressListener)) return;
-            ((IMachineProgressListener)te).onProgressUpdate(progress, total);
+            IMachineProgressListener mpl = (IMachineProgressListener)te;
+            mpl.onProgressUpdate(progress, total);
+            mpl.onPowerRateUpdate(powerAmount, powerExpected);
         });
         ctx.setPacketHandled(true);
     }

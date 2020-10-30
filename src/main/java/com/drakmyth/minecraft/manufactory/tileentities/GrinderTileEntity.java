@@ -38,9 +38,10 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     private boolean firstTick;
     private ItemStackHandler grinderInventory;
     private GrinderRecipe currentRecipe;
+    private float lastPowerReceived;
     private float powerRequired;
-    private float powerRemaining; // 25 power, defined by recipe
-    private float maxPowerPerTick; // powerRequired / processTime
+    private float powerRemaining;
+    private float maxPowerPerTick;
 
     public GrinderTileEntity() {
         super(ModTileEntityTypes.GRINDER.get());
@@ -58,6 +59,11 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         return (powerRequired - powerRemaining) / powerRequired;
     }
 
+    public float getPowerRate() {
+        if (maxPowerPerTick <= 0) return 0;
+        return lastPowerReceived / maxPowerPerTick;
+    }
+
     @Override
     public ITextComponent getDisplayName() {
         return new StringTextComponent("Grinder");
@@ -68,6 +74,14 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
+    }
+
+    // Client-Side Only
+    @Override
+    public void onPowerRateUpdate(float amount, float expected) {
+        // TODO: Consider using a rolling window to display ramp up/down
+        lastPowerReceived = amount;
+        maxPowerPerTick = expected;
     }
 
     @Override
@@ -99,6 +113,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         if (recipe == null) return false;
         ItemStack result = recipe.getResults().get(0).getA();
         if (!grinderInventory.insertItem(1, result, true).isEmpty()) return false; // TODO: Account for additional results
+        lastPowerReceived = 0;
         powerRequired = recipe.getPowerRequired();
         powerRemaining = recipe.getPowerRequired();
         maxPowerPerTick = recipe.getPowerRequired() / (float)recipe.getProcessTime();
@@ -108,7 +123,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     private void updateClientGui() {
-        MachineProgressPacket msg = new MachineProgressPacket(powerRemaining, powerRequired, getPos());
+        MachineProgressPacket msg = new MachineProgressPacket(powerRemaining, powerRequired, lastPowerReceived, maxPowerPerTick, getPos());
         Chunk chunk = world.getChunkAt(getPos());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
     }
@@ -131,6 +146,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
 
         if (!currentRecipe.getIngredient().test(grinderInventory.getStackInSlot(0))) {
             currentRecipe = null;
+            lastPowerReceived = 0;
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;
@@ -139,13 +155,14 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             return;
         }
 
-        float power = maxPowerPerTick; // TODO: Get from power network
-        powerRemaining -= power;
+        lastPowerReceived = maxPowerPerTick; // TODO: Get from power network
+        powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);
             ItemStack resultStack = currentRecipe.getResults().get(0).getA().copy(); // TODO: Account for additional results
             grinderInventory.insertItem(1, resultStack, false);
             currentRecipe = null;
+            lastPowerReceived = 0;
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;

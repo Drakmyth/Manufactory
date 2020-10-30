@@ -67,6 +67,10 @@ public class GrinderContainer extends Container {
         return tileEntity.getProgress();
     }
 
+    public float getPowerRate() {
+        return tileEntity.getPowerRate();
+    }
+
     @Override
     public boolean canInteractWith(PlayerEntity playerIn) {
         return isWithinUsableDistance(posCallable, playerIn, ModBlocks.GRINDER.get());
