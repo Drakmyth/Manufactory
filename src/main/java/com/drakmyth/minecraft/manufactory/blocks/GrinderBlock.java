@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class GrinderBlock extends Block implements IPowerBlock {
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -76,4 +77,16 @@ public class GrinderBlock extends Block implements IPowerBlock {
     protected void fillStateContainer(Builder<Block, BlockState> builder) {
         builder.add(HORIZONTAL_FACING);
     }
+
+    @Override
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.isIn(newState.getBlock())) {
+            TileEntity tileentity = world.getTileEntity(pos);
+            if (!(tileentity instanceof GrinderTileEntity)) return;
+            ItemStackHandler inventory = ((GrinderTileEntity)tileentity).getInventory();
+            for (int i = 0; i < inventory.getSlots(); i++) {
+                spawnAsEntity(world, pos, inventory.getStackInSlot(i));
+            }
+        }
+     }
 }
