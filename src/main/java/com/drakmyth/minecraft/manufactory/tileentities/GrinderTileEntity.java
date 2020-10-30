@@ -41,7 +41,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         super(ModTileEntityTypes.GRINDER.get());
 
         firstTick = true;
-        grinderInventory = createNewInventory();
+        grinderInventory = new ItemStackHandler(2);
     }
 
     public ItemStackHandler getInventory() {
@@ -51,10 +51,6 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     public float getProgress() {
         if (powerRequired <= 0) return 0;
         return (powerRequired - powerRemaining) / powerRequired;
-    }
-
-    private ItemStackHandler createNewInventory() {
-        return new ItemStackHandler(2);
     }
 
     @Override
@@ -80,7 +76,6 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
-        grinderInventory = createNewInventory();
         grinderInventory.deserializeNBT(nbt.getCompound("inventory"));
         powerRequired = nbt.getFloat("powerRequired");
         powerRemaining = nbt.getFloat("powerRemaining");
@@ -90,6 +85,8 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     private boolean tryStartRecipe() {
         GrinderRecipe recipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
         if (recipe == null) return false;
+        ItemStack result = recipe.getResults().get(0).getA();
+        if (!grinderInventory.insertItem(1, result, true).isEmpty()) return false; // TODO: Account for additional results
         powerRequired = recipe.getPowerRequired();
         powerRemaining = recipe.getPowerRequired();
         maxPowerPerTick = recipe.getPowerRequired() / (float)recipe.getProcessTime();
@@ -127,13 +124,8 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         powerRemaining -= power;
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);
-            ItemStack outputStack = grinderInventory.getStackInSlot(1).copy();
-            ItemStack recipeResultStack = currentRecipe.getResults().get(0).getA();
-            // TODO: Account for additional results
-            if (!outputStack.isItemEqual(recipeResultStack)) {
-                outputStack = recipeResultStack.copy();
-            }
-            grinderInventory.insertItem(1, outputStack, false);
+            ItemStack resultStack = currentRecipe.getResults().get(0).getA(); // TODO: Account for additional results
+            grinderInventory.insertItem(1, resultStack, false);
             currentRecipe = null;
             powerRequired = 0;
             powerRemaining = 0;

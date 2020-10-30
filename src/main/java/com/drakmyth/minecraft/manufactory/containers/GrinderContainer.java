@@ -12,6 +12,7 @@ import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +43,12 @@ public class GrinderContainer extends Container {
         // Input Slot
         this.addSlot(new SlotItemHandler(grinderInventory, 0, 56, 35));
         // Output Slot
-        this.addSlot(new SlotItemHandler(grinderInventory, 1, 116, 35));
+        this.addSlot(new SlotItemHandler(grinderInventory, 1, 116, 35) {
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return false;
+            }
+        });
 
         // Player Inventory
         for (int j = 0; j < 3; j++) {
