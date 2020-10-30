@@ -18,6 +18,15 @@ public final class ModItems {
 
     public static final RegistryObject<Item> AMBER = ITEMS.register("amber", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> COAGULATED_LATEX = ITEMS.register("coagulated_latex", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_COAL_ORE_ROUGH = ITEMS.register("ground_coal_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_DIAMOND_ORE_ROUGH = ITEMS.register("ground_diamond_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_EMERALD_ORE_ROUGH = ITEMS.register("ground_emerald_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_GOLD_ORE_ROUGH = ITEMS.register("ground_gold_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_IRON_ORE_ROUGH = ITEMS.register("ground_iron_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_LAPIS_ORE_ROUGH = ITEMS.register("ground_lapis_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_NETHER_QUARTZ_ORE_ROUGH = ITEMS.register("ground_nether_quartz_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_REDSTONE_ORE_ROUGH = ITEMS.register("ground_redstone_ore_rough", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> GROUND_ANCIENT_DEBRIS_ROUGH = ITEMS.register("ground_ancient_debris_rough", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> RUBBER = ITEMS.register("rubber", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> TAPPING_KNIFE = ITEMS.register("tapping_knife", () -> new TappingKnifeItem(defaultProperties().maxStackSize(1)));
 
