@@ -7,8 +7,11 @@ package com.drakmyth.minecraft.manufactory.network;
 
 import java.util.function.Supplier;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -68,7 +71,21 @@ public class MachineProgressPacket {
     public void handle(Supplier<Context> contextSupplier) {
         Context ctx = contextSupplier.get();
         ctx.enqueueWork(() -> {
-            DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> MachineProgressPacketHandler.handle(this));
+            DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new DistExecutor.SafeRunnable() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void run() {
+                    Minecraft minecraft = Minecraft.getInstance();
+                    World world = minecraft.world;
+                    if (!world.isAreaLoaded(pos, 1)) return;
+                    TileEntity te = world.getTileEntity(pos);
+                    if (!(te instanceof IMachineProgressListener)) return;
+                    IMachineProgressListener mpl = (IMachineProgressListener) te;
+                    mpl.onProgressUpdate(progress, total);
+                    mpl.onPowerRateUpdate(powerAmount, powerExpected);
+                }
+            });
         });
         ctx.setPacketHandled(true);
     }
