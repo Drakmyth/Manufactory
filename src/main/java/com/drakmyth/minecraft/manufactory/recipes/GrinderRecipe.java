@@ -5,9 +5,6 @@
 
 package com.drakmyth.minecraft.manufactory.recipes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 
 import net.minecraft.inventory.IInventory;
@@ -16,7 +13,6 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 
 public class GrinderRecipe extends ManufactoryRecipe {
