@@ -14,14 +14,19 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class ModPacketHandler {
     private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+    public static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
+            .named(new ResourceLocation(Reference.MOD_ID, "main"))
+            .networkProtocolVersion(() -> PROTOCOL_VERSION)
+            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
+            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+            .simpleChannel();
 
     public static void registerMessages() {
         int messageId = 0;
         INSTANCE.messageBuilder(MachineProgressPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
-            .encoder(MachineProgressPacket::encode)
-            .decoder(MachineProgressPacket::decode)
-            .consumer(MachineProgressPacket::handle)
-            .add();
+                .encoder(MachineProgressPacket::encode)
+                .decoder(MachineProgressPacket::decode)
+                .consumer(MachineProgressPacket::handle)
+                .add();
     }
 }
