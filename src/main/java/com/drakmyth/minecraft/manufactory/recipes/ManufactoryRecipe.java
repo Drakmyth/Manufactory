@@ -8,45 +8,71 @@ package com.drakmyth.minecraft.manufactory.recipes;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class ManufactoryRecipe implements IRecipe<IInventory> {
+public abstract class ManufactoryRecipe implements IRecipe<IInventory> {
+    private final ResourceLocation recipeId;
+    private Ingredient ingredient;
+    private ItemStack result;
+    private float extraChance;
+    private float[] extraAmounts;
+    private int powerRequired;
+    private int processTime;
+
+    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime) {
+        this.recipeId = recipeId;
+        this.ingredient = ingredient;
+        this.result = result;
+        this.extraChance = extraChance;
+        this.extraAmounts = extraAmounts;
+        this.powerRequired = powerRequired;
+        this.processTime = processTime;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public float getExtraChance() {
+        return extraChance;
+    }
+
+    public float[] getExtraAmounts() {
+        return extraAmounts;
+    }
+
+    public int getPowerRequired() {
+        return powerRequired;
+    }
+
+    public int getProcessTime() {
+        return processTime;
+    }
 
     @Override
     public boolean matches(IInventory inv, World worldIn) {
-        return false;
+        return ingredient.test(inv.getStackInSlot(0));
     }
 
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
-        return null;
+        return result;
     }
 
     @Override
     public boolean canFit(int width, int height) {
-        return false;
+        return true;
     }
 
     @Override
     public ItemStack getRecipeOutput() {
-        return null;
+        return result;
     }
 
     @Override
     public ResourceLocation getId() {
-        return null;
-    }
-
-    @Override
-    public IRecipeSerializer<?> getSerializer() {
-        return null;
-    }
-
-    @Override
-    public IRecipeType<?> getType() {
-        return null;
+        return recipeId;
     }
 }

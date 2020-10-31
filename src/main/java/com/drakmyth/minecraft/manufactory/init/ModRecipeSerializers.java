@@ -17,5 +17,5 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class ModRecipeSerializers {
     public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
 
-    public static final RegistryObject<IRecipeSerializer<?>> GRINDER = RECIPE_SERIALIZERS.register("grinder", ManufactoryRecipeSerializer<GrinderRecipe>::new);
+    public static final RegistryObject<IRecipeSerializer<?>> GRINDER = RECIPE_SERIALIZERS.register("grinder", () -> new ManufactoryRecipeSerializer<GrinderRecipe>(GrinderRecipe::new));
 }

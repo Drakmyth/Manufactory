@@ -10,9 +10,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
@@ -21,11 +19,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ManufactoryRecipeSerializer<T extends IRecipe<IInventory>> extends ForgeRegistryEntry<IRecipeSerializer<?>>
-        implements IRecipeSerializer<GrinderRecipe> {
+public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>>
+        implements IRecipeSerializer<T> {
+    private final ManufactoryRecipeSerializer.IFactory<T> factory;
+
+
+    public ManufactoryRecipeSerializer(ManufactoryRecipeSerializer.IFactory<T> factory) {
+        this.factory = factory;
+    }
 
     @Override
-    public GrinderRecipe read(ResourceLocation recipeId, JsonObject json) {
+    public T read(ResourceLocation recipeId, JsonObject json) {
         Ingredient ingredient = Ingredient.deserialize(json.get("ingredient"));
         JsonObject resultObj = json.get("result").getAsJsonObject();
         ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(resultObj, "item", "minecraft:empty"), ':');
@@ -40,12 +44,12 @@ public class ManufactoryRecipeSerializer<T extends IRecipe<IInventory>> extends 
         }
         int powerRequired = JSONUtils.getInt(json, "powerRequired", 25);
         int processTime = JSONUtils.getInt(json, "processTime", 200);
-        return new GrinderRecipe(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
+        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
     }
 
     @Nullable
     @Override
-    public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public T read(ResourceLocation recipeId, PacketBuffer buffer) {
         Ingredient ingredient = Ingredient.read(buffer);
         ItemStack result = buffer.readItemStack();
         float extraChance = buffer.readFloat();
@@ -56,11 +60,11 @@ public class ManufactoryRecipeSerializer<T extends IRecipe<IInventory>> extends 
         }
         int powerRequired = buffer.readInt();
         int processTime = buffer.readInt();
-        return new GrinderRecipe(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
+        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
     }
 
     @Override
-    public void write(PacketBuffer buffer, GrinderRecipe recipe) {
+    public void write(PacketBuffer buffer, T recipe) {
         recipe.getIngredient().write(buffer);
         buffer.writeItemStack(recipe.getRecipeOutput());
         buffer.writeFloat(recipe.getExtraChance());
@@ -71,5 +75,9 @@ public class ManufactoryRecipeSerializer<T extends IRecipe<IInventory>> extends 
         }
         buffer.writeInt(recipe.getPowerRequired());
         buffer.writeInt(recipe.getProcessTime());
+    }
+
+    public interface IFactory<T extends ManufactoryRecipe> {
+        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime);
     }
 }
