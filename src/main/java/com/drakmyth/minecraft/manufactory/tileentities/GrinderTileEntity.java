@@ -111,7 +111,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     private boolean tryStartRecipe() {
         GrinderRecipe recipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
         if (recipe == null) return false;
-        ItemStack result = recipe.getResults().get(0).getA();
+        ItemStack result = recipe.getRecipeOutput();
         if (!grinderInventory.insertItem(1, result, true).isEmpty()) return false; // TODO: Account for additional results
         lastPowerReceived = 0;
         powerRequired = recipe.getPowerRequired();
@@ -159,7 +159,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);
-            ItemStack resultStack = currentRecipe.getResults().get(0).getA().copy(); // TODO: Account for additional results
+            ItemStack resultStack = currentRecipe.getRecipeOutput().copy(); // TODO: Account for additional results
             grinderInventory.insertItem(1, resultStack, false);
             currentRecipe = null;
             lastPowerReceived = 0;

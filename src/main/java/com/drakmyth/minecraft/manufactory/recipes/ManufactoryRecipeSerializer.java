@@ -5,11 +5,6 @@
 
 package com.drakmyth.minecraft.manufactory.recipes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonArray;
@@ -23,7 +18,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -33,45 +27,47 @@ public class ManufactoryRecipeSerializer<T extends IRecipe<IInventory>> extends 
     @Override
     public GrinderRecipe read(ResourceLocation recipeId, JsonObject json) {
         Ingredient ingredient = Ingredient.deserialize(json.get("ingredient"));
-        JsonArray resultArray = json.getAsJsonArray("results");
-        List<Tuple<ItemStack, Float>> results = Stream.of(resultArray).map(element -> {
-            JsonObject result = element.get(0).getAsJsonObject();
-            ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(result, "item", "minecraft:empty"), ':');
-            int amount = JSONUtils.getInt(result, "amount", 0);
-            ItemStack item = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), amount);
-            float chance = JSONUtils.getFloat(result, "chance", 1.0f);
-            return new Tuple<ItemStack, Float>(item, chance);
-        }).collect(Collectors.toList());
+        JsonObject resultObj = json.get("result").getAsJsonObject();
+        ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(resultObj, "item", "minecraft:empty"), ':');
+        int amount = JSONUtils.getInt(resultObj, "amount", 0);
+        ItemStack result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), amount);
+        float extraChance = JSONUtils.getFloat(json, "extraChance");
+        JsonArray resultArray = json.getAsJsonArray("extraAmounts");
+        float[] extraAmounts = new float[resultArray.size()];
+        for (int i = 0; i < resultArray.size(); i++) {
+            float element = resultArray.get(i).getAsFloat();
+            extraAmounts[i] = element;
+        }
         int powerRequired = JSONUtils.getInt(json, "powerRequired", 25);
         int processTime = JSONUtils.getInt(json, "processTime", 200);
-
-        return new GrinderRecipe(recipeId, ingredient, results, powerRequired, processTime);
+        return new GrinderRecipe(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
     }
 
     @Nullable
     @Override
     public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
         Ingredient ingredient = Ingredient.read(buffer);
-        int resultCount = buffer.readInt();
-        List<Tuple<ItemStack, Float>> results = new ArrayList<>();
-        for (int i = 0; i < resultCount; i++) {
-            ItemStack result = buffer.readItemStack();
-            float chance = buffer.readFloat();
-            results.add(new Tuple<ItemStack, Float>(result, chance));
+        ItemStack result = buffer.readItemStack();
+        float extraChance = buffer.readFloat();
+        int extraAmountsCount = buffer.readInt();
+        float[] extraAmounts = new float[extraAmountsCount];
+        for (int i = 0; i < extraAmountsCount; i++) {
+            extraAmounts[i] = buffer.readFloat();
         }
         int powerRequired = buffer.readInt();
         int processTime = buffer.readInt();
-        return new GrinderRecipe(recipeId, ingredient, results, powerRequired, processTime);
+        return new GrinderRecipe(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
     }
 
     @Override
     public void write(PacketBuffer buffer, GrinderRecipe recipe) {
         recipe.getIngredient().write(buffer);
-        List<Tuple<ItemStack, Float>> results = recipe.getResults();
-        buffer.writeInt(results.size());
-        for (Tuple<ItemStack, Float> result : results) {
-            buffer.writeItemStack(result.getA());
-            buffer.writeFloat(result.getB());
+        buffer.writeItemStack(recipe.getRecipeOutput());
+        buffer.writeFloat(recipe.getExtraChance());
+        float[] extraAmounts = recipe.getExtraAmounts();
+        buffer.writeInt(extraAmounts.length);
+        for (float amount : extraAmounts) {
+            buffer.writeFloat(amount);
         }
         buffer.writeInt(recipe.getPowerRequired());
         buffer.writeInt(recipe.getProcessTime());

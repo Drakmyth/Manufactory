@@ -12,7 +12,6 @@ import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
@@ -20,25 +19,30 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 
-public class GrinderRecipe implements IRecipe<IInventory> {
+public class GrinderRecipe extends ManufactoryRecipe {
 
     public static final IRecipeType<GrinderRecipe> recipeType = IRecipeType.register("grinder");
 
     private final ResourceLocation recipeId;
     private Ingredient ingredient;
-    private List<Tuple<ItemStack, Float>> results;
+    private ItemStack result;
+    private float extraChance;
+    private float[] extraAmounts;
     private int powerRequired;
     private int processTime;
 
     public GrinderRecipe(ResourceLocation recipeId) {
         this.recipeId = recipeId;
-        results = new ArrayList<>();
+        result = ItemStack.EMPTY;
+        extraAmounts = new float[0];
     }
 
-    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, List<Tuple<ItemStack, Float>> results, int powerRequired, int processTime) {
+    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime) {
         this.recipeId = recipeId;
         this.ingredient = ingredient;
-        this.results = results;
+        this.result = result;
+        this.extraChance = extraChance;
+        this.extraAmounts = extraAmounts;
         this.powerRequired = powerRequired;
         this.processTime = processTime;
     }
@@ -47,8 +51,12 @@ public class GrinderRecipe implements IRecipe<IInventory> {
         return ingredient;
     }
 
-    public List<Tuple<ItemStack, Float>> getResults() {
-        return results;
+    public float getExtraChance() {
+        return extraChance;
+    }
+
+    public float[] getExtraAmounts() {
+        return extraAmounts;
     }
 
     public int getPowerRequired() {
@@ -66,7 +74,7 @@ public class GrinderRecipe implements IRecipe<IInventory> {
 
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
-        return ItemStack.EMPTY;
+        return result;
     }
 
     @Override
@@ -76,7 +84,7 @@ public class GrinderRecipe implements IRecipe<IInventory> {
 
     @Override
     public ItemStack getRecipeOutput() {
-        return ItemStack.EMPTY;
+        return result;
     }
 
     @Override
