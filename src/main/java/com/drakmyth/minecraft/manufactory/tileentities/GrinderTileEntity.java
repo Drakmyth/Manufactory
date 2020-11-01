@@ -5,6 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.tileentities;
 
+import java.util.Random;
+
 import com.drakmyth.minecraft.manufactory.containers.GrinderContainer;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
@@ -111,8 +113,8 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     private boolean tryStartRecipe() {
         GrinderRecipe recipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
         if (recipe == null) return false;
-        ItemStack result = recipe.getRecipeOutput();
-        if (!grinderInventory.insertItem(1, result, true).isEmpty()) return false; // TODO: Account for additional results
+        ItemStack maxResult = recipe.getMaxOutput();
+        if (!grinderInventory.insertItem(1, maxResult, true).isEmpty()) return false;
         lastPowerReceived = 0;
         powerRequired = recipe.getPowerRequired();
         powerRemaining = recipe.getPowerRequired();
@@ -159,7 +161,11 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);
-            ItemStack resultStack = currentRecipe.getRecipeOutput().copy(); // TODO: Account for additional results
+            ItemStack resultStack = currentRecipe.getRecipeOutput().copy();
+            Random rand = world.getRandom();
+            if (currentRecipe.hasExtraChance() && rand.nextFloat() <= currentRecipe.getExtraChance()) {
+                resultStack.grow(currentRecipe.getRandomExtraAmount(rand));
+            }
             grinderInventory.insertItem(1, resultStack, false);
             currentRecipe = null;
             lastPowerReceived = 0;

@@ -5,6 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.recipes;
 
+import java.util.Random;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -37,6 +39,14 @@ public abstract class ManufactoryRecipe implements IRecipe<IInventory> {
 
     public float getExtraChance() {
         return extraChance;
+    }
+
+    public boolean hasExtraChance() {
+        return extraAmounts.length > 0;
+    }
+
+    public int getRandomExtraAmount(Random rand) {
+        return extraAmounts[rand.nextInt(extraAmounts.length)];
     }
 
     public int[] getExtraAmounts() {
