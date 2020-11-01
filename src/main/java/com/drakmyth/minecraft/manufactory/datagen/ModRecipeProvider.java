@@ -23,8 +23,7 @@ import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.Tuple;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(DataGenerator generator) {
@@ -70,24 +69,56 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
             .build(consumer);
 
-        List<Tuple<Tuple<String, Item>, RegistryObject<Item>>> ores = Arrays.asList(
-            new Tuple<>(new Tuple<>("coal_ore", Items.COAL_ORE), ModItems.GROUND_COAL_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("diamond_ore", Items.DIAMOND_ORE), ModItems.GROUND_DIAMOND_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("emerald_ore", Items.EMERALD_ORE), ModItems.GROUND_EMERALD_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("gold_ore", Items.GOLD_ORE), ModItems.GROUND_GOLD_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("iron_ore", Items.IRON_ORE), ModItems.GROUND_IRON_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("lapis_ore", Items.LAPIS_ORE), ModItems.GROUND_LAPIS_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("nether_quartz_ore", Items.NETHER_QUARTZ_ORE), ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("redstone_ore", Items.REDSTONE_ORE), ModItems.GROUND_REDSTONE_ORE_ROUGH),
-            new Tuple<>(new Tuple<>("ancient_debris", Items.ANCIENT_DEBRIS), ModItems.GROUND_ANCIENT_DEBRIS_ROUGH)
+        List<OreProcessingRecipeData> grinderOres = Arrays.asList(
+            new OreProcessingRecipeData(Items.COAL_ORE, ModItems.GROUND_COAL_ORE_ROUGH.get(), Items.COAL),
+            new OreProcessingRecipeData(Items.DIAMOND_ORE, ModItems.GROUND_DIAMOND_ORE_ROUGH.get(), Items.DIAMOND),
+            new OreProcessingRecipeData(Items.EMERALD_ORE, ModItems.GROUND_EMERALD_ORE_ROUGH.get(), Items.EMERALD),
+            new OreProcessingRecipeData(Items.GOLD_ORE, ModItems.GROUND_GOLD_ORE_ROUGH.get(), Items.GOLD_INGOT),
+            new OreProcessingRecipeData(Items.IRON_ORE, ModItems.GROUND_IRON_ORE_ROUGH.get(), Items.IRON_INGOT),
+            new OreProcessingRecipeData(Items.LAPIS_ORE, ModItems.GROUND_LAPIS_ORE_ROUGH.get(), Items.LAPIS_LAZULI),
+            new OreProcessingRecipeData(Items.NETHER_QUARTZ_ORE, ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH.get(), Items.QUARTZ),
+            new OreProcessingRecipeData(Items.REDSTONE_ORE, ModItems.GROUND_REDSTONE_ORE_ROUGH.get(), Items.REDSTONE),
+            new OreProcessingRecipeData(Items.ANCIENT_DEBRIS, ModItems.GROUND_ANCIENT_DEBRIS_ROUGH.get(), Items.NETHERITE_SCRAP)
             );
 
-        // Ore -> Ground Ore (Rough)
-        ores.stream().forEach(tuple -> {
-            ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(tuple.getA().getB()), tuple.getB().get())
+        grinderOres.stream().forEach(data -> {
+            String inputName = ForgeRegistries.ITEMS.getKey(data.getInput()).getPath();
+            String outputName = ForgeRegistries.ITEMS.getKey(data.getOutput()).getPath();
+            String processedName = ForgeRegistries.ITEMS.getKey(data.getProcessed()).getPath();
+            // Ore -> Ground Ore (Rough)
+            ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(data.getInput()), data.getOutput())
             .withExtraChance(0.3f, 1)
-            .addCriterion(String.format("has_%s", tuple.getA().getA()), InventoryChangeTrigger.Instance.forItems(tuple.getA().getB()))
+            .addCriterion(String.format("has_%s", inputName), InventoryChangeTrigger.Instance.forItems(data.getInput()))
             .build(consumer);
+
+            // Ground Ore (Rough) -> Ingot
+            CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(data.getOutput()), data.getProcessed(), 0.2f, 200)
+            .addCriterion(String.format("has_%s", outputName), InventoryChangeTrigger.Instance.forItems(data.getOutput()))
+            .build(consumer, String.format("manufactory:%s_from_ground_ore_rough", processedName));
         });
+    }
+
+    private static class OreProcessingRecipeData {
+        private Item input;
+        private Item output;
+        private Item processed;
+
+        public OreProcessingRecipeData(Item input, Item output, Item processed) {
+            this.input = input;
+            this.output = output;
+            this.processed = processed;
+        }
+
+        public Item getInput() {
+            return input;
+        }
+
+        public Item getOutput() {
+            return output;
+        }
+
+        public Item getProcessed() {
+            return processed;
+        }
     }
 }

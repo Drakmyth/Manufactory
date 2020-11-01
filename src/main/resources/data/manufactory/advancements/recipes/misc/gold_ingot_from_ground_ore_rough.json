@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:ground_coal_ore_rough"
+      "manufactory:gold_ingot_from_ground_ore_rough"
     ]
   },
   "criteria": {
-    "has_minecraft:coal_ore": {
+    "has_ground_gold_ore_rough": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:coal_ore"
+            "item": "manufactory:ground_gold_ore_rough"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:ground_coal_ore_rough"
+        "recipe": "manufactory:gold_ingot_from_ground_ore_rough"
       }
     }
   },
   "requirements": [
     [
-      "has_minecraft:coal_ore",
+      "has_ground_gold_ore_rough",
       "has_the_recipe"
     ]
   ]
