@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeBuilder;
@@ -129,7 +130,7 @@ public class ModRecipeProvider extends RecipeProvider {
             // Ground Ore (Rough) -> Ingot
             CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(data.getOutput()), data.getProcessed(), 0.2f, 200)
             .addCriterion(String.format("has_%s", outputName), InventoryChangeTrigger.Instance.forItems(data.getOutput()))
-            .build(consumer, String.format("manufactory:%s_from_ground_ore_rough", processedName));
+            .build(consumer, String.format("%s:%s_from_ground_ore_rough", Reference.MOD_ID, processedName));
         });
     }
 
