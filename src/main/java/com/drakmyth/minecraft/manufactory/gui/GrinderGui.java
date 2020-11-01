@@ -22,6 +22,13 @@ public class GrinderGui extends ContainerScreen<GrinderContainer> {
     }
 
     @Override
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+     }
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
         this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
         int i = this.guiLeft;
