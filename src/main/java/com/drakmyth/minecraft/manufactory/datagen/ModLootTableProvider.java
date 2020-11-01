@@ -48,6 +48,7 @@ public class ModLootTableProvider extends LootTableProvider {
         @Override
         protected void addTables() {
             registerDropSelfLootTable(ModBlocks.AMBER_BLOCK.get());
+            registerDropSelfLootTable(ModBlocks.GRINDER.get());
             registerDropSelfLootTable(ModBlocks.LATEX_COLLECTOR.get());
             registerDropSelfLootTable(ModBlocks.POWER_CABLE.get());
             registerDropSelfLootTable(ModBlocks.SOLAR_PANEL.get());

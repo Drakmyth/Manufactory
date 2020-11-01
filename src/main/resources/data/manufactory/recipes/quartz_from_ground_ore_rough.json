@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "manufactory:ground_nether_quartz_ore_rough"
+  },
+  "result": "minecraft:quartz",
+  "experience": 0.2,
+  "cookingtime": 200
+}

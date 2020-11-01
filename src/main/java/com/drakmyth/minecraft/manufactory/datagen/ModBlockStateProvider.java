@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
@@ -16,8 +17,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -43,6 +46,15 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", "manufactory:item/latex_collector");
         itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", "minecraft:item/bone_meal");
+        itemModels().withExistingParent("item/ground_coal_ore_rough", "block/coal_ore");
+        itemModels().withExistingParent("item/ground_diamond_ore_rough", "block/diamond_ore");
+        itemModels().withExistingParent("item/ground_emerald_ore_rough", "block/emerald_ore");
+        itemModels().withExistingParent("item/ground_gold_ore_rough", "block/gold_ore");
+        itemModels().withExistingParent("item/ground_iron_ore_rough", "block/iron_ore");
+        itemModels().withExistingParent("item/ground_lapis_ore_rough", "block/lapis_ore");
+        itemModels().withExistingParent("item/ground_nether_quartz_ore_rough", "block/nether_quartz_ore");
+        itemModels().withExistingParent("item/ground_redstone_ore_rough", "block/redstone_ore");
+        itemModels().withExistingParent("item/ground_ancient_debris_rough", "block/ancient_debris");
         itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", "minecraft:item/ink_sac");
         itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", "manufactory:item/tapping_knife");
 
@@ -58,6 +70,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile solarPanelModel = models().getBuilder("solar_panel").parent(daylightDetectorModel);
         simpleBlock(ModBlocks.SOLAR_PANEL.get(), solarPanelModel);
         itemModels().getBuilder("solar_panel").parent(solarPanelModel);
+
+        ResourceLocation furnaceModelLoc = new ResourceLocation("minecraft", "block/furnace");
+        ModelFile furnaceModel = new ExistingModelFile(furnaceModelLoc, exFileHelper);
+        ModelFile grinderModel = models().getBuilder("grinder").parent(furnaceModel);
+        generateGrinderBlockState(grinderModel);
+        itemModels().getBuilder("grinder").parent(grinderModel);
     }
 
     private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {
@@ -180,5 +198,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.part().modelFile(sideModel).rotationY(90).addModel().condition(PowerCableBlock.EAST, true);
         builder.part().modelFile(sideModel).rotationY(180).addModel().condition(PowerCableBlock.SOUTH, true);
         builder.part().modelFile(sideModel).rotationY(270).addModel().condition(PowerCableBlock.WEST, true);
+    }
+
+    private void generateGrinderBlockState(ModelFile grinderModel) {
+        VariantBlockStateBuilder builder = getVariantBuilder(ModBlocks.GRINDER.get());
+        builder.forAllStates(state -> {
+            int yRotation = (int)state.get(GrinderBlock.HORIZONTAL_FACING).getOpposite().getHorizontalAngle();
+            return ConfiguredModel.builder().modelFile(grinderModel).rotationY(yRotation).build();
+        });
     }
 }

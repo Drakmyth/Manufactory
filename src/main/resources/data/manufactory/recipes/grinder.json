@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "s s",
+    "srs",
+    "sps"
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:stone"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "p": {
+      "item": "manufactory:power_cable"
+    }
+  },
+  "result": {
+    "item": "manufactory:grinder"
+  }
+}

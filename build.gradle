@@ -156,3 +156,18 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+task refreshGeneratedAssets {
+    doFirst {
+        delete 'src/main/resources/data'
+        fileTree('src/main/resources/assets/manufactory').exclude('textures').visit { delete it.file }
+    }
+
+    doLast {
+        copy {
+            from 'src/generated/resources'
+            into 'src/main/resources'
+            exclude '**/.cache'
+        }
+    }
+}

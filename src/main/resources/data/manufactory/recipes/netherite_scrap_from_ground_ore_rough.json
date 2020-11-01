@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "manufactory:ground_ancient_debris_rough"
+  },
+  "result": "minecraft:netherite_scrap",
+  "experience": 0.2,
+  "cookingtime": 200
+}

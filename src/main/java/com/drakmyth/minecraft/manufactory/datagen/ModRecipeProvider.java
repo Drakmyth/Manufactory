@@ -5,10 +5,13 @@
 
 package com.drakmyth.minecraft.manufactory.datagen;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
+import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeBuilder;
 
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.data.CookingRecipeBuilder;
@@ -17,8 +20,11 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ItemTags;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(DataGenerator generator) {
@@ -63,5 +69,101 @@ public class ModRecipeProvider extends RecipeProvider {
         CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 0.1f, 200)
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
             .build(consumer);
+
+        // Power Cable
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.POWER_CABLE.get())
+            .patternLine("   ")
+            .patternLine("rrr")
+            .patternLine("   ")
+            .key('r', ModItems.RUBBER.get())
+            .addCriterion("has_rubber", InventoryChangeTrigger.Instance.forItems(ModItems.RUBBER.get()))
+            .build(consumer);
+
+        // Solar Panel
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.SOLAR_PANEL.get())
+            .patternLine("ddd")
+            .patternLine("qrq")
+            .patternLine("wpw")
+            .key('d', Items.DAYLIGHT_DETECTOR)
+            .key('q', Items.QUARTZ)
+            .key('r', Items.REDSTONE)
+            .key('w', ItemTags.WOODEN_SLABS)
+            .key('p', ModBlocks.POWER_CABLE.get())
+            .addCriterion("has_daylight_detector", InventoryChangeTrigger.Instance.forItems(Items.DAYLIGHT_DETECTOR))
+            .build(consumer);
+
+        // Grinder
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.GRINDER.get())
+            .patternLine("s s")
+            .patternLine("srs")
+            .patternLine("sps")
+            .key('s', Items.STONE)
+            .key('r', Items.REDSTONE)
+            .key('p', ModBlocks.POWER_CABLE.get())
+            .addCriterion("has_redstone", InventoryChangeTrigger.Instance.forItems(Items.REDSTONE))
+            .build(consumer);
+
+        List<OreProcessingRecipeData> grinderOres = Arrays.asList(
+            new OreProcessingRecipeData(Items.COAL_ORE, ModItems.GROUND_COAL_ORE_ROUGH.get(), Items.COAL),
+            new OreProcessingRecipeData(Items.DIAMOND_ORE, ModItems.GROUND_DIAMOND_ORE_ROUGH.get(), Items.DIAMOND),
+            new OreProcessingRecipeData(Items.EMERALD_ORE, ModItems.GROUND_EMERALD_ORE_ROUGH.get(), Items.EMERALD),
+            new OreProcessingRecipeData(Items.GOLD_ORE, ModItems.GROUND_GOLD_ORE_ROUGH.get(), Items.GOLD_INGOT),
+            new OreProcessingRecipeData(Items.IRON_ORE, ModItems.GROUND_IRON_ORE_ROUGH.get(), Items.IRON_INGOT),
+            new OreProcessingRecipeData(Items.LAPIS_ORE, ModItems.GROUND_LAPIS_ORE_ROUGH.get(), Items.LAPIS_LAZULI),
+            new OreProcessingRecipeData(Items.NETHER_QUARTZ_ORE, ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH.get(), Items.QUARTZ),
+            new OreProcessingRecipeData(Items.REDSTONE_ORE, ModItems.GROUND_REDSTONE_ORE_ROUGH.get(), Items.REDSTONE),
+            new OreProcessingRecipeData(Items.ANCIENT_DEBRIS, ModItems.GROUND_ANCIENT_DEBRIS_ROUGH.get(), Items.NETHERITE_SCRAP)
+            );
+
+        grinderOres.stream().forEach(data -> {
+            String inputName = ForgeRegistries.ITEMS.getKey(data.getInput()).getPath();
+            String outputName = ForgeRegistries.ITEMS.getKey(data.getOutput()).getPath();
+            String processedName = ForgeRegistries.ITEMS.getKey(data.getProcessed()).getPath();
+
+            // Ore -> Ground Ore (Rough)
+            ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(data.getInput()), data.getOutput())
+            .withExtraChance(0.3f, data.getExtraAmounts())
+            .addCriterion(String.format("has_%s", inputName), InventoryChangeTrigger.Instance.forItems(data.getInput()))
+            .build(consumer);
+
+            // Ground Ore (Rough) -> Ingot
+            CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(data.getOutput()), data.getProcessed(), 0.2f, 200)
+            .addCriterion(String.format("has_%s", outputName), InventoryChangeTrigger.Instance.forItems(data.getOutput()))
+            .build(consumer, String.format("manufactory:%s_from_ground_ore_rough", processedName));
+        });
+    }
+
+    private static class OreProcessingRecipeData {
+        private Item input;
+        private Item output;
+        private Item processed;
+        private int[] extraAmounts;
+
+        public OreProcessingRecipeData(Item input, Item output, Item processed) {
+            this(input, output, processed, new int[]{1});
+        }
+
+        public OreProcessingRecipeData(Item input, Item output, Item processed, int[] extraAmounts) {
+            this.input = input;
+            this.output = output;
+            this.processed = processed;
+            this.extraAmounts = extraAmounts;
+        }
+
+        public Item getInput() {
+            return input;
+        }
+
+        public Item getOutput() {
+            return output;
+        }
+
+        public Item getProcessed() {
+            return processed;
+        }
+
+        public int[] getExtraAmounts() {
+            return extraAmounts;
+        }
     }
 }

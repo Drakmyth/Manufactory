@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "rrr",
+    "   "
+  ],
+  "key": {
+    "r": {
+      "item": "manufactory:rubber"
+    }
+  },
+  "result": {
+    "item": "manufactory:power_cable"
+  }
+}
