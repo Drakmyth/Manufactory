@@ -5,6 +5,11 @@
 
 package com.drakmyth.minecraft.manufactory.datagen;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
@@ -18,8 +23,11 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.Tuple;
+import net.minecraftforge.fml.RegistryObject;
 
 public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(DataGenerator generator) {
@@ -65,11 +73,24 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
             .build(consumer);
 
-        // Coagulated Latex -> 5 Rubber
-        ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 5)
-            .withExtraChance(0.25f)
-            .withExtraAmounts(new float[]{4, 5, 6, 7, 8})
-            .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
-            .build(consumer, "manufactory:rubber_from_grinder");
+        List<Tuple<Tuple<String, Item>, RegistryObject<Item>>> ores = Arrays.asList(
+            new Tuple<>(new Tuple<>("coal_ore", Items.COAL_ORE), ModItems.GROUND_COAL_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("diamond_ore", Items.DIAMOND_ORE), ModItems.GROUND_DIAMOND_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("emerald_ore", Items.EMERALD_ORE), ModItems.GROUND_EMERALD_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("gold_ore", Items.GOLD_ORE), ModItems.GROUND_GOLD_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("iron_ore", Items.IRON_ORE), ModItems.GROUND_IRON_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("lapis_ore", Items.LAPIS_ORE), ModItems.GROUND_LAPIS_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("nether_quartz_ore", Items.NETHER_QUARTZ_ORE), ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("redstone_ore", Items.REDSTONE_ORE), ModItems.GROUND_REDSTONE_ORE_ROUGH),
+            new Tuple<>(new Tuple<>("ancient_debris", Items.ANCIENT_DEBRIS), ModItems.GROUND_ANCIENT_DEBRIS_ROUGH)
+            );
+
+        // Ore -> Ground Ore (Rough)
+        ores.stream().forEach(tuple -> {
+            ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(tuple.getA().getB()), tuple.getB().get())
+            .withExtraChance(0.3f, 1)
+            .addCriterion(String.format("has_%s", tuple.getA().getA()), InventoryChangeTrigger.Instance.forItems(tuple.getA().getB()))
+            .build(consumer);
+        });
     }
 }

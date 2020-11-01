@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:ground_redstone_ore_rough"
+    ]
+  },
+  "criteria": {
+    "has_redstone_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:redstone_ore"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:ground_redstone_ore_rough"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_redstone_ore",
+      "has_the_recipe"
+    ]
+  ]
+}

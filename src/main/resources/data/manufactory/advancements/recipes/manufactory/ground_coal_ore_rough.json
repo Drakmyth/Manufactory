@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:rubber_from_grinder"
+      "manufactory:ground_coal_ore_rough"
     ]
   },
   "criteria": {
-    "has_coagulated_latex": {
+    "has_coal_ore": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "manufactory:coagulated_latex"
+            "item": "minecraft:coal_ore"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:rubber_from_grinder"
+        "recipe": "manufactory:ground_coal_ore_rough"
       }
     }
   },
   "requirements": [
     [
-      "has_coagulated_latex",
+      "has_coal_ore",
       "has_the_recipe"
     ]
   ]

@@ -61,12 +61,12 @@ public class ManufactoryRecipeBuilder {
       return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
    }
 
-   public ManufactoryRecipeBuilder withExtraChance(float extraChance) {
-      this.extraChance = extraChance;
-      return this;
+   public ManufactoryRecipeBuilder withExtraChance(float extraChance, float extraAmount) {
+      return withExtraChance(extraChance, new float[]{extraAmount});
    }
 
-   public ManufactoryRecipeBuilder withExtraAmounts(float[] extraAmounts) {
+   public ManufactoryRecipeBuilder withExtraChance(float extraChance, float[] extraAmounts) {
+      this.extraChance = extraChance;
       this.extraAmounts = extraAmounts;
       return this;
    }

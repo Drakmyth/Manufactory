@@ -1,0 +1,16 @@
+{
+  "type": "manufactory:grinder",
+  "ingredient": {
+    "item": "minecraft:coal_ore"
+  },
+  "result": {
+    "item": "manufactory:ground_coal_ore_rough",
+    "count": 1
+  },
+  "extraChance": 0.3,
+  "extraAmounts": [
+    1.0
+  ],
+  "powerRequired": 25,
+  "processTime": 200
+}
