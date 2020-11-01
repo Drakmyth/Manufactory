@@ -32,7 +32,7 @@ public class ManufactoryRecipeBuilder {
    private Ingredient ingredient;
    private ItemStack result;
    private float extraChance;
-   private float[] extraAmounts;
+   private int[] extraAmounts;
    private int powerRequired;
    private int processTime;
    private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
@@ -43,7 +43,7 @@ public class ManufactoryRecipeBuilder {
       this.ingredient = ingredient;
       this.result = result.copy();
       this.extraChance = 0;
-      this.extraAmounts = new float[0];
+      this.extraAmounts = new int[0];
       this.powerRequired = 25;
       this.processTime = 200;
       this.recipeSerializer = serializer;
@@ -61,11 +61,11 @@ public class ManufactoryRecipeBuilder {
       return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
    }
 
-   public ManufactoryRecipeBuilder withExtraChance(float extraChance, float extraAmount) {
-      return withExtraChance(extraChance, new float[]{extraAmount});
+   public ManufactoryRecipeBuilder withExtraChance(float extraChance, int extraAmount) {
+      return withExtraChance(extraChance, new int[]{extraAmount});
    }
 
-   public ManufactoryRecipeBuilder withExtraChance(float extraChance, float[] extraAmounts) {
+   public ManufactoryRecipeBuilder withExtraChance(float extraChance, int[] extraAmounts) {
       this.extraChance = extraChance;
       this.extraAmounts = extraAmounts;
       return this;
@@ -121,14 +121,14 @@ public class ManufactoryRecipeBuilder {
       private Ingredient ingredient;
       private ItemStack result;
       private float extraChance;
-      private float[] extraAmounts;
+      private int[] extraAmounts;
       private int powerRequired;
       private int processTime;
       private final Advancement.Builder advancementBuilder;
       private final ResourceLocation advancementId;
       private final IRecipeSerializer<? extends IRecipe<IInventory>> serializer;
 
-      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
+      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
          this.id = idIn;
          this.group = groupIn;
          this.ingredient = ingredient;
@@ -152,7 +152,7 @@ public class ManufactoryRecipeBuilder {
          json.add("result", serializeItemStack(resultStack));
          json.addProperty("extraChance", this.extraChance);
          JsonArray extraAmountsArray = new JsonArray();
-         for (float amount : extraAmounts) {
+         for (int amount : extraAmounts) {
             extraAmountsArray.add(amount);
          }
          json.add("extraAmounts", extraAmountsArray);

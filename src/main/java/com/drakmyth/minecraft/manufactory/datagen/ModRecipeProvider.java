@@ -85,9 +85,10 @@ public class ModRecipeProvider extends RecipeProvider {
             String inputName = ForgeRegistries.ITEMS.getKey(data.getInput()).getPath();
             String outputName = ForgeRegistries.ITEMS.getKey(data.getOutput()).getPath();
             String processedName = ForgeRegistries.ITEMS.getKey(data.getProcessed()).getPath();
+
             // Ore -> Ground Ore (Rough)
             ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(data.getInput()), data.getOutput())
-            .withExtraChance(0.3f, 1)
+            .withExtraChance(0.3f, data.getExtraAmounts())
             .addCriterion(String.format("has_%s", inputName), InventoryChangeTrigger.Instance.forItems(data.getInput()))
             .build(consumer);
 
@@ -102,11 +103,17 @@ public class ModRecipeProvider extends RecipeProvider {
         private Item input;
         private Item output;
         private Item processed;
+        private int[] extraAmounts;
 
         public OreProcessingRecipeData(Item input, Item output, Item processed) {
+            this(input, output, processed, new int[]{1});
+        }
+
+        public OreProcessingRecipeData(Item input, Item output, Item processed, int[] extraAmounts) {
             this.input = input;
             this.output = output;
             this.processed = processed;
+            this.extraAmounts = extraAmounts;
         }
 
         public Item getInput() {
@@ -119,6 +126,10 @@ public class ModRecipeProvider extends RecipeProvider {
 
         public Item getProcessed() {
             return processed;
+        }
+
+        public int[] getExtraAmounts() {
+            return extraAmounts;
         }
     }
 }

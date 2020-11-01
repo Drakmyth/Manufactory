@@ -17,11 +17,11 @@ public abstract class ManufactoryRecipe implements IRecipe<IInventory> {
     private Ingredient ingredient;
     private ItemStack result;
     private float extraChance;
-    private float[] extraAmounts;
+    private int[] extraAmounts;
     private int powerRequired;
     private int processTime;
 
-    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime) {
+    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime) {
         this.recipeId = recipeId;
         this.ingredient = ingredient;
         this.result = result;
@@ -39,7 +39,7 @@ public abstract class ManufactoryRecipe implements IRecipe<IInventory> {
         return extraChance;
     }
 
-    public float[] getExtraAmounts() {
+    public int[] getExtraAmounts() {
         return extraAmounts;
     }
 
@@ -59,6 +59,16 @@ public abstract class ManufactoryRecipe implements IRecipe<IInventory> {
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
         return result;
+    }
+
+    public ItemStack getMaxOutput() {
+        ItemStack maxResult = result.copy();
+        int max = 0;
+        for(int amount : extraAmounts) {
+            max = Math.max(max, amount);
+        }
+        maxResult.grow(max);
+        return maxResult;
     }
 
     @Override

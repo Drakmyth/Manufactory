@@ -37,9 +37,9 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         ItemStack result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), amount);
         float extraChance = JSONUtils.getFloat(json, "extraChance");
         JsonArray resultArray = json.getAsJsonArray("extraAmounts");
-        float[] extraAmounts = new float[resultArray.size()];
+        int[] extraAmounts = new int[resultArray.size()];
         for (int i = 0; i < resultArray.size(); i++) {
-            float element = resultArray.get(i).getAsFloat();
+            int element = resultArray.get(i).getAsInt();
             extraAmounts[i] = element;
         }
         int powerRequired = JSONUtils.getInt(json, "powerRequired", 25);
@@ -54,9 +54,9 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         ItemStack result = buffer.readItemStack();
         float extraChance = buffer.readFloat();
         int extraAmountsCount = buffer.readInt();
-        float[] extraAmounts = new float[extraAmountsCount];
+        int[] extraAmounts = new int[extraAmountsCount];
         for (int i = 0; i < extraAmountsCount; i++) {
-            extraAmounts[i] = buffer.readFloat();
+            extraAmounts[i] = buffer.readInt();
         }
         int powerRequired = buffer.readInt();
         int processTime = buffer.readInt();
@@ -68,9 +68,9 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         recipe.getIngredient().write(buffer);
         buffer.writeItemStack(recipe.getRecipeOutput());
         buffer.writeFloat(recipe.getExtraChance());
-        float[] extraAmounts = recipe.getExtraAmounts();
+        int[] extraAmounts = recipe.getExtraAmounts();
         buffer.writeInt(extraAmounts.length);
-        for (float amount : extraAmounts) {
+        for (int amount : extraAmounts) {
             buffer.writeFloat(amount);
         }
         buffer.writeInt(recipe.getPowerRequired());
@@ -78,6 +78,6 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
     }
 
     public interface IFactory<T extends ManufactoryRecipe> {
-        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime);
+        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime);
     }
 }
