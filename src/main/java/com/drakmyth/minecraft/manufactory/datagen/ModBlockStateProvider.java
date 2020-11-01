@@ -43,7 +43,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile latexCollectorFullModel = generatePartialLatexCollectorFullModel();
         generateLatexCollectorBlockState(latexCollectorEmptyModel, latexCollectorFillingModel, latexCollectorFullModel);
 
-        itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", "manufactory:item/latex_collector");
+        itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", String.format("%s:item/latex_collector", Reference.MOD_ID));
         itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", "minecraft:item/bone_meal");
         itemModels().withExistingParent("item/ground_coal_ore_rough", "block/coal_ore");
@@ -56,7 +56,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/ground_redstone_ore_rough", "block/redstone_ore");
         itemModels().withExistingParent("item/ground_ancient_debris_rough", "block/ancient_debris");
         itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", "minecraft:item/ink_sac");
-        itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", "manufactory:item/tapping_knife");
+        itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", String.format("%s:item/tapping_knife", Reference.MOD_ID));
 
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
         ModelFile powerCableSideModel = generatePartialPowerCableSideModel();

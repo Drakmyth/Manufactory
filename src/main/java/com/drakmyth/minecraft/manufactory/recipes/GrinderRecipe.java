@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.recipes;
 
+import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 
 import net.minecraft.item.ItemStack;
@@ -15,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GrinderRecipe extends ManufactoryRecipe {
 
-    public static final IRecipeType<GrinderRecipe> recipeType = IRecipeType.register("manufactory:grinder");
+    public static final IRecipeType<GrinderRecipe> recipeType = IRecipeType.register(String.format("%s:grinder", Reference.MOD_ID));
 
     public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime) {
         super(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
