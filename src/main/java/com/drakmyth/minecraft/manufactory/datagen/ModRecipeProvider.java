@@ -23,6 +23,7 @@ import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ItemTags;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModRecipeProvider extends RecipeProvider {
@@ -67,6 +68,39 @@ public class ModRecipeProvider extends RecipeProvider {
         // Coagulated Latex -> Rubber
         CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 0.1f, 200)
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
+            .build(consumer);
+
+        // Power Cable
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.POWER_CABLE.get())
+            .patternLine("   ")
+            .patternLine("rrr")
+            .patternLine("   ")
+            .key('r', ModItems.RUBBER.get())
+            .addCriterion("has_rubber", InventoryChangeTrigger.Instance.forItems(ModItems.RUBBER.get()))
+            .build(consumer);
+
+        // Solar Panel
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.SOLAR_PANEL.get())
+            .patternLine("ddd")
+            .patternLine("qrq")
+            .patternLine("wpw")
+            .key('d', Items.DAYLIGHT_DETECTOR)
+            .key('q', Items.QUARTZ)
+            .key('r', Items.REDSTONE)
+            .key('w', ItemTags.WOODEN_SLABS)
+            .key('p', ModBlocks.POWER_CABLE.get())
+            .addCriterion("has_daylight_detector", InventoryChangeTrigger.Instance.forItems(Items.DAYLIGHT_DETECTOR))
+            .build(consumer);
+
+        // Grinder
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.GRINDER.get())
+            .patternLine("s s")
+            .patternLine("srs")
+            .patternLine("sps")
+            .key('s', Items.STONE)
+            .key('r', Items.REDSTONE)
+            .key('p', ModBlocks.POWER_CABLE.get())
+            .addCriterion("has_redstone", InventoryChangeTrigger.Instance.forItems(Items.REDSTONE))
             .build(consumer);
 
         List<OreProcessingRecipeData> grinderOres = Arrays.asList(

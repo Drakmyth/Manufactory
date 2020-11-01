@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ddd",
+    "qrq",
+    "wpw"
+  ],
+  "key": {
+    "d": {
+      "item": "minecraft:daylight_detector"
+    },
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "w": {
+      "tag": "minecraft:wooden_slabs"
+    },
+    "p": {
+      "item": "manufactory:power_cable"
+    }
+  },
+  "result": {
+    "item": "manufactory:solar_panel"
+  }
+}
