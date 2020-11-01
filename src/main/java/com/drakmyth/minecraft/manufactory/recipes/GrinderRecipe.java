@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GrinderRecipe extends ManufactoryRecipe {
 
-    public static final IRecipeType<GrinderRecipe> recipeType = IRecipeType.register("grinder");
+    public static final IRecipeType<GrinderRecipe> recipeType = IRecipeType.register("manufactory:grinder");
 
     public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime) {
         super(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);

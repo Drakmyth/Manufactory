@@ -66,7 +66,9 @@ public class ModRecipeProvider extends RecipeProvider {
             .build(consumer);
 
         // Coagulated Latex -> 5 Rubber
-        ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 5, 0.25f, new float[]{4, 5, 6, 7, 8}, 25, 200)
+        ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 5)
+            .withExtraChance(0.25f)
+            .withExtraAmounts(new float[]{4, 5, 6, 7, 8})
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
             .build(consumer, "manufactory:rubber_from_grinder");
     }

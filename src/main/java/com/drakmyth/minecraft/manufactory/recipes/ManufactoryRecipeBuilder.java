@@ -20,7 +20,6 @@ import net.minecraft.advancements.IRequirementsStrategy;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -31,8 +30,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ManufactoryRecipeBuilder {
    private Ingredient ingredient;
-   private Item result;
-   private int resultCount;
+   private ItemStack result;
    private float extraChance;
    private float[] extraAmounts;
    private int powerRequired;
@@ -41,23 +39,46 @@ public class ManufactoryRecipeBuilder {
    private String group;
    private final ManufactoryRecipeSerializer<?> recipeSerializer;
 
-   private ManufactoryRecipeBuilder(Ingredient ingredient, IItemProvider result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime, ManufactoryRecipeSerializer<?> serializer) {
+   private ManufactoryRecipeBuilder(Ingredient ingredient, ItemStack result, ManufactoryRecipeSerializer<?> serializer) {
       this.ingredient = ingredient;
-      this.result = result.asItem();
-      this.resultCount = resultCount;
-      this.extraChance = extraChance;
-      this.extraAmounts = extraAmounts;
-      this.powerRequired = powerRequired;
-      this.processTime = processTime;
+      this.result = result.copy();
+      this.extraChance = 0;
+      this.extraAmounts = new float[0];
+      this.powerRequired = 25;
+      this.processTime = 200;
       this.recipeSerializer = serializer;
    }
 
-   public static ManufactoryRecipeBuilder manufactoryRecipe(Ingredient ingredient, IItemProvider result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime, ManufactoryRecipeSerializer<?> serializer) {
-      return new ManufactoryRecipeBuilder(ingredient, result, resultCount, extraChance, extraAmounts, powerRequired, processTime, serializer);
+   private static ManufactoryRecipeBuilder manufactoryRecipe(Ingredient ingredient, ItemStack result, ManufactoryRecipeSerializer<?> serializer) {
+      return new ManufactoryRecipeBuilder(ingredient, result, serializer);
    }
 
-   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, IItemProvider result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime) {
-      return manufactoryRecipe(ingredient, result, resultCount, extraChance, extraAmounts, powerRequired, processTime, (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
+   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, IItemProvider result) {
+      return grinderRecipe(ingredient, result, 1);
+   }
+
+   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, IItemProvider result, int count) {
+      return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
+   }
+
+   public ManufactoryRecipeBuilder withExtraChance(float extraChance) {
+      this.extraChance = extraChance;
+      return this;
+   }
+
+   public ManufactoryRecipeBuilder withExtraAmounts(float[] extraAmounts) {
+      this.extraAmounts = extraAmounts;
+      return this;
+   }
+
+   public ManufactoryRecipeBuilder withPowerRequired(int powerRequired) {
+      this.powerRequired = powerRequired;
+      return this;
+   }
+
+   public ManufactoryRecipeBuilder withProcessTime(int processTime) {
+      this.processTime = processTime;
+      return this;
    }
 
    public ManufactoryRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
@@ -66,11 +87,11 @@ public class ManufactoryRecipeBuilder {
    }
 
    public void build(Consumer<IFinishedRecipe> consumerIn) {
-      this.build(consumerIn, ForgeRegistries.ITEMS.getKey(this.result));
+      this.build(consumerIn, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
    }
 
    public void build(Consumer<IFinishedRecipe> consumerIn, String save) {
-      ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result);
+      ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result.getItem());
       ResourceLocation resourcelocation1 = new ResourceLocation(save);
       if (resourcelocation1.equals(resourcelocation)) {
          throw new IllegalStateException("Recipe " + resourcelocation1 + " should remove its 'save' argument");
@@ -82,7 +103,7 @@ public class ManufactoryRecipeBuilder {
    public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id) {
       this.validate(id);
       this.advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.resultCount, this.extraChance, this.extraAmounts, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath()), this.recipeSerializer));
+      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getGroup().getPath() + "/" + id.getPath()), this.recipeSerializer));
    }
 
    /**
@@ -98,8 +119,7 @@ public class ManufactoryRecipeBuilder {
       private final ResourceLocation id;
       private final String group;
       private Ingredient ingredient;
-      private Item result;
-      private int resultCount;
+      private ItemStack result;
       private float extraChance;
       private float[] extraAmounts;
       private int powerRequired;
@@ -108,12 +128,11 @@ public class ManufactoryRecipeBuilder {
       private final ResourceLocation advancementId;
       private final IRecipeSerializer<? extends IRecipe<IInventory>> serializer;
 
-      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, Item result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
+      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, float[] extraAmounts, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
          this.id = idIn;
          this.group = groupIn;
          this.ingredient = ingredient;
          this.result = result;
-         this.resultCount = resultCount;
          this.extraChance = extraChance;
          this.extraAmounts = extraAmounts;
          this.powerRequired = powerRequired;
@@ -129,7 +148,7 @@ public class ManufactoryRecipeBuilder {
          }
 
          json.add("ingredient", this.ingredient.serialize());
-         ItemStack resultStack = new ItemStack(this.result, this.resultCount);
+         ItemStack resultStack = this.result.copy();
          json.add("result", serializeItemStack(resultStack));
          json.addProperty("extraChance", this.extraChance);
          JsonArray extraAmountsArray = new JsonArray();
