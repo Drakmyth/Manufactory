@@ -5,15 +5,15 @@
   },
   "result": {
     "item": "manufactory:rubber",
-    "amount": 5
+    "count": 5
   },
   "extraChance": 0.25,
   "extraAmounts": [
-    4,
-    5,
-    6,
-    7,
-    8
+    4.0,
+    5.0,
+    6.0,
+    7.0,
+    8.0
   ],
   "powerRequired": 25,
   "processTime": 200

@@ -2,6 +2,7 @@
  *  SPDX-License-Identifier: LGPL-3.0-only
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
+
 package com.drakmyth.minecraft.manufactory.recipes;
 
 import java.util.function.Consumer;
@@ -9,6 +10,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancements.Advancement;
@@ -19,36 +21,43 @@ import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ManufactoryRecipeBuilder {
-   private final Item result;
-   private final Ingredient ingredient;
-   private final float experience;
-   private final int cookingTime;
+   private Ingredient ingredient;
+   private Item result;
+   private int resultCount;
+   private float extraChance;
+   private float[] extraAmounts;
+   private int powerRequired;
+   private int processTime;
    private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
    private String group;
    private final ManufactoryRecipeSerializer<?> recipeSerializer;
 
-   private ManufactoryRecipeBuilder(IItemProvider resultIn, Ingredient ingredientIn, float experienceIn, int cookingTimeIn, ManufactoryRecipeSerializer<?> serializer) {
-      this.result = resultIn.asItem();
-      this.ingredient = ingredientIn;
-      this.experience = experienceIn;
-      this.cookingTime = cookingTimeIn;
+   private ManufactoryRecipeBuilder(Ingredient ingredient, IItemProvider result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime, ManufactoryRecipeSerializer<?> serializer) {
+      this.ingredient = ingredient;
+      this.result = result.asItem();
+      this.resultCount = resultCount;
+      this.extraChance = extraChance;
+      this.extraAmounts = extraAmounts;
+      this.powerRequired = powerRequired;
+      this.processTime = processTime;
       this.recipeSerializer = serializer;
    }
 
-   public static ManufactoryRecipeBuilder manufactoryRecipe(Ingredient ingredientIn, IItemProvider resultIn, float experienceIn, int cookingTimeIn, ManufactoryRecipeSerializer<?> serializer) {
-      return new ManufactoryRecipeBuilder(resultIn, ingredientIn, experienceIn, cookingTimeIn, serializer);
+   public static ManufactoryRecipeBuilder manufactoryRecipe(Ingredient ingredient, IItemProvider result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime, ManufactoryRecipeSerializer<?> serializer) {
+      return new ManufactoryRecipeBuilder(ingredient, result, resultCount, extraChance, extraAmounts, powerRequired, processTime, serializer);
    }
 
-   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredientIn, IItemProvider resultIn, float experienceIn, int cookingTimeIn) {
-      return manufactoryRecipe(ingredientIn, resultIn, experienceIn, cookingTimeIn, (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
+   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, IItemProvider result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime) {
+      return manufactoryRecipe(ingredient, result, resultCount, extraChance, extraAmounts, powerRequired, processTime, (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
    }
 
    public ManufactoryRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
@@ -57,11 +66,11 @@ public class ManufactoryRecipeBuilder {
    }
 
    public void build(Consumer<IFinishedRecipe> consumerIn) {
-      this.build(consumerIn, Registry.ITEM.getKey(this.result));
+      this.build(consumerIn, ForgeRegistries.ITEMS.getKey(this.result));
    }
 
    public void build(Consumer<IFinishedRecipe> consumerIn, String save) {
-      ResourceLocation resourcelocation = Registry.ITEM.getKey(this.result);
+      ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result);
       ResourceLocation resourcelocation1 = new ResourceLocation(save);
       if (resourcelocation1.equals(resourcelocation)) {
          throw new IllegalStateException("Recipe " + resourcelocation1 + " should remove its 'save' argument");
@@ -73,7 +82,7 @@ public class ManufactoryRecipeBuilder {
    public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id) {
       this.validate(id);
       this.advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.experience, this.cookingTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath()), this.recipeSerializer));
+      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.resultCount, this.extraChance, this.extraAmounts, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath()), this.recipeSerializer));
    }
 
    /**
@@ -88,21 +97,27 @@ public class ManufactoryRecipeBuilder {
    public static class Result implements IFinishedRecipe {
       private final ResourceLocation id;
       private final String group;
-      private final Ingredient ingredient;
-      private final Item result;
-      private final float experience;
-      private final int cookingTime;
+      private Ingredient ingredient;
+      private Item result;
+      private int resultCount;
+      private float extraChance;
+      private float[] extraAmounts;
+      private int powerRequired;
+      private int processTime;
       private final Advancement.Builder advancementBuilder;
       private final ResourceLocation advancementId;
       private final IRecipeSerializer<? extends IRecipe<IInventory>> serializer;
 
-      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredientIn, Item resultIn, float experienceIn, int cookingTimeIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
+      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, Item result, int resultCount, float extraChance, float[] extraAmounts, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
          this.id = idIn;
          this.group = groupIn;
-         this.ingredient = ingredientIn;
-         this.result = resultIn;
-         this.experience = experienceIn;
-         this.cookingTime = cookingTimeIn;
+         this.ingredient = ingredient;
+         this.result = result;
+         this.resultCount = resultCount;
+         this.extraChance = extraChance;
+         this.extraAmounts = extraAmounts;
+         this.powerRequired = powerRequired;
+         this.processTime = processTime;
          this.advancementBuilder = advancementBuilderIn;
          this.advancementId = advancementIdIn;
          this.serializer = serializerIn;
@@ -114,9 +129,23 @@ public class ManufactoryRecipeBuilder {
          }
 
          json.add("ingredient", this.ingredient.serialize());
-         json.addProperty("result", Registry.ITEM.getKey(this.result).toString());
-         json.addProperty("experience", this.experience);
-         json.addProperty("cookingtime", this.cookingTime);
+         ItemStack resultStack = new ItemStack(this.result, this.resultCount);
+         json.add("result", serializeItemStack(resultStack));
+         json.addProperty("extraChance", this.extraChance);
+         JsonArray extraAmountsArray = new JsonArray();
+         for (float amount : extraAmounts) {
+            extraAmountsArray.add(amount);
+         }
+         json.add("extraAmounts", extraAmountsArray);
+         json.addProperty("powerRequired", this.powerRequired);
+         json.addProperty("processTime", this.processTime);
+      }
+
+      private JsonObject serializeItemStack(ItemStack itemStack) {
+         JsonObject json = new JsonObject();
+         json.addProperty("item", ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString());
+         json.addProperty("count", itemStack.getCount());
+         return json;
       }
 
       public IRecipeSerializer<?> getSerializer() {

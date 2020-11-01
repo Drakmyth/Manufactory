@@ -33,7 +33,7 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         Ingredient ingredient = Ingredient.deserialize(json.get("ingredient"));
         JsonObject resultObj = json.get("result").getAsJsonObject();
         ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(resultObj, "item", "minecraft:empty"), ':');
-        int amount = JSONUtils.getInt(resultObj, "amount", 0);
+        int amount = JSONUtils.getInt(resultObj, "count", 0);
         ItemStack result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), amount);
         float extraChance = JSONUtils.getFloat(json, "extraChance");
         JsonArray resultArray = json.getAsJsonArray("extraAmounts");

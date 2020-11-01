@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
+import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeBuilder;
 
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.data.CookingRecipeBuilder;
@@ -63,5 +64,10 @@ public class ModRecipeProvider extends RecipeProvider {
         CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 0.1f, 200)
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
             .build(consumer);
+
+        // Coagulated Latex -> 5 Rubber
+        ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 5, 0.25f, new float[]{4, 5, 6, 7, 8}, 25, 200)
+            .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
+            .build(consumer, "manufactory:rubber_from_grinder");
     }
 }

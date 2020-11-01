@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:rubber_from_grinder"
+    ]
+  },
+  "criteria": {
+    "has_coagulated_latex": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "manufactory:coagulated_latex"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:rubber_from_grinder"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_coagulated_latex",
+      "has_the_recipe"
+    ]
+  ]
+}
