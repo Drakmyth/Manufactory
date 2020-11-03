@@ -31,18 +31,6 @@ public class PNetCommand {
                     )
                 )
             )
-            // .executes(ctx -> {
-            //     for (ServerWorld dim : ctx.getSource().getServer().getWorlds()) {
-            //         sendTime(ctx.getSource(), dim);
-            //     }
-
-            //     MinecraftServer server = ctx.getSource().getServer();
-            //     double meanTickTime = mean(server.tickTimeArray) * 1.0E-6D;
-            //     double meanTPS = Math.min(1000.0/meanTickTime, 20);
-            //     ctx.getSource().sendFeedback(new TranslationTextComponent("commands.forge.tps.summary.all", TIME_FORMATTER.format(meanTickTime), TIME_FORMATTER.format(meanTPS)), false);
-
-            //     return 0;
-            // }
         ;
     }
 

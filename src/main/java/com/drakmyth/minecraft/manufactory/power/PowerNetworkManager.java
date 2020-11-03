@@ -84,7 +84,7 @@ public class PowerNetworkManager extends WorldSavedData {
         } else if (existingNetworks.size() == 1) {
             addBlockToNetwork(pos, existingNetworks.get(0), type);
         } else {
-            // Merge existing networks, add block to merged network
+            // TODO: Merge existing networks, add block to merged network
         }
 
         markDirty();
@@ -102,12 +102,12 @@ public class PowerNetworkManager extends WorldSavedData {
             currentNetwork.removeBlock(pos);
             blockCache.remove(pos);
         } else {
-            // If two or more connections, check if block is cut vertice
+            // TODO: If two or more connections, check if block is cut vertice
             // splitNetwork = true;
         }
 
         if (splitNetwork) {
-            // If block was cut vertice, split network
+            // TODO: If block was cut vertice, split network
         }
 
         markDirty();

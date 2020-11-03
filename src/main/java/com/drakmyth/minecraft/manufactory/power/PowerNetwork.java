@@ -27,10 +27,6 @@ public class PowerNetwork {
     private float power;
     private boolean isDirty;
 
-    // Tick all sources
-    // store tick power in network
-    // Remove power from network
-
     public PowerNetwork() {
         this(UUID.randomUUID().toString(), Collections.emptyList(), Collections.emptyList());
     }
