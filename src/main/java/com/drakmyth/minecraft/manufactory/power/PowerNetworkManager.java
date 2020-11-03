@@ -5,9 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.power;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +71,10 @@ public class PowerNetworkManager extends WorldSavedData {
 
     public int getSourceCount(String networkId) {
         return networks.get(networkId).getSources().size();
+    }
+
+    public int getSinkCount(String networkId) {
+        return networks.get(networkId).getSinks().size();
     }
 
     public float consumePower(float requested, BlockPos pos) {

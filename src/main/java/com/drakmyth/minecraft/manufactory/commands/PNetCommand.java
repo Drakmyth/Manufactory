@@ -40,7 +40,8 @@ public class PNetCommand {
         for (String networkId : networkIds) {
             int blockCount = pnm.getBlockCount(networkId);
             int sourceCount = pnm.getSourceCount(networkId);
-            cs.sendFeedback(new StringTextComponent(String.format("%s B:%d, S:%d", networkId, blockCount, sourceCount)), false);
+            int sinkCount = pnm.getSinkCount(networkId);
+            cs.sendFeedback(new StringTextComponent(String.format("%s Size:%d, In:%d, Out:%d", networkId, blockCount, sourceCount, sinkCount)), false);
         }
 
         return 1;

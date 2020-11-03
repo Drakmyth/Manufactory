@@ -29,17 +29,19 @@ public class PowerNetwork {
     private String networkId;
     private Map<BlockPos, Direction[]> nodes;
     private List<BlockPos> sources;
+    private List<BlockPos> sinks;
     private float power;
     private boolean isDirty;
 
     public PowerNetwork() {
-        this(UUID.randomUUID().toString(), Collections.emptyList(), Collections.emptyList());
+        this(UUID.randomUUID().toString(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
-    private PowerNetwork(String networkId, List<PowerNetworkNode> nodes, List<BlockPos> sources) {
+    private PowerNetwork(String networkId, List<PowerNetworkNode> nodes, List<BlockPos> sources, List<BlockPos> sinks) {
         this.networkId = networkId;
         this.nodes = nodes.stream().collect(Collectors.toMap(node -> node.getPos(), node -> node.getDirections()));
         this.sources = new ArrayList<>(sources);
+        this.sinks = new ArrayList<>(sinks);
         power = 0;
         isDirty = true;
     }
@@ -63,14 +65,20 @@ public class PowerNetwork {
     public void merge(PowerNetwork network) {
         nodes.putAll(network.getNodes());
         sources.addAll(network.getSources());
+        sinks.addAll(network.getSinks());
         markDirty();
     }
 
     public PowerNetwork split(List<PowerNetworkNode> splitNodes) {
         PowerNetwork network = new PowerNetwork();
         for (PowerNetworkNode node : splitNodes) {
-            boolean isNodeSource = sources.contains(node.getPos());
-            network.addNode(node, isNodeSource ? Type.SOURCE : Type.NONE);
+            Type nodeType = Type.NONE;
+            if (sources.contains(node.getPos())) {
+                nodeType = Type.SOURCE;
+            } else if (sinks.contains(node.getPos())) {
+                nodeType = Type.SINK;
+            }
+            network.addNode(node, nodeType);
             removeBlock(node.getPos());
         }
         markDirty();
@@ -79,8 +87,15 @@ public class PowerNetwork {
 
     public void addNode(PowerNetworkNode node, Type type) {
         nodes.put(node.getPos(), node.getDirections());
-        if (type == Type.SOURCE) {
-            sources.add(node.getPos());
+        switch(type) {
+            case SOURCE:
+                sources.add(node.getPos());
+                break;
+            case SINK:
+                sinks.add(node.getPos());
+                break;
+            case NONE:
+                break;
         }
     }
 
@@ -91,6 +106,7 @@ public class PowerNetwork {
     public void removeBlock(BlockPos pos) {
         nodes.remove(pos);
         sources.remove(pos);
+        sinks.remove(pos);
     }
 
     public Map<BlockPos, Direction[]> getNodes() {
@@ -105,6 +121,10 @@ public class PowerNetwork {
         return new ArrayList<>(sources);
     }
 
+    public List<BlockPos> getSinks() {
+        return new ArrayList<>(sinks);
+    }
+
     public void tick(World world) {
         power = sources.stream().reduce(0f, (powerFromSources, source) -> {
             if (!world.isAreaLoaded(source, 1)) return powerFromSources;
@@ -116,6 +136,7 @@ public class PowerNetwork {
     }
 
     public float consumePower(float requested) {
+        // TODO: Spread power across 'sinks.count()' most recent unique machines
         float available = Math.min(requested, power);
         power -= available;
         markDirty();
@@ -147,7 +168,16 @@ public class PowerNetwork {
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
 
-        return new PowerNetwork(networkId, nodes, sources);
+        ListNBT sinkListNBT = nbt.getList("sinks", Constants.NBT.TAG_COMPOUND);
+        List<BlockPos> sinks = sinkListNBT.stream().map(compound -> {
+            CompoundNBT sinkPosNBT = (CompoundNBT)compound;
+            int x = sinkPosNBT.getInt("x");
+            int y = sinkPosNBT.getInt("y");
+            int z = sinkPosNBT.getInt("z");
+            return new BlockPos(x, y, z);
+        }).collect(Collectors.toList());
+
+        return new PowerNetwork(networkId, nodes, sources, sinks);
     }
 
     public CompoundNBT write(CompoundNBT compound) {
@@ -177,6 +207,16 @@ public class PowerNetwork {
             sourceListNBT.add(sourcePosNBT);
         });
         compound.put("sources", sourceListNBT);
+
+        ListNBT sinkListNBT = new ListNBT();
+        sinks.stream().forEach(sink -> {
+            CompoundNBT sinkPosNBT = new CompoundNBT();
+            sinkPosNBT.putInt("x", sink.getX());
+            sinkPosNBT.putInt("y", sink.getY());
+            sinkPosNBT.putInt("z", sink.getZ());
+            sinkListNBT.add(sinkPosNBT);
+        });
+        compound.put("sinks", sinkListNBT);
         return compound;
     }
 }
