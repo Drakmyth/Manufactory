@@ -7,13 +7,16 @@ package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
+import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -25,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -67,6 +71,13 @@ public class GrinderBlock extends Block implements IPowerBlock {
         return ActionResultType.CONSUME;
     }
 
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (world.isRemote()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        pnm.trackBlock(pos, getPowerBlockType());
+    }
+
     private void interactWith(World world, BlockPos pos, PlayerEntity player) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (!(tileEntity instanceof GrinderTileEntity)) return;
@@ -80,7 +91,11 @@ public class GrinderBlock extends Block implements IPowerBlock {
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (world.isRemote()) return;
         if (!state.isIn(newState.getBlock())) {
+            PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+            pnm.untrackBlock(pos);
+
             TileEntity tileentity = world.getTileEntity(pos);
             if (!(tileentity instanceof GrinderTileEntity)) return;
             ItemStackHandler inventory = ((GrinderTileEntity)tileentity).getInventory();
@@ -88,5 +103,15 @@ public class GrinderBlock extends Block implements IPowerBlock {
                 spawnAsEntity(world, pos, inventory.getStackInSlot(i));
             }
         }
-     }
+    }
+
+    @Override
+    public Type getPowerBlockType() {
+        return Type.SINK;
+    }
+
+    @Override
+    public float getAvailablePower() {
+        return 0;
+    }
 }

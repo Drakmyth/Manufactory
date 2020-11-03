@@ -10,4 +10,12 @@ import net.minecraft.util.Direction;
 
 public interface IPowerBlock {
     boolean canConnectToFace(BlockState state, Direction dir);
+    Type getPowerBlockType();
+    float getAvailablePower();
+
+    public static enum Type {
+        NONE,
+        SOURCE,
+        SINK
+    }
 }

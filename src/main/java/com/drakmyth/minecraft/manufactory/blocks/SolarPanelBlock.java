@@ -6,13 +6,16 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
+import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
@@ -21,6 +24,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBlock {
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -67,7 +72,33 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (world.isRemote()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        pnm.trackBlock(pos, getPowerBlockType());
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (world.isRemote()) return;
+        if (!state.isIn(newState.getBlock())) {
+            PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+            pnm.untrackBlock(pos);
+        }
+    }
+
+    @Override
     protected void fillStateContainer(Builder<Block, BlockState> builder) {
         builder.add(HORIZONTAL_FACING, WATERLOGGED);
+    }
+
+    @Override
+    public Type getPowerBlockType() {
+        return Type.SOURCE;
+    }
+
+    @Override
+    public float getAvailablePower() {
+        return 0.03125f;
     }
 }
