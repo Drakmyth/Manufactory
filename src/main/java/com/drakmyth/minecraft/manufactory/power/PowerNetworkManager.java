@@ -5,6 +5,9 @@
 
 package com.drakmyth.minecraft.manufactory.power;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +122,6 @@ public class PowerNetworkManager extends WorldSavedData {
         PowerNetwork currentNetwork = networks.get(blockCache.get(pos));
         PowerNetworkNode node = currentNetwork.getNode(pos);
         List<BlockPos> networkedNeighbors = getSurroundingNetworkedBlocks(node);
-        boolean splitNetwork = false;
 
         if (networkedNeighbors.isEmpty()) {
             deleteNetwork(currentNetwork.getId());
@@ -128,12 +130,26 @@ public class PowerNetworkManager extends WorldSavedData {
             currentNetwork.removeBlock(pos);
             blockCache.remove(pos);
         } else {
-            // TODO: If two or more connections, check if block is cut vertice
-            // splitNetwork = true;
-        }
+            Map<BlockPos, Direction[]> allNodes = currentNetwork.getNodes();
+            allNodes.remove(pos);
+            List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections())
+                .map(dir -> {
+                    BlockPos start = pos.offset(dir);
+                    if (!allNodes.containsKey(start)) return null;
+                    List<PowerNetworkNode> branchNodes = PowerNetworkWalker.walk(allNodes, start);
+                    branchNodes.forEach(bn -> allNodes.remove(bn.getPos()));
+                    return branchNodes;
+                })
+                .filter(list -> list != null)
+                .collect(Collectors.toList());
 
-        if (splitNetwork) {
-            // TODO: If block was cut vertice, split network
+            for (List<PowerNetworkNode> branch : branches) {
+                PowerNetwork newNetwork = currentNetwork.split(branch);
+                String newNetworkId = newNetwork.getId();
+                networks.put(newNetworkId, newNetwork);
+                branch.forEach(n -> blockCache.put(n.getPos(), newNetworkId));
+            }
+
         }
 
         markDirty();

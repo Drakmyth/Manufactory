@@ -66,6 +66,17 @@ public class PowerNetwork {
         markDirty();
     }
 
+    public PowerNetwork split(List<PowerNetworkNode> splitNodes) {
+        PowerNetwork network = new PowerNetwork();
+        for (PowerNetworkNode node : splitNodes) {
+            boolean isNodeSource = sources.contains(node.getPos());
+            network.addNode(node, isNodeSource ? Type.SOURCE : Type.NONE);
+            removeBlock(node.getPos());
+        }
+        markDirty();
+        return network;
+    }
+
     public void addNode(PowerNetworkNode node, Type type) {
         nodes.put(node.getPos(), node.getDirections());
         if (type == Type.SOURCE) {
