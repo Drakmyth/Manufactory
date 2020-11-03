@@ -5,12 +5,14 @@
 
 package com.drakmyth.minecraft.manufactory.power;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,9 +30,11 @@ import net.minecraftforge.common.util.Constants;
 public class PowerNetwork {
     private String networkId;
     private Map<BlockPos, Direction[]> nodes;
+    private Queue<BlockPos> spreading_window;
     private List<BlockPos> sources;
     private List<BlockPos> sinks;
-    private float power;
+    private float totalPower;
+    private float remainingPower;
     private boolean isDirty;
 
     public PowerNetwork() {
@@ -40,9 +44,11 @@ public class PowerNetwork {
     private PowerNetwork(String networkId, List<PowerNetworkNode> nodes, List<BlockPos> sources, List<BlockPos> sinks) {
         this.networkId = networkId;
         this.nodes = nodes.stream().collect(Collectors.toMap(node -> node.getPos(), node -> node.getDirections()));
+        this.spreading_window = new ArrayDeque<>();
         this.sources = new ArrayList<>(sources);
         this.sinks = new ArrayList<>(sinks);
-        power = 0;
+        totalPower = 0;
+        remainingPower = 0;
         isDirty = true;
     }
 
@@ -126,19 +132,25 @@ public class PowerNetwork {
     }
 
     public void tick(World world) {
-        power = sources.stream().reduce(0f, (powerFromSources, source) -> {
+        totalPower = sources.stream().reduce(0f, (powerFromSources, source) -> {
             if (!world.isAreaLoaded(source, 1)) return powerFromSources;
             Block sourceBlock = world.getBlockState(source).getBlock();
             if (!(sourceBlock instanceof IPowerBlock)) return powerFromSources;
             return powerFromSources + ((IPowerBlock)sourceBlock).getAvailablePower();
         }, (a, b) -> a + b);
+        remainingPower = totalPower;
         markDirty();
     }
 
-    public float consumePower(float requested) {
-        // TODO: Spread power across 'sinks.count()' most recent unique machines
-        float available = Math.min(requested, power);
-        power -= available;
+    public float consumePower(float requested, BlockPos pos) {
+        spreading_window.add(pos);
+        while(spreading_window.size() > sinks.size()) {
+            spreading_window.remove();
+        }
+        long activeSinks = spreading_window.stream().distinct().count();
+        float available = Math.min(requested, totalPower/activeSinks);
+        available = Math.min(available, remainingPower);
+        remainingPower -= available;
         markDirty();
         return available;
     }

@@ -89,7 +89,7 @@ public class PowerNetworkManager extends WorldSavedData {
             LOGGER.warn(String.format("Power requested from network %s, but network doesn't exist.", networkId));
         }
 
-        float consumed = network.consumePower(requested);
+        float consumed = network.consumePower(requested, pos);
         if (network.isDirty()) markDirty();
         return consumed;
     }
