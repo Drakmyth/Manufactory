@@ -143,13 +143,15 @@ public class PowerNetworkManager extends WorldSavedData {
                 .filter(list -> list != null)
                 .collect(Collectors.toList());
 
+            branches.remove(0); // The first branch will keep the old networkId
             for (List<PowerNetworkNode> branch : branches) {
                 PowerNetwork newNetwork = currentNetwork.split(branch);
                 String newNetworkId = newNetwork.getId();
                 networks.put(newNetworkId, newNetwork);
                 branch.forEach(n -> blockCache.put(n.getPos(), newNetworkId));
             }
-
+            currentNetwork.removeBlock(pos);
+            blockCache.remove(pos);
         }
 
         markDirty();
