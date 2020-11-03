@@ -75,7 +75,7 @@ public class GrinderBlock extends Block implements IPowerBlock {
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (world.isRemote()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-        pnm.trackBlock(pos, getPowerBlockType());
+        pnm.trackBlock(pos, new Direction[] {state.get(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
     }
 
     private void interactWith(World world, BlockPos pos, PlayerEntity player) {

@@ -16,6 +16,7 @@ import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -74,29 +75,40 @@ public class PowerNetworkManager extends WorldSavedData {
         return consumed;
     }
 
-    public void trackBlock(BlockPos pos, Type type) {
-        List<String> existingNetworks = getSurroundingNetworkIds(pos);
+    public void trackBlock(BlockPos pos, Direction[] dirs, Type type) {
+        PowerNetworkNode node = new PowerNetworkNode(pos, dirs);
+        List<String> existingNetworks = getSurroundingNetworkIds(node);
 
         if (existingNetworks.isEmpty()) {
             PowerNetwork network = new PowerNetwork();
             networks.put(network.getId(), network);
-            addBlockToNetwork(pos, network.getId(), type);
+            addNodeToNetwork(node, network.getId(), type);
         } else if (existingNetworks.size() == 1) {
-            addBlockToNetwork(pos, existingNetworks.get(0), type);
+            addNodeToNetwork(node, existingNetworks.get(0), type);
         } else {
-            // TODO: Merge existing networks, add block to merged network
+            PowerNetwork firstNetwork = networks.get(existingNetworks.remove(0));
+            List<PowerNetwork> otherNetworks = existingNetworks.stream().map(networkId -> networks.get(networkId)).collect(Collectors.toList());
+
+            for (PowerNetwork mergeNetwork : otherNetworks) {
+                firstNetwork.merge(mergeNetwork);
+                mergeNetwork.getBlocks().forEach(block -> blockCache.put(block, firstNetwork.getId()));
+                deleteNetwork(mergeNetwork.getId());
+            }
+
+            addNodeToNetwork(node, firstNetwork.getId(), type);
         }
 
         markDirty();
     }
 
     public void untrackBlock(BlockPos pos) {
-        List<BlockPos> networkedNeighbors = getSurroundingNetworkedBlocks(pos);
         PowerNetwork currentNetwork = networks.get(blockCache.get(pos));
+        PowerNetworkNode node = currentNetwork.getNode(pos);
+        List<BlockPos> networkedNeighbors = getSurroundingNetworkedBlocks(node);
         boolean splitNetwork = false;
 
         if (networkedNeighbors.isEmpty()) {
-            networks.remove(currentNetwork.getId());
+            deleteNetwork(currentNetwork.getId());
             blockCache.remove(pos);
         } else if (networkedNeighbors.size() == 1) {
             currentNetwork.removeBlock(pos);
@@ -113,22 +125,21 @@ public class PowerNetworkManager extends WorldSavedData {
         markDirty();
     }
 
-    private void addBlockToNetwork(BlockPos pos, String networkId, Type type) {
-        networks.get(networkId).addBlock(pos, type);
-        blockCache.put(pos, networkId);
+    private void addNodeToNetwork(PowerNetworkNode node, String networkId, Type type) {
+        networks.get(networkId).addNode(node, type);
+        blockCache.put(node.getPos(), networkId);
     }
 
-    private List<BlockPos> getSurroundingNetworkedBlocks(BlockPos pos) {
-        BlockPos[] surroundingBlocks = new BlockPos[] { pos.north(), pos.east(), pos.south(), pos.west(), pos.up(), pos.down() };
-        return Stream.of(surroundingBlocks)
+    private List<BlockPos> getSurroundingNetworkedBlocks(PowerNetworkNode node) {
+        return Stream.of(node.getDirections())
+            .map(dir -> node.getPos().offset(dir))
             .filter(block -> blockCache.containsKey(block))
             .collect(Collectors.toList());
     }
 
-    private List<String> getSurroundingNetworkIds(BlockPos pos) {
-        BlockPos[] surroundingBlocks = new BlockPos[] { pos.north(), pos.east(), pos.south(), pos.west(), pos.up(), pos.down() };
-        return Stream.of(surroundingBlocks)
-            .map(block -> blockCache.get(block))
+    private List<String> getSurroundingNetworkIds(PowerNetworkNode node) {
+        return Stream.of(node.getDirections())
+            .map(dir -> blockCache.get(node.getPos().offset(dir)))
             .distinct()
             .filter(networkId -> networkId != null)
             .collect(Collectors.toList());

@@ -75,7 +75,7 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (world.isRemote()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-        pnm.trackBlock(pos, getPowerBlockType());
+        pnm.trackBlock(pos, new Direction[] {state.get(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
     }
 
     @Override

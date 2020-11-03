@@ -6,23 +6,28 @@
 package com.drakmyth.minecraft.manufactory.power;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 public class PowerNetwork {
     private String networkId;
-    private List<BlockPos> blocks;
+    private Map<BlockPos, Direction[]> nodes;
     private List<BlockPos> sources;
     private float power;
     private boolean isDirty;
@@ -31,9 +36,9 @@ public class PowerNetwork {
         this(UUID.randomUUID().toString(), Collections.emptyList(), Collections.emptyList());
     }
 
-    private PowerNetwork(String networkId, List<BlockPos> blocks, List<BlockPos> sources) {
+    private PowerNetwork(String networkId, List<PowerNetworkNode> nodes, List<BlockPos> sources) {
         this.networkId = networkId;
-        this.blocks = new ArrayList<>(blocks);
+        this.nodes = nodes.stream().collect(Collectors.toMap(node -> node.getPos(), node -> node.getDirections()));
         this.sources = new ArrayList<>(sources);
         power = 0;
         isDirty = true;
@@ -51,24 +56,38 @@ public class PowerNetwork {
         isDirty = true;
     }
 
-    public void addBlock(BlockPos pos) {
-        addBlock(pos, Type.NONE);
+    public void addNode(PowerNetworkNode node) {
+        addNode(node, Type.NONE);
     }
 
-    public void addBlock(BlockPos pos, Type type) {
-        blocks.add(pos);
+    public void merge(PowerNetwork network) {
+        nodes.putAll(network.getNodes());
+        sources.addAll(network.getSources());
+        markDirty();
+    }
+
+    public void addNode(PowerNetworkNode node, Type type) {
+        nodes.put(node.getPos(), node.getDirections());
         if (type == Type.SOURCE) {
-            sources.add(pos);
+            sources.add(node.getPos());
         }
     }
 
+    public PowerNetworkNode getNode(BlockPos pos) {
+        return new PowerNetworkNode(pos, nodes.get(pos));
+    }
+
     public void removeBlock(BlockPos pos) {
-        blocks.remove(pos);
+        nodes.remove(pos);
         sources.remove(pos);
     }
 
+    public Map<BlockPos, Direction[]> getNodes() {
+        return new HashMap<>(nodes);
+    }
+
     public List<BlockPos> getBlocks() {
-        return new ArrayList<>(blocks);
+        return new ArrayList<>(nodes.keySet());
     }
 
     public List<BlockPos> getSources() {
@@ -94,14 +113,20 @@ public class PowerNetwork {
 
     public static PowerNetwork fromNBT(CompoundNBT nbt) {
         String networkId = nbt.getString("networkId");
-        ListNBT blockListNBT = nbt.getList("blocks", Constants.NBT.TAG_COMPOUND);
-        List<BlockPos> blocks = blockListNBT.stream().map(compound -> {
-            CompoundNBT blockPosNBT = (CompoundNBT)compound;
-            int x = blockPosNBT.getInt("x");
-            int y = blockPosNBT.getInt("y");
-            int z = blockPosNBT.getInt("z");
-            return new BlockPos(x, y, z);
+        ListNBT nodeListNBT = nbt.getList("nodes", Constants.NBT.TAG_COMPOUND);
+        List<PowerNetworkNode> nodes = nodeListNBT.stream().map(compound -> {
+            CompoundNBT nodeNBT = (CompoundNBT)compound;
+            int x = nodeNBT.getInt("x");
+            int y = nodeNBT.getInt("y");
+            int z = nodeNBT.getInt("z");
+            BlockPos pos = new BlockPos(x, y, z);
+            Direction[] directions = Arrays.stream(nodeNBT.getIntArray("directions"))
+                .boxed()
+                .map(index -> Direction.byIndex(index))
+                .toArray(Direction[]::new);
+            return new PowerNetworkNode(pos, directions);
         }).collect(Collectors.toList());
+
         ListNBT sourceListNBT = nbt.getList("sources", Constants.NBT.TAG_COMPOUND);
         List<BlockPos> sources = sourceListNBT.stream().map(compound -> {
             CompoundNBT sourcePosNBT = (CompoundNBT)compound;
@@ -111,21 +136,27 @@ public class PowerNetwork {
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
 
-        return new PowerNetwork(networkId, blocks, sources);
+        return new PowerNetwork(networkId, nodes, sources);
     }
 
     public CompoundNBT write(CompoundNBT compound) {
         isDirty = false;
         compound.putString("networkId", networkId);
-        ListNBT blockListNBT = new ListNBT();
-        blocks.stream().forEach(block -> {
-            CompoundNBT blockPosNBT = new CompoundNBT();
-            blockPosNBT.putInt("x", block.getX());
-            blockPosNBT.putInt("y", block.getY());
-            blockPosNBT.putInt("z", block.getZ());
-            blockListNBT.add(blockPosNBT);
+        ListNBT nodeListNBT = new ListNBT();
+        nodes.entrySet().stream().forEach(node -> {
+            BlockPos block = node.getKey();
+            CompoundNBT nodeNBT = new CompoundNBT();
+            nodeNBT.putInt("x", block.getX());
+            nodeNBT.putInt("y", block.getY());
+            nodeNBT.putInt("z", block.getZ());
+            List<Integer> directions = Stream.of(node.getValue())
+                .map(dir -> dir.getIndex())
+                .collect(Collectors.toList());
+            nodeNBT.putIntArray("directions", directions);
+            nodeListNBT.add(nodeNBT);
         });
-        compound.put("blocks", blockListNBT);
+        compound.put("nodes", nodeListNBT);
+
         ListNBT sourceListNBT = new ListNBT();
         sources.stream().forEach(source -> {
             CompoundNBT sourcePosNBT = new CompoundNBT();
