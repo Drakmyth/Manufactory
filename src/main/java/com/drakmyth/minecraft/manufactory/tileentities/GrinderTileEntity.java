@@ -161,7 +161,6 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
 
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
         lastPowerReceived = pnm.consumePower(maxPowerPerTick, pos);
-        LOGGER.debug(String.format("Power received: %f", lastPowerReceived));
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);

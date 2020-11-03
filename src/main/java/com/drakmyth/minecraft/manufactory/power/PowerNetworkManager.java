@@ -14,6 +14,9 @@ import java.util.stream.Stream;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
@@ -25,6 +28,7 @@ import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
 public class PowerNetworkManager extends WorldSavedData {
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String DATA_NAME = Reference.MOD_ID + "_PowerNetworkData";
 
     private Map<BlockPos, String> blockCache;
@@ -69,7 +73,17 @@ public class PowerNetworkManager extends WorldSavedData {
     }
 
     public float consumePower(float requested, BlockPos pos) {
-        PowerNetwork network = networks.get(blockCache.get(pos));
+        String networkId = blockCache.get(pos);
+        if (networkId == null) {
+            LOGGER.warn(String.format("Machine at %s requested power, but is not part of a power network.", pos));
+            return 0;
+        }
+
+        PowerNetwork network = networks.get(networkId);
+        if (network == null) {
+            LOGGER.warn(String.format("Power requested from network %s, but network doesn't exist.", networkId));
+        }
+
         float consumed = network.consumePower(requested);
         if (network.isDirty()) markDirty();
         return consumed;
