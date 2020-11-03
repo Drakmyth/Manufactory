@@ -102,6 +102,7 @@ public class GrinderBlock extends Block implements IPowerBlock {
             for (int i = 0; i < inventory.getSlots(); i++) {
                 spawnAsEntity(world, pos, inventory.getStackInSlot(i));
             }
+            world.removeTileEntity(pos);
         }
     }
 
