@@ -233,11 +233,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
             .face(Direction.UP).texture("#bottom").end()
             .face(Direction.DOWN).texture("#bottom").end().end();
 
-        builder.texture("side", "manufactory:block/grinder_side");
-        builder.texture("inside", "manufactory:block/grinder_inside");
-        builder.texture("back", "manufactory:block/grinder_back_socket");
-        builder.texture("top", "manufactory:block/grinder_top");
-        builder.texture("bottom", "minecraft:block/furnace_top");
+        builder.texture("front", String.format("%s:block/grinder_side", Reference.MOD_ID));
+        builder.texture("side", String.format("%s:block/grinder_side", Reference.MOD_ID));
+        builder.texture("inside", String.format("%s:block/grinder_inside", Reference.MOD_ID));
+        builder.texture("back", String.format("%s:block/grinder_back_socket", Reference.MOD_ID));
+        builder.texture("top", String.format("%s:block/grinder_top", Reference.MOD_ID));
+        builder.texture("bottom", String.format("%s:block/furnace_top", Reference.MOD_ID));
         return builder;
     }
 
