@@ -71,9 +71,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.SOLAR_PANEL.get(), solarPanelModel);
         itemModels().getBuilder("solar_panel").parent(solarPanelModel);
 
-        ResourceLocation furnaceModelLoc = new ResourceLocation("minecraft", "block/furnace");
-        ModelFile furnaceModel = new ExistingModelFile(furnaceModelLoc, exFileHelper);
-        ModelFile grinderModel = models().getBuilder("grinder").parent(furnaceModel);
+        ModelFile grinderModel = generateGrinderModel();
         generateGrinderBlockState(grinderModel);
         itemModels().getBuilder("grinder").parent(grinderModel);
     }
@@ -198,6 +196,49 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.part().modelFile(sideModel).rotationY(90).addModel().condition(PowerCableBlock.EAST, true);
         builder.part().modelFile(sideModel).rotationY(180).addModel().condition(PowerCableBlock.SOUTH, true);
         builder.part().modelFile(sideModel).rotationY(270).addModel().condition(PowerCableBlock.WEST, true);
+    }
+
+    private ModelFile generateGrinderModel() {
+        BlockModelBuilder builder = models().getBuilder("grinder");
+        // north_side
+        builder.element().from(2, 0, 0).to(14, 16, 2)
+            .face(Direction.NORTH).texture("#side").end()
+            .face(Direction.SOUTH).texture("#inside").end()
+            .face(Direction.UP).texture("#top").end()
+            .face(Direction.DOWN).texture("#bottom").end().end();
+        // east_side
+        builder.element().from(14, 0, 0).to(16, 16, 16)
+            .face(Direction.NORTH).texture("#side").end()
+            .face(Direction.EAST).texture("#side").end()
+            .face(Direction.SOUTH).texture("#back").end()
+            .face(Direction.WEST).texture("#inside").end()
+            .face(Direction.UP).texture("#top").end()
+            .face(Direction.DOWN).texture("#bottom").end().end();
+        // south_side
+        builder.element().from(2, 0, 14).to(14, 16, 16)
+            .face(Direction.NORTH).texture("#inside").end()
+            .face(Direction.SOUTH).texture("#back").end()
+            .face(Direction.UP).texture("#top").end()
+            .face(Direction.DOWN).texture("#bottom").end().end();
+        // west_side
+        builder.element().from(0, 0, 0).to(2, 16, 16)
+            .face(Direction.NORTH).texture("#side").end()
+            .face(Direction.EAST).texture("#inside").end()
+            .face(Direction.SOUTH).texture("#back").end()
+            .face(Direction.WEST).texture("#side").end()
+            .face(Direction.UP).texture("#top").end()
+            .face(Direction.DOWN).texture("#bottom").end().end();
+        // bottom_side
+        builder.element().from(2, 0, 2).to(14, 2, 14)
+            .face(Direction.UP).texture("#bottom").end()
+            .face(Direction.DOWN).texture("#bottom").end().end();
+
+        builder.texture("side", "manufactory:block/grinder_side");
+        builder.texture("inside", "manufactory:block/grinder_inside");
+        builder.texture("back", "manufactory:block/grinder_back_socket");
+        builder.texture("top", "manufactory:block/grinder_top");
+        builder.texture("bottom", "minecraft:block/furnace_top");
+        return builder;
     }
 
     private void generateGrinderBlockState(ModelFile grinderModel) {
