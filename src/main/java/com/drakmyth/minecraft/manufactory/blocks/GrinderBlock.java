@@ -5,6 +5,9 @@
 
 package com.drakmyth.minecraft.manufactory.blocks;
 
+import com.drakmyth.minecraft.manufactory.containers.GrinderContainerProvider;
+import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainerProvider;
+import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
@@ -15,6 +18,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
@@ -65,9 +69,9 @@ public class GrinderBlock extends Block implements IPowerBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) return ActionResultType.SUCCESS;
-        interactWith(world, pos, player);
+        interactWith(state, world, pos, player, player.getHeldItem(hand), hit.getFace());
         return ActionResultType.CONSUME;
     }
 
@@ -78,10 +82,16 @@ public class GrinderBlock extends Block implements IPowerBlock {
         pnm.trackBlock(pos, new Direction[] {state.get(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
     }
 
-    private void interactWith(World world, BlockPos pos, PlayerEntity player) {
+    private void interactWith(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItem, Direction face) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (!(tileEntity instanceof GrinderTileEntity)) return;
-        NetworkHooks.openGui((ServerPlayerEntity)player, (GrinderTileEntity)tileEntity, extraData -> {extraData.writeBlockPos(pos);});
+        INamedContainerProvider containerProvider;
+        if (heldItem.getItem() == ModItems.WRENCH.get() && face == state.get(HORIZONTAL_FACING).getOpposite()) {
+            containerProvider = new GrinderUpgradeContainerProvider(pos);
+        } else {
+            containerProvider = new GrinderContainerProvider(pos);
+        }
+        NetworkHooks.openGui((ServerPlayerEntity)player, containerProvider, pos);
     }
 
     @Override
@@ -98,9 +108,14 @@ public class GrinderBlock extends Block implements IPowerBlock {
 
             TileEntity tileentity = world.getTileEntity(pos);
             if (!(tileentity instanceof GrinderTileEntity)) return;
-            ItemStackHandler inventory = ((GrinderTileEntity)tileentity).getInventory();
+            GrinderTileEntity grinderTE = (GrinderTileEntity)tileentity;
+            ItemStackHandler inventory = grinderTE.getInventory();
             for (int i = 0; i < inventory.getSlots(); i++) {
                 spawnAsEntity(world, pos, inventory.getStackInSlot(i));
+            }
+            ItemStackHandler upgradeInventory = grinderTE.getUpgradeInventory();
+            for (int i = 0; i < upgradeInventory.getSlots(); i++) {
+                spawnAsEntity(world, pos, upgradeInventory.getStackInSlot(i));
             }
             world.removeTileEntity(pos);
         }

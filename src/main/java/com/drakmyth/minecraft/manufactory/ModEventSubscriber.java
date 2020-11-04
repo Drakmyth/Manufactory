@@ -10,6 +10,7 @@ import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
 import com.drakmyth.minecraft.manufactory.gui.GrinderGui;
+import com.drakmyth.minecraft.manufactory.gui.GrinderUpgradeGui;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 
@@ -60,5 +61,6 @@ public final class ModEventSubscriber {
     @SubscribeEvent
     public static void fmlClientSetup(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(ModContainerTypes.GRINDER.get(), GrinderGui::new);
+        ScreenManager.registerFactory(ModContainerTypes.GRINDER_UPGRADE.get(), GrinderUpgradeGui::new);
     }
 }
