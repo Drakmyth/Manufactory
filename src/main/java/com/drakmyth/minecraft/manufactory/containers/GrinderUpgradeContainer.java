@@ -34,7 +34,7 @@ public class GrinderUpgradeContainer extends Container {
     }
 
     public GrinderUpgradeContainer(int windowId, IItemHandler playerInventory, PlayerEntity player, BlockPos pos) {
-        super(ModContainerTypes.GRINDER.get(), windowId);
+        super(ModContainerTypes.GRINDER_UPGRADE.get(), windowId);
         World world = player.getEntityWorld();
         posCallable = IWorldPosCallable.of(world, pos);
         tileEntity = (GrinderTileEntity)world.getTileEntity(pos);
