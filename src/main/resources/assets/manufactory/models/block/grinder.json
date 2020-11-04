@@ -1,5 +1,6 @@
 {
   "textures": {
+    "front": "manufactory:block/grinder_side",
     "side": "manufactory:block/grinder_side",
     "inside": "manufactory:block/grinder_inside",
     "back": "manufactory:block/grinder_back_socket",

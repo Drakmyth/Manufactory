@@ -17,6 +17,13 @@ public final class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
     public static final RegistryObject<Item> AMBER = ITEMS.register("amber", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> MOTOR_TIER0 = ITEMS.register("motor_tier0", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> COAGULATED_LATEX = ITEMS.register("coagulated_latex", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> GROUND_COAL_ORE_ROUGH = ITEMS.register("ground_coal_ore_rough", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> GROUND_DIAMOND_ORE_ROUGH = ITEMS.register("ground_diamond_ore_rough", () -> new Item(defaultProperties()));

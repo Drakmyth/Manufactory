@@ -45,6 +45,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", String.format("%s:item/latex_collector", Reference.MOD_ID));
         itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/motor_tier0", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/motor_tier1", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/motor_tier2", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/motor_tier3", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/power_socket", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/battery", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", "minecraft:item/bone_meal");
         itemModels().withExistingParent("item/ground_coal_ore_rough", "block/coal_ore");
         itemModels().withExistingParent("item/ground_diamond_ore_rough", "block/diamond_ore");
@@ -238,7 +245,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.texture("inside", String.format("%s:block/grinder_inside", Reference.MOD_ID));
         builder.texture("back", String.format("%s:block/grinder_back_socket", Reference.MOD_ID));
         builder.texture("top", String.format("%s:block/grinder_top", Reference.MOD_ID));
-        builder.texture("bottom", String.format("%s:block/furnace_top", Reference.MOD_ID));
+        builder.texture("bottom", "minecraft:block/furnace_top");
         return builder;
     }
 
