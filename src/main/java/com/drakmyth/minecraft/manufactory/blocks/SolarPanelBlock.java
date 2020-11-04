@@ -98,7 +98,17 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
-    public float getAvailablePower() {
-        return 0.03125f;
+    public float getAvailablePower(BlockState state, World world, BlockPos pos) {
+        if (!world.getDimensionType().hasSkyLight()) return 0;
+
+        float celestialAngle = world.getCelestialAngleRadians(1.0F);
+        if (celestialAngle >= Math.PI / 2 && celestialAngle <= 3 * Math.PI / 2) return 0;
+        float timeFactor = (float)Math.cos(celestialAngle);
+
+        // TODO: change pos.up() to pos once solar panel is no longer a full block size
+        // world.getLight automatically accounts for weather
+        float lightFactor = world.getLight(pos.up()) / 15f;
+
+        return 0.03125f * timeFactor * lightFactor;
     }
 }

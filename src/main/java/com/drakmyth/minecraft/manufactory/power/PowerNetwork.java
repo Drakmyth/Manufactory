@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
@@ -132,11 +133,13 @@ public class PowerNetwork {
     }
 
     public void tick(World world) {
+        if (sinks.isEmpty()) return;
         totalPower = sources.stream().reduce(0f, (powerFromSources, source) -> {
             if (!world.isAreaLoaded(source, 1)) return powerFromSources;
-            Block sourceBlock = world.getBlockState(source).getBlock();
+            BlockState sourceBlockState = world.getBlockState(source);
+            Block sourceBlock = sourceBlockState.getBlock();
             if (!(sourceBlock instanceof IPowerBlock)) return powerFromSources;
-            return powerFromSources + ((IPowerBlock)sourceBlock).getAvailablePower();
+            return powerFromSources + ((IPowerBlock)sourceBlock).getAvailablePower(sourceBlockState, world, source);
         }, (a, b) -> a + b);
         remainingPower = totalPower;
         markDirty();

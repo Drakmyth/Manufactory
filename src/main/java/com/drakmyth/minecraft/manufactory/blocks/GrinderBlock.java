@@ -112,7 +112,7 @@ public class GrinderBlock extends Block implements IPowerBlock {
     }
 
     @Override
-    public float getAvailablePower() {
+    public float getAvailablePower(BlockState state, World world, BlockPos pos) {
         return 0;
     }
 }

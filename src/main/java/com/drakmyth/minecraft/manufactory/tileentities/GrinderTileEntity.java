@@ -15,9 +15,6 @@ import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -37,7 +34,6 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider, IMachineProgressListener {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
     private ItemStackHandler grinderInventory;
@@ -122,7 +118,6 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         powerRemaining = recipe.getPowerRequired();
         maxPowerPerTick = recipe.getPowerRequired() / (float)recipe.getProcessTime();
         currentRecipe = recipe;
-        LOGGER.debug(String.format("Starting recipe: %s, %f, %f", recipe.getId(), powerRemaining, maxPowerPerTick));
         return true;
     }
 

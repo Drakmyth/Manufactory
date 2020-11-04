@@ -180,7 +180,7 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
-    public float getAvailablePower() {
+    public float getAvailablePower(BlockState state, World world, BlockPos pos) {
         return 0;
     }
 }

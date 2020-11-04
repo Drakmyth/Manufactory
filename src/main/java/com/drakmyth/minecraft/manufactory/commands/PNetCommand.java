@@ -30,6 +30,9 @@ public class PNetCommand {
                         .executes(ctx -> deleteNetworkInDimension(ctx.getSource(), DimensionArgument.getDimensionArgument(ctx, "dim"), PowerNetworkArgument.getPowerNetworkArgument(ctx, "networkId")))
                     )
                 )
+                .then(Commands.literal("time")
+                    .executes(ctx -> printTime(ctx.getSource(), DimensionArgument.getDimensionArgument(ctx, "dim")))
+                )
             )
         ;
     }
@@ -52,6 +55,14 @@ public class PNetCommand {
         pnm.deleteNetwork(networkId);
         cs.sendFeedback(new StringTextComponent(String.format("Network %s deleted", networkId)), false);
 
+        return 1;
+    }
+
+    private static int printTime(CommandSource cs, ServerWorld dim) {
+        long daytime = dim.getDayTime();
+        float celestialAngle = dim.getCelestialAngleRadians(1.0F);
+
+        cs.sendFeedback(new StringTextComponent(String.format("daytime: %d, angle: %f", daytime, celestialAngle)), false);
         return 1;
     }
 }
