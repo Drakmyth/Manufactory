@@ -9,13 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
+import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -27,6 +30,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBlock {
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
@@ -150,7 +154,33 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (world.isRemote()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        pnm.trackBlock(pos, Direction.values(), getPowerBlockType());
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (world.isRemote()) return;
+        if (!state.isIn(newState.getBlock())) {
+            PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+            pnm.untrackBlock(pos);
+        }
+    }
+
+    @Override
     protected void fillStateContainer(Builder<Block, BlockState> builder) {
         builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, WATERLOGGED);
+    }
+
+    @Override
+    public Type getPowerBlockType() {
+        return Type.NONE;
+    }
+
+    @Override
+    public float getAvailablePower(BlockState state, World world, BlockPos pos) {
+        return 0;
     }
 }
