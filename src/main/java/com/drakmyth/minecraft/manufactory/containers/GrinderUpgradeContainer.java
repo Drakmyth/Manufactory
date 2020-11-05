@@ -12,6 +12,7 @@ import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,14 +52,14 @@ public class GrinderUpgradeContainer extends Container {
         this.addSlot(new SlotItemHandler(upgradeInventory, 0, 62, 14) {
             @Override
             public boolean isItemValid(ItemStack stack) {
-                return isItemGrinderWheel(stack);
+                return false;
             }
         });
         // Wheel Slot 2
         this.addSlot(new SlotItemHandler(upgradeInventory, 1, 98, 14) {
             @Override
             public boolean isItemValid(ItemStack stack) {
-                return isItemGrinderWheel(stack);
+                return false;
             }
         });
         // Motor Slot
@@ -72,7 +73,17 @@ public class GrinderUpgradeContainer extends Container {
         this.addSlot(new SlotItemHandler(upgradeInventory, 3, 80, 58) {
             @Override
             public boolean isItemValid(ItemStack stack) {
-                return isItemPowerUpgrade(stack);
+                return stack.getItem() instanceof IPowerUpgrade;
+            }
+
+            @Override
+            public void onSlotChanged() {
+                super.onSlotChanged();
+                // TODO: Trying to get the cable to disconnect when this changes, but none of these seem to work
+                // world.markBlockRangeForRenderUpdate(pos, tileEntity.getBlockState(), tileEntity.getBlockState());
+                // world.updateComparatorOutputLevel(pos, tileEntity.getBlockState().getBlock());
+                // world.notifyBlockUpdate(pos, tileEntity.getBlockState(), tileEntity.getBlockState(), 3);
+                // world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockState().getBlock());
             }
         });
 
@@ -87,15 +98,6 @@ public class GrinderUpgradeContainer extends Container {
         for (int i = 0; i < 9; i++) {
             this.addSlot(new SlotItemHandler(playerInventory, i, (i + 1) * 8 + (i * 10), 142));
         }
-    }
-
-    private boolean isItemGrinderWheel(ItemStack stack) {
-        return false;
-    }
-
-    private boolean isItemPowerUpgrade(ItemStack stack) {
-        List<Item> powerUpgrades = Arrays.asList(ModItems.BATTERY.get(), ModItems.POWER_SOCKET.get());
-        return powerUpgrades.contains(stack.getItem());
     }
 
     @Override
