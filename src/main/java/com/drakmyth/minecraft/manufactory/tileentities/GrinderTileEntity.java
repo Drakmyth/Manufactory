@@ -106,14 +106,14 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         if (!hasBothWheels()) return 0;
         IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
         IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(2).getItem();
-        return Math.max(wheel1.getTier(), wheel2.getTier());
+        return Math.max(wheel1.getTier().getHarvestLevel(), wheel2.getTier().getHarvestLevel());
     }
 
     private float getEfficiencyModifier() {
         if (!hasBothWheels()) return 0;
         IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
         IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
-        return wheel1.getTier() <= wheel2.getTier() ? wheel1.getEfficiency() : wheel2.getEfficiency();
+        return wheel1.getTier().getHarvestLevel() <= wheel2.getTier().getHarvestLevel() ? wheel1.getEfficiency() : wheel2.getEfficiency();
     }
 
     private boolean hasBothWheels() {

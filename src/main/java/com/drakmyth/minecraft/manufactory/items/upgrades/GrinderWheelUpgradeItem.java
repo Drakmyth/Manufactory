@@ -6,18 +6,19 @@
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemTier;
 
 public class GrinderWheelUpgradeItem extends Item implements IGrinderWheelUpgrade {
-    private int tier;
+    private ItemTier tier;
     private float efficiency;
 
-    public GrinderWheelUpgradeItem(Properties properties, int tier, float efficiency) {
+    public GrinderWheelUpgradeItem(Properties properties, ItemTier tier, float efficiency) {
         super(properties);
         this.tier = tier;
         this.efficiency = efficiency;
     }
 
-    public int getTier() {
+    public ItemTier getTier() {
         return tier;
     }
 

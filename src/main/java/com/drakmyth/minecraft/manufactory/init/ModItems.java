@@ -13,6 +13,7 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.PowerSocketItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemTier;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,11 +26,11 @@ public final class ModItems {
     public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(singleItemProperties(), 2.0f));
     public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(singleItemProperties(), 4.0f));
     public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(singleItemProperties(), 8.0f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER0 = ITEMS.register("grinder_wheel_tier0", () -> new GrinderWheelUpgradeItem(singleItemProperties(), 0, 0f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER1 = ITEMS.register("grinder_wheel_tier1", () -> new GrinderWheelUpgradeItem(singleItemProperties(), 1, 0.25f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER2 = ITEMS.register("grinder_wheel_tier2", () -> new GrinderWheelUpgradeItem(singleItemProperties(), 2, 0.5f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER3 = ITEMS.register("grinder_wheel_tier3", () -> new GrinderWheelUpgradeItem(singleItemProperties(), 3, 0.75f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER4 = ITEMS.register("grinder_wheel_tier4", () -> new GrinderWheelUpgradeItem(singleItemProperties(), 4, 1f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER0 = ITEMS.register("grinder_wheel_tier0", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.WOOD, 0f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER1 = ITEMS.register("grinder_wheel_tier1", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.STONE, 0.25f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER2 = ITEMS.register("grinder_wheel_tier2", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.IRON, 0.5f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER3 = ITEMS.register("grinder_wheel_tier3", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.DIAMOND, 0.75f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER4 = ITEMS.register("grinder_wheel_tier4", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.NETHERITE, 1f));
     public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new PowerSocketItem(singleItemProperties()));
     public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new BatteryItem(singleItemProperties()));
     public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", () -> new Item(singleItemProperties()));
