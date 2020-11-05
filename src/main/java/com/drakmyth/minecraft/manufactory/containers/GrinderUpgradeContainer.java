@@ -5,12 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
-import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
@@ -19,7 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
@@ -79,11 +74,7 @@ public class GrinderUpgradeContainer extends Container {
             @Override
             public void onSlotChanged() {
                 super.onSlotChanged();
-                // TODO: Trying to get the cable to disconnect when this changes, but none of these seem to work
-                // world.markBlockRangeForRenderUpdate(pos, tileEntity.getBlockState(), tileEntity.getBlockState());
-                // world.updateComparatorOutputLevel(pos, tileEntity.getBlockState().getBlock());
-                // world.notifyBlockUpdate(pos, tileEntity.getBlockState(), tileEntity.getBlockState(), 3);
-                // world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockState().getBlock());
+                tileEntity.getBlockState().updateNeighbours(world, pos, 3);
             }
         });
 
