@@ -9,6 +9,7 @@ import com.drakmyth.minecraft.manufactory.containers.GrinderContainerProvider;
 import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainerProvider;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.items.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
@@ -31,6 +33,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -58,8 +61,17 @@ public class GrinderBlock extends Block implements IPowerBlock {
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, Direction dir) {
-        return dir == state.get(HORIZONTAL_FACING).getOpposite();
+    public boolean canConnectToFace(BlockState state, BlockPos pos, IWorld world, Direction dir) {
+        TileEntity te = world.getTileEntity(pos);
+        if (!(te instanceof GrinderTileEntity)) return false;
+        if (dir != state.get(HORIZONTAL_FACING).getOpposite()) return false;
+
+        GrinderTileEntity gte = (GrinderTileEntity)te;
+        ItemStackHandler upgradeInventory = gte.getUpgradeInventory();
+        Item powerUpgrade = upgradeInventory.getStackInSlot(3).getItem();
+        if (!(powerUpgrade instanceof IPowerUpgrade)) return false;
+
+        return ((IPowerUpgrade)powerUpgrade).rendersConnection();
     }
 
     @Override

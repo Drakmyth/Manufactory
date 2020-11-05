@@ -9,15 +9,19 @@ import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
-public class PowerUpgradeItem extends Item implements IPowerUpgrade {
-    private IPowerUpgrade consumePowerFunc;
+public class BatteryItem extends Item implements IPowerUpgrade {
 
-    public PowerUpgradeItem(Properties properties, IPowerUpgrade consumePowerFunc) {
+    public BatteryItem(Properties properties) {
         super(properties);
-        this.consumePowerFunc = consumePowerFunc;
     }
 
+    @Override
     public float consumePower(float requestedPower, ServerWorld world, BlockPos pos) {
-        return consumePowerFunc.consumePower(requestedPower, world, pos);
+        return 0;
+    }
+
+    @Override
+    public boolean rendersConnection() {
+        return false;
     }
 }

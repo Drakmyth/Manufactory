@@ -46,7 +46,7 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, IWorld world, Direction dir) {
         return dir == state.get(HORIZONTAL_FACING).getOpposite();
     }
 
