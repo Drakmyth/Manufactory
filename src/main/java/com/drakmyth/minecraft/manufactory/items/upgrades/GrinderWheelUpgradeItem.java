@@ -9,13 +9,19 @@ import net.minecraft.item.Item;
 
 public class GrinderWheelUpgradeItem extends Item implements IGrinderWheelUpgrade {
     private int tier;
+    private float efficiency;
 
-    public GrinderWheelUpgradeItem(Properties properties, int tier) {
+    public GrinderWheelUpgradeItem(Properties properties, int tier, float efficiency) {
         super(properties);
         this.tier = tier;
+        this.efficiency = efficiency;
     }
 
     public int getTier() {
         return tier;
+    }
+
+    public float getEfficiency() {
+        return efficiency;
     }
 }
