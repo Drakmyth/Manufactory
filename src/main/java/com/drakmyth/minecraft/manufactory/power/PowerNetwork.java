@@ -146,6 +146,7 @@ public class PowerNetwork {
     }
 
     public float consumePower(float requested, BlockPos pos) {
+        if (requested <= 0) return 0;
         spreading_window.add(pos);
         while(spreading_window.size() > sinks.size()) {
             spreading_window.remove();

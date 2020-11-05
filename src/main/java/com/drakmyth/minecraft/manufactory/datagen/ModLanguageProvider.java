@@ -26,6 +26,13 @@ public class ModLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.SOLAR_PANEL, "Solar Panel");
 
         addItem(ModItems.AMBER, "Amber");
+        addItem(ModItems.MOTOR_TIER0, "Basic Motor");
+        addItem(ModItems.MOTOR_TIER1, "Magnetic Motor");
+        addItem(ModItems.MOTOR_TIER2, "Compound Motor");
+        addItem(ModItems.MOTOR_TIER3, "Induction Motor");
+        addItem(ModItems.POWER_SOCKET, "Power Socket");
+        addItem(ModItems.BATTERY, "Battery");
+        addItem(ModItems.WRENCH, "Wrench");
         addItem(ModItems.COAGULATED_LATEX, "Coagulated Latex");
         addItem(ModItems.GROUND_COAL_ORE_ROUGH, "Ground Coal Ore (Rough)");
         addItem(ModItems.GROUND_DIAMOND_ORE_ROUGH, "Ground Diamond Ore (Rough)");

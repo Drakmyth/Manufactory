@@ -6,6 +6,9 @@
 package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.items.BatteryItem;
+import com.drakmyth.minecraft.manufactory.items.MotorUpgradeItem;
+import com.drakmyth.minecraft.manufactory.items.PowerSocketItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import net.minecraft.item.Item;
@@ -17,6 +20,13 @@ public final class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
     public static final RegistryObject<Item> AMBER = ITEMS.register("amber", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> MOTOR_TIER0 = ITEMS.register("motor_tier0", () -> new MotorUpgradeItem(defaultProperties(), 1.0f));
+    public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(defaultProperties(), 2.0f));
+    public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(defaultProperties(), 4.0f));
+    public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(defaultProperties(), 8.0f));
+    public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new PowerSocketItem(defaultProperties()));
+    public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new BatteryItem(defaultProperties()));
+    public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> COAGULATED_LATEX = ITEMS.register("coagulated_latex", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> GROUND_COAL_ORE_ROUGH = ITEMS.register("ground_coal_ore_rough", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> GROUND_DIAMOND_ORE_ROUGH = ITEMS.register("ground_diamond_ore_rough", () -> new Item(defaultProperties()));

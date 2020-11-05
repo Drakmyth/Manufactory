@@ -5,6 +5,7 @@
   "block.manufactory.power_cable": "Power Cable",
   "block.manufactory.solar_panel": "Solar Panel",
   "item.manufactory.amber": "Amber",
+  "item.manufactory.battery": "Battery",
   "item.manufactory.coagulated_latex": "Coagulated Latex",
   "item.manufactory.ground_ancient_debris_rough": "Ground Ancient Debris (Rough)",
   "item.manufactory.ground_coal_ore_rough": "Ground Coal Ore (Rough)",
@@ -15,7 +16,13 @@
   "item.manufactory.ground_lapis_ore_rough": "Ground Lapis Lazuli Ore (Rough)",
   "item.manufactory.ground_nether_quartz_ore_rough": "Ground Nether Quartz Ore (Rough)",
   "item.manufactory.ground_redstone_ore_rough": "Ground Redstone Ore (Rough)",
+  "item.manufactory.motor_tier0": "Basic Motor",
+  "item.manufactory.motor_tier1": "Magnetic Motor",
+  "item.manufactory.motor_tier2": "Compound Motor",
+  "item.manufactory.motor_tier3": "Induction Motor",
+  "item.manufactory.power_socket": "Power Socket",
   "item.manufactory.rubber": "Rubber",
   "item.manufactory.tapping_knife": "Tapping Knife",
+  "item.manufactory.wrench": "Wrench",
   "itemGroup.manufactory": "Manufactory"
 }

@@ -8,10 +8,11 @@ package com.drakmyth.minecraft.manufactory.power;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public interface IPowerBlock {
-    boolean canConnectToFace(BlockState state, Direction dir);
+    boolean canConnectToFace(BlockState state, BlockPos pos, IWorld world, Direction dir);
     Type getPowerBlockType();
     float getAvailablePower(BlockState state, World world, BlockPos pos);
 

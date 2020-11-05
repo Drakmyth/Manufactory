@@ -92,14 +92,14 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
         return VoxelShapes.or(AABB_CENTER, shapes.toArray(new VoxelShape[0]));
     }
 
-    private boolean canConnect(BlockState state, Direction dir) {
+    private boolean canConnect(BlockState state, BlockPos pos, IWorld world, Direction dir) {
         Block block = state.getBlock();
         if (!(block instanceof IPowerBlock)) return false;
-        return ((IPowerBlock)block).canConnectToFace(state, dir);
+        return ((IPowerBlock)block).canConnectToFace(state, pos, world, dir);
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, IWorld world, Direction dir) {
         return true;
     }
 
@@ -114,12 +114,12 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
         BlockPos downPos = context.getPos().down();
         FluidState fluidstate = context.getWorld().getFluidState(context.getPos());
         return this.getDefaultState()
-            .with(NORTH, canConnect(world.getBlockState(northPos), Direction.SOUTH))
-            .with(EAST, canConnect(world.getBlockState(eastPos), Direction.WEST))
-            .with(SOUTH, canConnect(world.getBlockState(southPos), Direction.NORTH))
-            .with(WEST, canConnect(world.getBlockState(westPos), Direction.EAST))
-            .with(UP, canConnect(world.getBlockState(upPos), Direction.DOWN))
-            .with(DOWN, canConnect(world.getBlockState(downPos), Direction.UP))
+            .with(NORTH, canConnect(world.getBlockState(northPos), northPos, world, Direction.SOUTH))
+            .with(EAST, canConnect(world.getBlockState(eastPos), eastPos, world, Direction.WEST))
+            .with(SOUTH, canConnect(world.getBlockState(southPos), southPos, world, Direction.NORTH))
+            .with(WEST, canConnect(world.getBlockState(westPos), westPos, world, Direction.EAST))
+            .with(UP, canConnect(world.getBlockState(upPos), upPos, world, Direction.DOWN))
+            .with(DOWN, canConnect(world.getBlockState(downPos), downPos, world, Direction.UP))
             .with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
     }
 
@@ -129,25 +129,26 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
         if (stateIn.get(WATERLOGGED)) {
-            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
         Direction oppositeFacing = facing.getOpposite();
+        boolean canConnect = canConnect(facingState, facingPos, world, oppositeFacing);
         switch(facing) {
             case NORTH:
-                return stateIn.with(NORTH, canConnect(facingState, oppositeFacing));
+                return stateIn.with(NORTH, canConnect);
             case EAST:
-                return stateIn.with(EAST, canConnect(facingState, oppositeFacing));
+                return stateIn.with(EAST, canConnect);
             case SOUTH:
-                return stateIn.with(SOUTH, canConnect(facingState, oppositeFacing));
+                return stateIn.with(SOUTH, canConnect);
             case WEST:
-                return stateIn.with(WEST, canConnect(facingState, oppositeFacing));
+                return stateIn.with(WEST, canConnect);
             case UP:
-                return stateIn.with(UP, canConnect(facingState, oppositeFacing));
+                return stateIn.with(UP, canConnect);
             case DOWN:
-                return stateIn.with(DOWN, canConnect(facingState, oppositeFacing));
+                return stateIn.with(DOWN, canConnect);
             default:
                 return stateIn;
         }

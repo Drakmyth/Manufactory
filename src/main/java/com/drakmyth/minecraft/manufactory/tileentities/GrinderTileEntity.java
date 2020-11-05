@@ -7,36 +7,30 @@ package com.drakmyth.minecraft.manufactory.tileentities;
 
 import java.util.Random;
 
-import com.drakmyth.minecraft.manufactory.containers.GrinderContainer;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
-import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider, IMachineProgressListener {
+public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener {
 
     private boolean firstTick;
     private ItemStackHandler grinderInventory;
+    private ItemStackHandler grinderUpgradeInventory;
     private GrinderRecipe currentRecipe;
     private float lastPowerReceived;
     private float powerRequired;
@@ -48,10 +42,15 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
 
         firstTick = true;
         grinderInventory = new ItemStackHandler(2);
+        grinderUpgradeInventory = new ItemStackHandler(4);
     }
 
     public ItemStackHandler getInventory() {
         return grinderInventory;
+    }
+
+    public ItemStackHandler getUpgradeInventory() {
+        return grinderUpgradeInventory;
     }
 
     public float getProgress() {
@@ -60,13 +59,9 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     public float getPowerRate() {
-        if (maxPowerPerTick <= 0) return 0;
-        return lastPowerReceived / maxPowerPerTick;
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent("Grinder");
+        float motorSpeed = getMotorSpeed();
+        if (maxPowerPerTick <= 0 || motorSpeed <= 0) return 0;
+        return lastPowerReceived / (maxPowerPerTick * motorSpeed);
     }
 
     // Client-Side Only
@@ -85,14 +80,10 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     @Override
-    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
-        return new GrinderContainer(windowId, new InvWrapper(playerInventory), player, getPos());
-    }
-
-    @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
         compound.put("inventory", grinderInventory.serializeNBT());
+        compound.put("upgradeInventory", grinderUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
         compound.putFloat("powerRemaining", powerRemaining);
         compound.putFloat("maxPowerPerTick", maxPowerPerTick);
@@ -103,6 +94,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
         grinderInventory.deserializeNBT(nbt.getCompound("inventory"));
+        grinderUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
         powerRequired = nbt.getFloat("powerRequired");
         powerRemaining = nbt.getFloat("powerRemaining");
         maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
@@ -125,6 +117,17 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         MachineProgressPacket msg = new MachineProgressPacket(powerRemaining, powerRequired, lastPowerReceived, maxPowerPerTick, getPos());
         Chunk chunk = world.getChunkAt(getPos());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
+    }
+
+    private float getMotorSpeed() {
+        ItemStack motorStack = grinderUpgradeInventory.getStackInSlot(2);
+        return motorStack.getItem() instanceof IMotorUpgrade ? ((IMotorUpgrade)motorStack.getItem()).getPowerCapMultiplier() : 0.0f;
+    }
+
+    private IPowerProvider getPowerProvider() {
+        ItemStack powerStack = grinderUpgradeInventory.getStackInSlot(3);
+        IPowerProvider emptyPowerProvider = (requestedPower, world, pos) -> 0;
+        return powerStack.getItem() instanceof IPowerProvider ? (IPowerProvider)powerStack.getItem() : emptyPowerProvider;
     }
 
     @Override
@@ -154,8 +157,8 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             return;
         }
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-        lastPowerReceived = pnm.consumePower(maxPowerPerTick, pos);
+        IPowerProvider powerProvider = getPowerProvider();
+        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerWorld)world, pos);
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);
