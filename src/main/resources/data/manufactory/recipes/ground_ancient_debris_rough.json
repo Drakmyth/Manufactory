@@ -11,7 +11,7 @@
   "extraAmounts": [
     1
   ],
-  "tierRequired": 0,
+  "tierRequired": 3,
   "powerRequired": 25,
   "processTime": 200
 }

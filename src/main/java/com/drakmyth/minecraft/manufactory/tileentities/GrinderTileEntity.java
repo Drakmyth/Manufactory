@@ -105,7 +105,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     private int getTier() {
         if (!hasBothWheels()) return 0;
         IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
-        IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(2).getItem();
+        IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
         return Math.max(wheel1.getTier().getHarvestLevel(), wheel2.getTier().getHarvestLevel());
     }
 

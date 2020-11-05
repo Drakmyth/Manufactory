@@ -140,7 +140,7 @@ public class ModRecipeProvider extends RecipeProvider {
             .withExtraChance(0.3f, 1)
             .withTierRequired(ItemTier.WOOD.getHarvestLevel())
             .addCriterion("has_nether_gold_ore", InventoryChangeTrigger.Instance.forItems(Items.NETHER_GOLD_ORE))
-            .build(consumer);
+            .build(consumer, String.format("%s:ground_gold_ore_rough_from_nether_gold_ore", Reference.MOD_ID));
     }
 
     private static class OreProcessingRecipeData {
