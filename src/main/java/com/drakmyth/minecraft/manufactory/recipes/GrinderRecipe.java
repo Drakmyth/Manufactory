@@ -18,8 +18,8 @@ public class GrinderRecipe extends ManufactoryRecipe {
 
     public static final IRecipeType<GrinderRecipe> recipeType = IRecipeType.register(String.format("%s:grinder", Reference.MOD_ID));
 
-    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime) {
-        super(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
+    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime) {
+        super(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }
 
     @Override

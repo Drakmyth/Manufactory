@@ -42,9 +42,10 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
             int element = resultArray.get(i).getAsInt();
             extraAmounts[i] = element;
         }
+        int tierRequired = JSONUtils.getInt(json, "tierRequired", 0);
         int powerRequired = JSONUtils.getInt(json, "powerRequired", 25);
         int processTime = JSONUtils.getInt(json, "processTime", 200);
-        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
+        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }
 
     @Nullable
@@ -58,9 +59,10 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         for (int i = 0; i < extraAmountsCount; i++) {
             extraAmounts[i] = buffer.readInt();
         }
+        int tierRequired = buffer.readInt();
         int powerRequired = buffer.readInt();
         int processTime = buffer.readInt();
-        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, powerRequired, processTime);
+        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }
 
     @Override
@@ -73,11 +75,12 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         for (int amount : extraAmounts) {
             buffer.writeFloat(amount);
         }
+        buffer.writeInt(recipe.getTierRequired());
         buffer.writeInt(recipe.getPowerRequired());
         buffer.writeInt(recipe.getProcessTime());
     }
 
     public interface IFactory<T extends ManufactoryRecipe> {
-        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime);
+        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime);
     }
 }

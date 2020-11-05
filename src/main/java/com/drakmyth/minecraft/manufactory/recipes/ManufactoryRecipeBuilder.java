@@ -33,6 +33,7 @@ public class ManufactoryRecipeBuilder {
    private ItemStack result;
    private float extraChance;
    private int[] extraAmounts;
+   private int tierRequired;
    private int powerRequired;
    private int processTime;
    private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
@@ -44,6 +45,7 @@ public class ManufactoryRecipeBuilder {
       this.result = result.copy();
       this.extraChance = 0;
       this.extraAmounts = new int[0];
+      this.tierRequired = 0;
       this.powerRequired = 25;
       this.processTime = 200;
       this.recipeSerializer = serializer;
@@ -68,6 +70,11 @@ public class ManufactoryRecipeBuilder {
    public ManufactoryRecipeBuilder withExtraChance(float extraChance, int[] extraAmounts) {
       this.extraChance = extraChance;
       this.extraAmounts = extraAmounts;
+      return this;
+   }
+
+   public ManufactoryRecipeBuilder withTierRequired(int tierRequired) {
+      this.tierRequired = tierRequired;
       return this;
    }
 
@@ -103,7 +110,7 @@ public class ManufactoryRecipeBuilder {
    public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id) {
       this.validate(id);
       this.advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getGroup().getPath() + "/" + id.getPath()), this.recipeSerializer));
+      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getGroup().getPath() + "/" + id.getPath()), this.recipeSerializer));
    }
 
    /**
@@ -122,19 +129,21 @@ public class ManufactoryRecipeBuilder {
       private ItemStack result;
       private float extraChance;
       private int[] extraAmounts;
+      private int tierRequired;
       private int powerRequired;
       private int processTime;
       private final Advancement.Builder advancementBuilder;
       private final ResourceLocation advancementId;
       private final IRecipeSerializer<? extends IRecipe<IInventory>> serializer;
 
-      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
+      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
          this.id = idIn;
          this.group = groupIn;
          this.ingredient = ingredient;
          this.result = result;
          this.extraChance = extraChance;
          this.extraAmounts = extraAmounts;
+         this.tierRequired = tierRequired;
          this.powerRequired = powerRequired;
          this.processTime = processTime;
          this.advancementBuilder = advancementBuilderIn;
@@ -156,6 +165,7 @@ public class ManufactoryRecipeBuilder {
             extraAmountsArray.add(amount);
          }
          json.add("extraAmounts", extraAmountsArray);
+         json.addProperty("tierRequired", this.tierRequired);
          json.addProperty("powerRequired", this.powerRequired);
          json.addProperty("processTime", this.processTime);
       }

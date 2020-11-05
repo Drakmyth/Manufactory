@@ -20,15 +20,17 @@ public abstract class ManufactoryRecipe implements IRecipe<IInventory> {
     private ItemStack result;
     private float extraChance;
     private int[] extraAmounts;
+    private int tierRequired;
     private int powerRequired;
     private int processTime;
 
-    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int powerRequired, int processTime) {
+    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime) {
         this.recipeId = recipeId;
         this.ingredient = ingredient;
         this.result = result;
         this.extraChance = extraChance;
         this.extraAmounts = extraAmounts;
+        this.tierRequired = tierRequired;
         this.powerRequired = powerRequired;
         this.processTime = processTime;
     }
@@ -51,6 +53,10 @@ public abstract class ManufactoryRecipe implements IRecipe<IInventory> {
 
     public int[] getExtraAmounts() {
         return extraAmounts;
+    }
+
+    public int getTierRequired() {
+        return tierRequired;
     }
 
     public int getPowerRequired() {
