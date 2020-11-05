@@ -8,14 +8,16 @@ package com.drakmyth.minecraft.manufactory.tileentities;
 import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
-import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
-import com.drakmyth.minecraft.manufactory.items.IPowerProvider;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -100,9 +102,32 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
     }
 
+    private int getTier() {
+        if (!hasBothWheels()) return 0;
+        IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
+        IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
+        return Math.max(wheel1.getTier().getHarvestLevel(), wheel2.getTier().getHarvestLevel());
+    }
+
+    private float getEfficiencyModifier() {
+        if (!hasBothWheels()) return 0;
+        IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
+        IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
+        return wheel1.getTier().getHarvestLevel() <= wheel2.getTier().getHarvestLevel() ? wheel1.getEfficiency() : wheel2.getEfficiency();
+    }
+
+    private boolean hasBothWheels() {
+        Item wheel1 = grinderUpgradeInventory.getStackInSlot(0).getItem();
+        Item wheel2 = grinderUpgradeInventory.getStackInSlot(1).getItem();
+        if (!(wheel1 instanceof IGrinderWheelUpgrade) || !(wheel2 instanceof IGrinderWheelUpgrade)) return false;
+        return true;
+    }
+
     private boolean tryStartRecipe() {
         GrinderRecipe recipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
         if (recipe == null) return false;
+        if (!hasBothWheels()) return false;
+        if (getTier() < recipe.getTierRequired()) return false;
         ItemStack maxResult = recipe.getMaxOutput();
         if (!grinderInventory.insertItem(1, maxResult, true).isEmpty()) return false;
         lastPowerReceived = 0;
@@ -120,14 +145,14 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     private float getMotorSpeed() {
-        ItemStack motorStack = grinderUpgradeInventory.getStackInSlot(2);
-        return motorStack.getItem() instanceof IMotorUpgrade ? ((IMotorUpgrade)motorStack.getItem()).getPowerCapMultiplier() : 0.0f;
+        Item motor = grinderUpgradeInventory.getStackInSlot(2).getItem();
+        return motor instanceof IMotorUpgrade ? ((IMotorUpgrade)motor).getPowerCapMultiplier() : 0.0f;
     }
 
     private IPowerProvider getPowerProvider() {
-        ItemStack powerStack = grinderUpgradeInventory.getStackInSlot(3);
+        Item powerProvider = grinderUpgradeInventory.getStackInSlot(3).getItem();
         IPowerProvider emptyPowerProvider = (requestedPower, world, pos) -> 0;
-        return powerStack.getItem() instanceof IPowerProvider ? (IPowerProvider)powerStack.getItem() : emptyPowerProvider;
+        return powerProvider instanceof IPowerProvider ? (IPowerProvider)powerProvider : emptyPowerProvider;
     }
 
     @Override
@@ -157,6 +182,9 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             return;
         }
 
+        if (!hasBothWheels()) return;
+        if (getTier() < currentRecipe.getTierRequired()) return;
+
         IPowerProvider powerProvider = getPowerProvider();
         lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerWorld)world, pos);
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
@@ -164,8 +192,10 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             grinderInventory.extractItem(0, 1, false);
             ItemStack resultStack = currentRecipe.getRecipeOutput().copy();
             Random rand = world.getRandom();
-            if (currentRecipe.hasExtraChance() && rand.nextFloat() <= currentRecipe.getExtraChance()) {
-                resultStack.grow(currentRecipe.getRandomExtraAmount(rand));
+            if (getEfficiencyModifier() > 0) {
+                if (currentRecipe.hasExtraChance() && rand.nextFloat() <= (currentRecipe.getExtraChance() * getEfficiencyModifier())) {
+                    resultStack.grow(currentRecipe.getRandomExtraAmount(rand));
+                }
             }
             grinderInventory.insertItem(1, resultStack, false);
             currentRecipe = null;

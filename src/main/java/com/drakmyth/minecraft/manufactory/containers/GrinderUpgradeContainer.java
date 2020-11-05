@@ -7,8 +7,9 @@ package com.drakmyth.minecraft.manufactory.containers;
 
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
-import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
-import com.drakmyth.minecraft.manufactory.items.IPowerUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,14 +48,14 @@ public class GrinderUpgradeContainer extends Container {
         this.addSlot(new SlotItemHandler(upgradeInventory, 0, 62, 14) {
             @Override
             public boolean isItemValid(ItemStack stack) {
-                return false;
+                return stack.getItem() instanceof IGrinderWheelUpgrade;
             }
         });
         // Wheel Slot 2
         this.addSlot(new SlotItemHandler(upgradeInventory, 1, 98, 14) {
             @Override
             public boolean isItemValid(ItemStack stack) {
-                return false;
+                return stack.getItem() instanceof IGrinderWheelUpgrade;
             }
         });
         // Motor Slot

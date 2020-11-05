@@ -3,7 +3,7 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-package com.drakmyth.minecraft.manufactory.items;
+package com.drakmyth.minecraft.manufactory.items.upgrades;
 
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 

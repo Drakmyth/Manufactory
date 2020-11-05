@@ -9,7 +9,7 @@ import com.drakmyth.minecraft.manufactory.containers.GrinderContainerProvider;
 import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainerProvider;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
-import com.drakmyth.minecraft.manufactory.items.IPowerUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;

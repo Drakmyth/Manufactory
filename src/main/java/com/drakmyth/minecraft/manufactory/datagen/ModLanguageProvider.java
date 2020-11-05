@@ -30,6 +30,11 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.MOTOR_TIER1, "Magnetic Motor");
         addItem(ModItems.MOTOR_TIER2, "Compound Motor");
         addItem(ModItems.MOTOR_TIER3, "Induction Motor");
+        addItem(ModItems.GRINDER_WHEEL_TIER0, "Wooden Grinder Wheel");
+        addItem(ModItems.GRINDER_WHEEL_TIER1, "Stone Grinder Wheel");
+        addItem(ModItems.GRINDER_WHEEL_TIER2, "Iron Grinder Wheel");
+        addItem(ModItems.GRINDER_WHEEL_TIER3, "Diamond Grinder Wheel");
+        addItem(ModItems.GRINDER_WHEEL_TIER4, "Netherite Grinder Wheel");
         addItem(ModItems.POWER_SOCKET, "Power Socket");
         addItem(ModItems.BATTERY, "Battery");
         addItem(ModItems.WRENCH, "Wrench");

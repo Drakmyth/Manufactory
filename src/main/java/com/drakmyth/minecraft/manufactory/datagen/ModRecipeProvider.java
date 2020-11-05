@@ -21,6 +21,7 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.item.ItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -105,15 +106,15 @@ public class ModRecipeProvider extends RecipeProvider {
             .build(consumer);
 
         List<OreProcessingRecipeData> grinderOres = Arrays.asList(
-            new OreProcessingRecipeData(Items.COAL_ORE, ModItems.GROUND_COAL_ORE_ROUGH.get(), Items.COAL),
-            new OreProcessingRecipeData(Items.DIAMOND_ORE, ModItems.GROUND_DIAMOND_ORE_ROUGH.get(), Items.DIAMOND),
-            new OreProcessingRecipeData(Items.EMERALD_ORE, ModItems.GROUND_EMERALD_ORE_ROUGH.get(), Items.EMERALD),
-            new OreProcessingRecipeData(Items.GOLD_ORE, ModItems.GROUND_GOLD_ORE_ROUGH.get(), Items.GOLD_INGOT),
-            new OreProcessingRecipeData(Items.IRON_ORE, ModItems.GROUND_IRON_ORE_ROUGH.get(), Items.IRON_INGOT),
-            new OreProcessingRecipeData(Items.LAPIS_ORE, ModItems.GROUND_LAPIS_ORE_ROUGH.get(), Items.LAPIS_LAZULI),
-            new OreProcessingRecipeData(Items.NETHER_QUARTZ_ORE, ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH.get(), Items.QUARTZ),
-            new OreProcessingRecipeData(Items.REDSTONE_ORE, ModItems.GROUND_REDSTONE_ORE_ROUGH.get(), Items.REDSTONE),
-            new OreProcessingRecipeData(Items.ANCIENT_DEBRIS, ModItems.GROUND_ANCIENT_DEBRIS_ROUGH.get(), Items.NETHERITE_SCRAP)
+            new OreProcessingRecipeData(Items.COAL_ORE, ItemTier.WOOD, ModItems.GROUND_COAL_ORE_ROUGH.get(), Items.COAL),
+            new OreProcessingRecipeData(Items.DIAMOND_ORE, ItemTier.IRON, ModItems.GROUND_DIAMOND_ORE_ROUGH.get(), Items.DIAMOND),
+            new OreProcessingRecipeData(Items.EMERALD_ORE, ItemTier.IRON, ModItems.GROUND_EMERALD_ORE_ROUGH.get(), Items.EMERALD),
+            new OreProcessingRecipeData(Items.GOLD_ORE, ItemTier.IRON, ModItems.GROUND_GOLD_ORE_ROUGH.get(), Items.GOLD_INGOT),
+            new OreProcessingRecipeData(Items.IRON_ORE, ItemTier.STONE, ModItems.GROUND_IRON_ORE_ROUGH.get(), Items.IRON_INGOT),
+            new OreProcessingRecipeData(Items.LAPIS_ORE, ItemTier.STONE, ModItems.GROUND_LAPIS_ORE_ROUGH.get(), Items.LAPIS_LAZULI),
+            new OreProcessingRecipeData(Items.NETHER_QUARTZ_ORE, ItemTier.WOOD, ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH.get(), Items.QUARTZ),
+            new OreProcessingRecipeData(Items.REDSTONE_ORE, ItemTier.IRON, ModItems.GROUND_REDSTONE_ORE_ROUGH.get(), Items.REDSTONE),
+            new OreProcessingRecipeData(Items.ANCIENT_DEBRIS, ItemTier.DIAMOND, ModItems.GROUND_ANCIENT_DEBRIS_ROUGH.get(), Items.NETHERITE_SCRAP)
             );
 
         grinderOres.stream().forEach(data -> {
@@ -123,29 +124,39 @@ public class ModRecipeProvider extends RecipeProvider {
 
             // Ore -> Ground Ore (Rough)
             ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(data.getInput()), data.getOutput())
-            .withExtraChance(0.3f, data.getExtraAmounts())
-            .addCriterion(String.format("has_%s", inputName), InventoryChangeTrigger.Instance.forItems(data.getInput()))
-            .build(consumer);
+                .withExtraChance(0.3f, data.getExtraAmounts())
+                .withTierRequired(data.getTier().getHarvestLevel())
+                .addCriterion(String.format("has_%s", inputName), InventoryChangeTrigger.Instance.forItems(data.getInput()))
+                .build(consumer);
 
             // Ground Ore (Rough) -> Ingot
             CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(data.getOutput()), data.getProcessed(), 0.2f, 200)
-            .addCriterion(String.format("has_%s", outputName), InventoryChangeTrigger.Instance.forItems(data.getOutput()))
-            .build(consumer, String.format("%s:%s_from_ground_ore_rough", Reference.MOD_ID, processedName));
+                .addCriterion(String.format("has_%s", outputName), InventoryChangeTrigger.Instance.forItems(data.getOutput()))
+                .build(consumer, String.format("%s:%s_from_ground_ore_rough", Reference.MOD_ID, processedName));
         });
+
+        // Nether Gold Ore -> Ground Gold Ore (Rough)
+        ManufactoryRecipeBuilder.grinderRecipe(Ingredient.fromItems(Items.NETHER_GOLD_ORE), ModItems.GROUND_GOLD_ORE_ROUGH.get())
+            .withExtraChance(0.3f, 1)
+            .withTierRequired(ItemTier.WOOD.getHarvestLevel())
+            .addCriterion("has_nether_gold_ore", InventoryChangeTrigger.Instance.forItems(Items.NETHER_GOLD_ORE))
+            .build(consumer, String.format("%s:ground_gold_ore_rough_from_nether_gold_ore", Reference.MOD_ID));
     }
 
     private static class OreProcessingRecipeData {
         private Item input;
+        private ItemTier tier;
         private Item output;
         private Item processed;
         private int[] extraAmounts;
 
-        public OreProcessingRecipeData(Item input, Item output, Item processed) {
-            this(input, output, processed, new int[]{1});
+        public OreProcessingRecipeData(Item input, ItemTier tier, Item output, Item processed) {
+            this(input, tier, output, processed, new int[]{1});
         }
 
-        public OreProcessingRecipeData(Item input, Item output, Item processed, int[] extraAmounts) {
+        public OreProcessingRecipeData(Item input, ItemTier tier, Item output, Item processed, int[] extraAmounts) {
             this.input = input;
+            this.tier = tier;
             this.output = output;
             this.processed = processed;
             this.extraAmounts = extraAmounts;
@@ -153,6 +164,10 @@ public class ModRecipeProvider extends RecipeProvider {
 
         public Item getInput() {
             return input;
+        }
+
+        public ItemTier getTier() {
+            return tier;
         }
 
         public Item getOutput() {
