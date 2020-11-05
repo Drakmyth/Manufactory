@@ -11,6 +11,7 @@ import java.util.List;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
+import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,7 +65,7 @@ public class GrinderUpgradeContainer extends Container {
         this.addSlot(new SlotItemHandler(upgradeInventory, 2, 80, 36) {
             @Override
             public boolean isItemValid(ItemStack stack) {
-                return isItemMotor(stack);
+                return stack.getItem() instanceof IMotorUpgrade;
             }
         });
         // Power Slot
@@ -90,11 +91,6 @@ public class GrinderUpgradeContainer extends Container {
 
     private boolean isItemGrinderWheel(ItemStack stack) {
         return false;
-    }
-
-    private boolean isItemMotor(ItemStack stack) {
-        List<Item> motors = Arrays.asList(ModItems.MOTOR_TIER0.get(), ModItems.MOTOR_TIER1.get(), ModItems.MOTOR_TIER2.get(), ModItems.MOTOR_TIER3.get());
-        return motors.contains(stack.getItem());
     }
 
     private boolean isItemPowerUpgrade(ItemStack stack) {

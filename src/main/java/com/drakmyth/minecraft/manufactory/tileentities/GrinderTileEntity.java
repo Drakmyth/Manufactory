@@ -8,6 +8,7 @@ package com.drakmyth.minecraft.manufactory.tileentities;
 import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
@@ -58,8 +59,9 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     public float getPowerRate() {
-        if (maxPowerPerTick <= 0) return 0;
-        return lastPowerReceived / maxPowerPerTick;
+        float motorSpeed = getMotorSpeed();
+        if (maxPowerPerTick <= 0 || motorSpeed <= 0) return 0;
+        return lastPowerReceived / (maxPowerPerTick * motorSpeed);
     }
 
     // Client-Side Only
@@ -117,6 +119,11 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
     }
 
+    private float getMotorSpeed() {
+        ItemStack motorStack = grinderUpgradeInventory.getStackInSlot(2);
+        return motorStack.getItem() instanceof IMotorUpgrade ? ((IMotorUpgrade)motorStack.getItem()).getPowerCapMultiplier() : 0.0f;
+    }
+
     @Override
     public void tick() {
         if (world.isRemote) return;
@@ -145,7 +152,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         }
 
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-        lastPowerReceived = pnm.consumePower(maxPowerPerTick, pos);
+        lastPowerReceived = pnm.consumePower(maxPowerPerTick * getMotorSpeed(), pos);
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);
