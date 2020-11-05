@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.items.upgrades.BatteryItem;
+import com.drakmyth.minecraft.manufactory.items.upgrades.GrinderWheelUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.MotorUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.PowerSocketItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
@@ -24,6 +25,11 @@ public final class ModItems {
     public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(defaultProperties(), 2.0f));
     public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(defaultProperties(), 4.0f));
     public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(defaultProperties(), 8.0f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER0 = ITEMS.register("grinder_wheel_tier0", () -> new GrinderWheelUpgradeItem(defaultProperties()));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER1 = ITEMS.register("grinder_wheel_tier1", () -> new GrinderWheelUpgradeItem(defaultProperties()));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER2 = ITEMS.register("grinder_wheel_tier2", () -> new GrinderWheelUpgradeItem(defaultProperties()));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER3 = ITEMS.register("grinder_wheel_tier3", () -> new GrinderWheelUpgradeItem(defaultProperties()));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER4 = ITEMS.register("grinder_wheel_tier4", () -> new GrinderWheelUpgradeItem(defaultProperties()));
     public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new PowerSocketItem(defaultProperties()));
     public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new BatteryItem(defaultProperties()));
     public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", () -> new Item(defaultProperties()));

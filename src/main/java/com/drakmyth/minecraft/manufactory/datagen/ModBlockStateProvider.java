@@ -49,6 +49,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/motor_tier1", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/motor_tier2", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/motor_tier3", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/grinder_wheel_tier0", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/grinder_wheel_tier1", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/grinder_wheel_tier2", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/grinder_wheel_tier3", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
+        itemModels().withExistingParent("item/grinder_wheel_tier4", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/power_socket", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/battery", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
         itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
