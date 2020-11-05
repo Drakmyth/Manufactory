@@ -7,8 +7,8 @@ package com.drakmyth.minecraft.manufactory.containers;
 
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
-import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
-import com.drakmyth.minecraft.manufactory.items.IPowerUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 
 import net.minecraft.entity.player.PlayerEntity;

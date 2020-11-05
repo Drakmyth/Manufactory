@@ -8,8 +8,8 @@ package com.drakmyth.minecraft.manufactory.tileentities;
 import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
-import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
-import com.drakmyth.minecraft.manufactory.items.IPowerProvider;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;

@@ -6,9 +6,9 @@
 package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.items.BatteryItem;
-import com.drakmyth.minecraft.manufactory.items.MotorUpgradeItem;
-import com.drakmyth.minecraft.manufactory.items.PowerSocketItem;
+import com.drakmyth.minecraft.manufactory.items.upgrades.BatteryItem;
+import com.drakmyth.minecraft.manufactory.items.upgrades.MotorUpgradeItem;
+import com.drakmyth.minecraft.manufactory.items.upgrades.PowerSocketItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import net.minecraft.item.Item;
