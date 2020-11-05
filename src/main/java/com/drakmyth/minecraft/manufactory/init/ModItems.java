@@ -7,9 +7,13 @@ package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.items.MotorUpgradeItem;
+import com.drakmyth.minecraft.manufactory.items.PowerUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
+import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,8 +26,8 @@ public final class ModItems {
     public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(defaultProperties(), 2.0f));
     public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(defaultProperties(), 4.0f));
     public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(defaultProperties(), 8.0f));
-    public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new Item(defaultProperties()));
-    public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new PowerUpgradeItem(defaultProperties(), ModItems::powerSocketConsumePower));
+    public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new PowerUpgradeItem(defaultProperties(), ModItems::batterySocketConsumePower));
     public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> COAGULATED_LATEX = ITEMS.register("coagulated_latex", () -> new Item(defaultProperties()));
     public static final RegistryObject<Item> GROUND_COAL_ORE_ROUGH = ITEMS.register("ground_coal_ore_rough", () -> new Item(defaultProperties()));
@@ -40,5 +44,14 @@ public final class ModItems {
 
     private static Item.Properties defaultProperties() {
         return new Item.Properties().maxStackSize(64).group(ModItemGroups.MANUFACTORY_ITEM_GROUP);
+    }
+
+    private static float powerSocketConsumePower(float requestedPower, ServerWorld world, BlockPos pos) {
+        PowerNetworkManager pnm = PowerNetworkManager.get(world);
+        return pnm.consumePower(requestedPower, pos);
+    }
+
+    private static float batterySocketConsumePower(float requestedPower, ServerWorld world, BlockPos pos) {
+        return 0;
     }
 }

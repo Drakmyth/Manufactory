@@ -9,10 +9,10 @@ import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
-import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 
 import net.minecraft.block.BlockState;
@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -124,6 +125,15 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         return motorStack.getItem() instanceof IMotorUpgrade ? ((IMotorUpgrade)motorStack.getItem()).getPowerCapMultiplier() : 0.0f;
     }
 
+    private static float dummyPowerUpgrade(float requestedPower, ServerWorld world, BlockPos pos) {
+        return 0;
+    }
+
+    private IPowerUpgrade getPowerUpgrade() {
+        ItemStack powerStack = grinderUpgradeInventory.getStackInSlot(3);
+        return powerStack.getItem() instanceof IPowerUpgrade ? (IPowerUpgrade)powerStack.getItem() : GrinderTileEntity::dummyPowerUpgrade;
+    }
+
     @Override
     public void tick() {
         if (world.isRemote) return;
@@ -151,8 +161,8 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             return;
         }
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-        lastPowerReceived = pnm.consumePower(maxPowerPerTick * getMotorSpeed(), pos);
+        IPowerUpgrade powerProvider = getPowerUpgrade();
+        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerWorld)world, pos);
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
             grinderInventory.extractItem(0, 1, false);

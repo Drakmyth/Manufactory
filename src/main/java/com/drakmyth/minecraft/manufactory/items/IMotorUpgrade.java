@@ -6,5 +6,5 @@
 package com.drakmyth.minecraft.manufactory.items;
 
 public interface IMotorUpgrade {
-    public float getPowerCapMultiplier();
+    float getPowerCapMultiplier();
 }
