@@ -5,5 +5,5 @@
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
 public interface IGrinderWheelUpgrade {
-
+    int getTier();
 }
