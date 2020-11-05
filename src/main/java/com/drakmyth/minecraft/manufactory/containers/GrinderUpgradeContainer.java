@@ -5,14 +5,19 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
@@ -25,7 +30,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class GrinderUpgradeContainer extends Container {
 
-    public final ItemStackHandler grinderInventory;
+    public final ItemStackHandler upgradeInventory;
     private final IWorldPosCallable posCallable;
     private final GrinderTileEntity tileEntity;
 
@@ -38,16 +43,35 @@ public class GrinderUpgradeContainer extends Container {
         World world = player.getEntityWorld();
         posCallable = IWorldPosCallable.of(world, pos);
         tileEntity = (GrinderTileEntity)world.getTileEntity(pos);
-        grinderInventory = tileEntity.getInventory();
+        upgradeInventory = tileEntity.getUpgradeInventory();
 
         // Grinder Slots
-        // Input Slot
-        this.addSlot(new SlotItemHandler(grinderInventory, 0, 56, 35));
-        // Output Slot
-        this.addSlot(new SlotItemHandler(grinderInventory, 1, 116, 35) {
+        // Wheel Slot 1
+        this.addSlot(new SlotItemHandler(upgradeInventory, 0, 62, 14) {
             @Override
             public boolean isItemValid(ItemStack stack) {
-                return false;
+                return isItemGrinderWheel(stack);
+            }
+        });
+        // Wheel Slot 2
+        this.addSlot(new SlotItemHandler(upgradeInventory, 1, 98, 14) {
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return isItemGrinderWheel(stack);
+            }
+        });
+        // Motor Slot
+        this.addSlot(new SlotItemHandler(upgradeInventory, 2, 80, 36) {
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return isItemMotor(stack);
+            }
+        });
+        // Power Slot
+        this.addSlot(new SlotItemHandler(upgradeInventory, 3, 80, 58) {
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return isItemPowerUpgrade(stack);
             }
         });
 
@@ -64,6 +88,20 @@ public class GrinderUpgradeContainer extends Container {
         }
     }
 
+    private boolean isItemGrinderWheel(ItemStack stack) {
+        return false;
+    }
+
+    private boolean isItemMotor(ItemStack stack) {
+        List<Item> motors = Arrays.asList(ModItems.MOTOR_TIER0.get(), ModItems.MOTOR_TIER1.get(), ModItems.MOTOR_TIER2.get(), ModItems.MOTOR_TIER3.get());
+        return motors.contains(stack.getItem());
+    }
+
+    private boolean isItemPowerUpgrade(ItemStack stack) {
+        List<Item> powerUpgrades = Arrays.asList(ModItems.BATTERY.get(), ModItems.POWER_SOCKET.get());
+        return powerUpgrades.contains(stack.getItem());
+    }
+
     @Override
     public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
 
@@ -72,8 +110,8 @@ public class GrinderUpgradeContainer extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-            if (index < grinderInventory.getSlots()) { // transfer from grinder to inventory
-                if (!this.mergeItemStack(itemstack1, grinderInventory.getSlots(), this.inventorySlots.size(), false)) {
+            if (index < upgradeInventory.getSlots()) { // transfer from grinder to inventory
+                if (!this.mergeItemStack(itemstack1, upgradeInventory.getSlots(), this.inventorySlots.size(), false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { // transfer from inventory to grinder
