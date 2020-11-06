@@ -1,3 +1,6 @@
 {
-  "parent": "minecraft:block/ancient_debris"
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/ground_ancient_debris_rough"
+  }
 }

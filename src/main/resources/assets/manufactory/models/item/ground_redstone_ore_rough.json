@@ -1,3 +1,6 @@
 {
-  "parent": "minecraft:block/redstone_ore"
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/ground_redstone_ore_rough"
+  }
 }
