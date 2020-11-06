@@ -160,7 +160,7 @@ jar.finalizedBy('reobfJar')
 task refreshGeneratedAssets {
     doFirst {
         delete 'src/main/resources/data'
-        fileTree('src/main/resources/assets/manufactory').exclude('textures').visit { delete it.file }
+        delete 'src/main/resources/assets'
     }
 
     doLast {
@@ -168,6 +168,14 @@ task refreshGeneratedAssets {
             from 'src/generated/resources'
             into 'src/main/resources'
             exclude '**/.cache'
+        }
+        copy {
+            from 'psd/spritesheet-assets'
+            into 'src/main/resources/assets/manufactory/textures'
+        }
+        copy {
+            from 'psd/guis-assets'
+            into 'src/main/resources/assets/manufactory/textures'
         }
     }
 }
