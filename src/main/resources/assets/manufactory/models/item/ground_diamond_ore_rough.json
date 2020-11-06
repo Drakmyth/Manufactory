@@ -1,3 +1,6 @@
 {
-  "parent": "minecraft:block/diamond_ore"
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/ground_diamond_ore_rough"
+  }
 }

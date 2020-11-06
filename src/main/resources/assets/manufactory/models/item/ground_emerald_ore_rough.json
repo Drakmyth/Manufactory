@@ -1,3 +1,6 @@
 {
-  "parent": "minecraft:block/emerald_ore"
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/ground_emerald_ore_rough"
+  }
 }

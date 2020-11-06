@@ -34,7 +34,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        ModelFile amberBlockModel = cubeAllWithTexture(ModBlocks.AMBER_BLOCK.get(), new ResourceLocation("minecraft", "block/yellow_terracotta"));
+        ModelFile amberBlockModel = cubeAllWithTexture(ModBlocks.AMBER_BLOCK.get(), getBlockTexture("amber_block"));
         simpleBlock(ModBlocks.AMBER_BLOCK.get(), amberBlockModel);
         itemModels().getBuilder("amber_block").parent(amberBlockModel);
 
@@ -43,32 +43,32 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile latexCollectorFullModel = generatePartialLatexCollectorFullModel();
         generateLatexCollectorBlockState(latexCollectorEmptyModel, latexCollectorFillingModel, latexCollectorFullModel);
 
-        itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", String.format("%s:item/latex_collector", Reference.MOD_ID));
-        itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/motor_tier0", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/motor_tier1", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/motor_tier2", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/motor_tier3", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/grinder_wheel_tier0", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/grinder_wheel_tier1", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/grinder_wheel_tier2", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/grinder_wheel_tier3", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/grinder_wheel_tier4", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/power_socket", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/battery", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", "minecraft:item/baked_potato");
-        itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", "minecraft:item/bone_meal");
-        itemModels().withExistingParent("item/ground_coal_ore_rough", "block/coal_ore");
-        itemModels().withExistingParent("item/ground_diamond_ore_rough", "block/diamond_ore");
-        itemModels().withExistingParent("item/ground_emerald_ore_rough", "block/emerald_ore");
-        itemModels().withExistingParent("item/ground_gold_ore_rough", "block/gold_ore");
-        itemModels().withExistingParent("item/ground_iron_ore_rough", "block/iron_ore");
-        itemModels().withExistingParent("item/ground_lapis_ore_rough", "block/lapis_ore");
-        itemModels().withExistingParent("item/ground_nether_quartz_ore_rough", "block/nether_quartz_ore");
-        itemModels().withExistingParent("item/ground_redstone_ore_rough", "block/redstone_ore");
-        itemModels().withExistingParent("item/ground_ancient_debris_rough", "block/ancient_debris");
-        itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", "minecraft:item/ink_sac");
-        itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", String.format("%s:item/tapping_knife", Reference.MOD_ID));
+        itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", getItemTexture("latex_collector"));
+        itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", getItemTexture("amber"));
+        itemModels().withExistingParent("item/motor_tier0", "item/handheld").texture("layer0", getItemTexture("motor_tier0"));
+        itemModels().withExistingParent("item/motor_tier1", "item/handheld").texture("layer0", getItemTexture("motor_tier1"));
+        itemModels().withExistingParent("item/motor_tier2", "item/handheld").texture("layer0", getItemTexture("motor_tier2"));
+        itemModels().withExistingParent("item/motor_tier3", "item/handheld").texture("layer0", getItemTexture("motor_tier3"));
+        itemModels().withExistingParent("item/grinder_wheel_tier0", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier0"));
+        itemModels().withExistingParent("item/grinder_wheel_tier1", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier1"));
+        itemModels().withExistingParent("item/grinder_wheel_tier2", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier2"));
+        itemModels().withExistingParent("item/grinder_wheel_tier3", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier3"));
+        itemModels().withExistingParent("item/grinder_wheel_tier4", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier4"));
+        itemModels().withExistingParent("item/power_socket", "item/handheld").texture("layer0", getItemTexture("power_socket"));
+        itemModels().withExistingParent("item/battery", "item/handheld").texture("layer0", getItemTexture("battery"));
+        itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", getItemTexture("wrench"));
+        itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", getItemTexture("coagulated_latex"));
+        itemModels().withExistingParent("item/ground_coal_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_coal_ore_rough"));
+        itemModels().withExistingParent("item/ground_diamond_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_diamond_ore_rough"));
+        itemModels().withExistingParent("item/ground_emerald_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_emerald_ore_rough"));
+        itemModels().withExistingParent("item/ground_gold_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_gold_ore_rough"));
+        itemModels().withExistingParent("item/ground_iron_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_iron_ore_rough"));
+        itemModels().withExistingParent("item/ground_lapis_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_lapis_ore_rough"));
+        itemModels().withExistingParent("item/ground_nether_quartz_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_nether_quartz_ore_rough"));
+        itemModels().withExistingParent("item/ground_redstone_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_redstone_ore_rough"));
+        itemModels().withExistingParent("item/ground_ancient_debris_rough", "item/handheld").texture("layer0", getItemTexture("ground_ancient_debris_rough"));
+        itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", getItemTexture("rubber"));
+        itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", getItemTexture("tapping_knife"));
 
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
         ModelFile powerCableSideModel = generatePartialPowerCableSideModel();
@@ -88,8 +88,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().getBuilder("grinder").parent(grinderModel);
     }
 
-    private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {
-        return models().cubeAll(block.getRegistryName().getPath(), texture);
+    private String getItemTexture(String texture) {
+        return String.format("%s:item/%s", Reference.MOD_ID, texture);
+    }
+
+    private String getBlockTexture(String texture) {
+        return String.format("%s:block/%s", Reference.MOD_ID, texture);
+    }
+
+    private String getMinecraftBlockTexture(String block) {
+        return String.format("minecraft:block/%s", block);
+    }
+
+    private ModelFile cubeAllWithTexture(Block block, String texture) {
+        return models().cubeAll(block.getRegistryName().getPath(), new ResourceLocation(texture));
     }
 
     private ModelFile generateLatexCollectorEmptyModel() {
@@ -105,8 +117,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(5, 3, 1).to(6, 5, 5).allFaces((dir, face) -> face.texture("#collector")).end();
         // east_side
         builder.element().from(10, 3, 1).to(11, 5, 5).allFaces((dir, face) -> face.texture("#collector")).end();
-        builder.texture("collector", "minecraft:block/dirt");
-        builder.texture("particle", "minecraft:block/dirt");
+        builder.texture("collector", getMinecraftBlockTexture("dirt"));
+        builder.texture("particle", getMinecraftBlockTexture("dirt"));
         return builder;
     }
 
@@ -116,7 +128,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(6, 3, 1).to(10, 4, 5).face(Direction.UP).texture("#latex").end().end();
         // latex_stream
         builder.element().from(7, 5, 0).to(9, 12, 2).allFaces((dir, face) -> face.texture("#latex")).end();
-        builder.texture("latex", "minecraft:block/quartz_block_top");
+        builder.texture("latex", getMinecraftBlockTexture("quartz_block_top"));
         return builder;
     }
 
@@ -124,7 +136,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         BlockModelBuilder builder = models().getBuilder("latex_collector_full");
         // latex_surface
         builder.element().from(6, 4, 1).to(10, 5, 5).face(Direction.UP).texture("#latex").end().end();
-        builder.texture("latex", "minecraft:block/quartz_block_top");
+        builder.texture("latex", getMinecraftBlockTexture("quartz_block_top"));
         return builder;
     }
 
@@ -158,8 +170,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(6, 2, 6).to(10, 4, 10).allFaces((dir, face) -> face.texture("#cable")).end();
         // z_corners
         builder.element().from(6, 1, 7).to(10, 5, 9).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", "minecraft:block/coal_block");
-        builder.texture("particle", "minecraft:block/coal_block");
+        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
+        builder.texture("particle", getMinecraftBlockTexture("coal_block"));
         return builder;
     }
 
@@ -171,7 +183,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(7, 0, 0).to(9, 6, 7).allFaces((dir, face) -> face.texture("#cable")).end();
         // z_corners
         builder.element().from(6, 1, 0).to(10, 5, 7).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", "minecraft:block/coal_block");
+        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
         return builder;
     }
 
@@ -183,7 +195,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(7, 4, 5).to(9, 16, 11).allFaces((dir, face) -> face.texture("#cable")).end();
         // y_corners
         builder.element().from(6, 4, 6).to(10, 16, 10).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", "minecraft:block/coal_block");
+        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
         return builder;
     }
 
@@ -195,7 +207,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(7, 0, 5).to(9, 2, 11).allFaces((dir, face) -> face.texture("#cable")).end();
         // y_corners
         builder.element().from(6, 0, 6).to(10, 2, 10).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", "minecraft:block/coal_block");
+        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
         return builder;
     }
 
@@ -245,12 +257,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
             .face(Direction.UP).texture("#bottom").end()
             .face(Direction.DOWN).texture("#bottom").end().end();
 
-        builder.texture("front", String.format("%s:block/grinder_side", Reference.MOD_ID));
-        builder.texture("side", String.format("%s:block/grinder_side", Reference.MOD_ID));
-        builder.texture("inside", String.format("%s:block/grinder_inside", Reference.MOD_ID));
-        builder.texture("back", String.format("%s:block/grinder_back_socket", Reference.MOD_ID));
-        builder.texture("top", String.format("%s:block/grinder_top", Reference.MOD_ID));
-        builder.texture("bottom", "minecraft:block/furnace_top");
+        builder.texture("front", getBlockTexture("grinder_side"));
+        builder.texture("side", getBlockTexture("grinder_side"));
+        builder.texture("inside", getBlockTexture("grinder_inside"));
+        builder.texture("back", getBlockTexture("grinder_back_socket"));
+        builder.texture("top", getBlockTexture("grinder_top"));
+        builder.texture("bottom", getMinecraftBlockTexture("furnace_top"));
         return builder;
     }
 
