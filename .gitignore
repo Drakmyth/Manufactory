@@ -242,4 +242,4 @@ gradle-app.setting
 
 # Ignore Generated Files
 **/src/generated
-**/textures/spritesheet-assets
+**/psd/*-assets
