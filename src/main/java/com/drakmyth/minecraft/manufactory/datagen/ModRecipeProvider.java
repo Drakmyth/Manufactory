@@ -141,6 +141,36 @@ public class ModRecipeProvider extends RecipeProvider {
             .withTierRequired(ItemTier.WOOD.getHarvestLevel())
             .addCriterion("has_nether_gold_ore", InventoryChangeTrigger.Instance.forItems(Items.NETHER_GOLD_ORE))
             .build(consumer, String.format("%s:ground_gold_ore_rough_from_nether_gold_ore", Reference.MOD_ID));
+
+        List<OreProcessingRecipeData> ballMillOres = Arrays.asList(
+            new OreProcessingRecipeData(ModItems.GROUND_COAL_ORE_ROUGH.get(), ItemTier.WOOD, ModItems.GROUND_COAL_ORE_FINE.get(), Items.COAL),
+            new OreProcessingRecipeData(ModItems.GROUND_DIAMOND_ORE_ROUGH.get(), ItemTier.IRON, ModItems.GROUND_DIAMOND_ORE_FINE.get(), Items.DIAMOND),
+            new OreProcessingRecipeData(ModItems.GROUND_EMERALD_ORE_ROUGH.get(), ItemTier.IRON, ModItems.GROUND_EMERALD_ORE_FINE.get(), Items.EMERALD),
+            new OreProcessingRecipeData(ModItems.GROUND_GOLD_ORE_ROUGH.get(), ItemTier.IRON, ModItems.GROUND_GOLD_ORE_FINE.get(), Items.GOLD_INGOT),
+            new OreProcessingRecipeData(ModItems.GROUND_IRON_ORE_ROUGH.get(), ItemTier.STONE, ModItems.GROUND_IRON_ORE_FINE.get(), Items.IRON_INGOT),
+            new OreProcessingRecipeData(ModItems.GROUND_LAPIS_ORE_ROUGH.get(), ItemTier.STONE, ModItems.GROUND_LAPIS_ORE_FINE.get(), Items.LAPIS_LAZULI),
+            new OreProcessingRecipeData(ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH.get(), ItemTier.WOOD, ModItems.GROUND_NETHER_QUARTZ_ORE_FINE.get(), Items.QUARTZ),
+            new OreProcessingRecipeData(ModItems.GROUND_REDSTONE_ORE_ROUGH.get(), ItemTier.IRON, ModItems.GROUND_REDSTONE_ORE_FINE.get(), Items.REDSTONE),
+            new OreProcessingRecipeData(ModItems.GROUND_ANCIENT_DEBRIS_ROUGH.get(), ItemTier.DIAMOND, ModItems.GROUND_ANCIENT_DEBRIS_FINE.get(), Items.NETHERITE_SCRAP)
+            );
+
+        ballMillOres.stream().forEach(data -> {
+            String inputName = ForgeRegistries.ITEMS.getKey(data.getInput()).getPath();
+            String outputName = ForgeRegistries.ITEMS.getKey(data.getOutput()).getPath();
+            String processedName = ForgeRegistries.ITEMS.getKey(data.getProcessed()).getPath();
+
+            // Ground Ore (Rough) -> Ground Ore (Fine)
+            ManufactoryRecipeBuilder.ballMillRecipe(Ingredient.fromItems(data.getInput()), data.getOutput())
+                .withExtraChance(0.54f, data.getExtraAmounts())
+                .withTierRequired(data.getTier().getHarvestLevel())
+                .addCriterion(String.format("has_%s", inputName), InventoryChangeTrigger.Instance.forItems(data.getInput()))
+                .build(consumer);
+
+            // Ground Ore (Fine) -> Ingot
+            CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(data.getOutput()), data.getProcessed(), 0.2f, 200)
+                .addCriterion(String.format("has_%s", outputName), InventoryChangeTrigger.Instance.forItems(data.getOutput()))
+                .build(consumer, String.format("%s:%s_from_ground_ore_fine", Reference.MOD_ID, processedName));
+        });
     }
 
     private static class OreProcessingRecipeData {

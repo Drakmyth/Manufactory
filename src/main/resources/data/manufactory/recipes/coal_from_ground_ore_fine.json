@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "manufactory:ground_coal_ore_fine"
+  },
+  "result": "minecraft:coal",
+  "experience": 0.2,
+  "cookingtime": 200
+}

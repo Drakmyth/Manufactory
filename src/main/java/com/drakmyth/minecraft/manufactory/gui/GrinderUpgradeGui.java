@@ -34,16 +34,5 @@ public class GrinderUpgradeGui extends ContainerScreen<GrinderUpgradeContainer> 
         int i = this.guiLeft;
         int j = this.guiTop;
         this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
-
-        float powerRate = this.container.getPowerRate();
-        if (powerRate > 0) {
-            int yOffset = (int)((1 - powerRate) * 15);
-            this.blit(matrixStack, i + 57, j + 54 + yOffset, 176, yOffset, 15, 15 - yOffset);
-        }
-
-        float progress = this.container.getProgress();
-        if (progress > 0) {
-            this.blit(matrixStack, i + 79, j + 34, 176, 15, (int)(progress * 24), 16);
-        }
     }
 }

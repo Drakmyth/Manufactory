@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:emerald_from_ground_ore_fine"
+    ]
+  },
+  "criteria": {
+    "has_ground_emerald_ore_fine": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "manufactory:ground_emerald_ore_fine"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:emerald_from_ground_ore_fine"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ground_emerald_ore_fine",
+      "has_the_recipe"
+    ]
+  ]
+}

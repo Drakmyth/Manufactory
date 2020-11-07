@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/milling_ball_tier0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "manufactory:block/ball_mill"
+    },
+    "facing=south": {
+      "model": "manufactory:block/ball_mill",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "manufactory:block/ball_mill",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "manufactory:block/ball_mill",
+      "y": 90
+    }
+  }
+}
