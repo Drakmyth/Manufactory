@@ -5,7 +5,8 @@
     "inside": "manufactory:block/grinder_inside",
     "back": "manufactory:block/grinder_back_socket",
     "top": "manufactory:block/grinder_top",
-    "bottom": "minecraft:block/furnace_top"
+    "bottom": "minecraft:block/furnace_top",
+    "particle": "manufactory:block/grinder_side"
   },
   "elements": [
     {

@@ -282,6 +282,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.texture("back", getBlockTexture("grinder_back_socket"));
         builder.texture("top", getBlockTexture("grinder_top"));
         builder.texture("bottom", getMinecraftBlockTexture("furnace_top"));
+        builder.texture("particle", getBlockTexture("grinder_side"));
         return builder;
     }
 
@@ -308,6 +309,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.texture("back", getBlockTexture("ball_mill_back_socket"));
         builder.texture("top", getBlockTexture("ball_mill_top"));
         builder.texture("bottom", getMinecraftBlockTexture("furnace_top"));
+        builder.texture("particle", getBlockTexture("ball_mill_side"));
         return builder;
     }
 

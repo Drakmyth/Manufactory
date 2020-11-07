@@ -4,7 +4,8 @@
     "side": "manufactory:block/ball_mill_side",
     "back": "manufactory:block/ball_mill_back_socket",
     "top": "manufactory:block/ball_mill_top",
-    "bottom": "minecraft:block/furnace_top"
+    "bottom": "minecraft:block/furnace_top",
+    "particle": "manufactory:block/ball_mill_side"
   },
   "elements": [
     {
