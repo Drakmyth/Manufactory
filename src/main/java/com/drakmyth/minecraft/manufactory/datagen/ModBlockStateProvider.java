@@ -35,7 +35,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        ModelFile amberBlockModel = cubeAllWithTexture(ModBlocks.AMBER_BLOCK.get(), getBlockTexture("amber_block"));
+        ModelFile amberBlockModel = cubeAllWithTexture(ModBlocks.AMBER_BLOCK.get(), modLoc("block/amber_block"));
         simpleBlock(ModBlocks.AMBER_BLOCK.get(), amberBlockModel);
         itemModels().getBuilder("amber_block").parent(amberBlockModel);
 
@@ -44,46 +44,46 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile latexCollectorFullModel = generatePartialLatexCollectorFullModel();
         generateLatexCollectorBlockState(latexCollectorEmptyModel, latexCollectorFillingModel, latexCollectorFullModel);
 
-        itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", getItemTexture("latex_collector"));
-        itemModels().withExistingParent("item/amber", "item/handheld").texture("layer0", getItemTexture("amber"));
-        itemModels().withExistingParent("item/motor_tier0", "item/handheld").texture("layer0", getItemTexture("motor_tier0"));
-        itemModels().withExistingParent("item/motor_tier1", "item/handheld").texture("layer0", getItemTexture("motor_tier1"));
-        itemModels().withExistingParent("item/motor_tier2", "item/handheld").texture("layer0", getItemTexture("motor_tier2"));
-        itemModels().withExistingParent("item/motor_tier3", "item/handheld").texture("layer0", getItemTexture("motor_tier3"));
-        itemModels().withExistingParent("item/grinder_wheel_tier0", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier0"));
-        itemModels().withExistingParent("item/grinder_wheel_tier1", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier1"));
-        itemModels().withExistingParent("item/grinder_wheel_tier2", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier2"));
-        itemModels().withExistingParent("item/grinder_wheel_tier3", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier3"));
-        itemModels().withExistingParent("item/grinder_wheel_tier4", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier4"));
-        itemModels().withExistingParent("item/milling_ball_tier0", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier0"));
-        itemModels().withExistingParent("item/milling_ball_tier1", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier1"));
-        itemModels().withExistingParent("item/milling_ball_tier2", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier2"));
-        itemModels().withExistingParent("item/milling_ball_tier3", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier3"));
-        itemModels().withExistingParent("item/milling_ball_tier4", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier4"));
-        itemModels().withExistingParent("item/power_socket", "item/handheld").texture("layer0", getItemTexture("power_socket"));
-        itemModels().withExistingParent("item/battery", "item/handheld").texture("layer0", getItemTexture("battery"));
-        itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", getItemTexture("wrench"));
-        itemModels().withExistingParent("item/coagulated_latex", "item/handheld").texture("layer0", getItemTexture("coagulated_latex"));
-        itemModels().withExistingParent("item/ground_coal_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_coal_ore_rough"));
-        itemModels().withExistingParent("item/ground_diamond_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_diamond_ore_rough"));
-        itemModels().withExistingParent("item/ground_emerald_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_emerald_ore_rough"));
-        itemModels().withExistingParent("item/ground_gold_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_gold_ore_rough"));
-        itemModels().withExistingParent("item/ground_iron_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_iron_ore_rough"));
-        itemModels().withExistingParent("item/ground_lapis_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_lapis_ore_rough"));
-        itemModels().withExistingParent("item/ground_nether_quartz_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_nether_quartz_ore_rough"));
-        itemModels().withExistingParent("item/ground_redstone_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_redstone_ore_rough"));
-        itemModels().withExistingParent("item/ground_ancient_debris_rough", "item/handheld").texture("layer0", getItemTexture("ground_ancient_debris_rough"));
-        itemModels().withExistingParent("item/ground_coal_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_coal_ore_fine"));
-        itemModels().withExistingParent("item/ground_diamond_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_diamond_ore_fine"));
-        itemModels().withExistingParent("item/ground_emerald_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_emerald_ore_fine"));
-        itemModels().withExistingParent("item/ground_gold_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_gold_ore_fine"));
-        itemModels().withExistingParent("item/ground_iron_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_iron_ore_fine"));
-        itemModels().withExistingParent("item/ground_lapis_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_lapis_ore_fine"));
-        itemModels().withExistingParent("item/ground_nether_quartz_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_nether_quartz_ore_fine"));
-        itemModels().withExistingParent("item/ground_redstone_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_redstone_ore_fine"));
-        itemModels().withExistingParent("item/ground_ancient_debris_fine", "item/handheld").texture("layer0", getItemTexture("ground_ancient_debris_fine"));
-        itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", getItemTexture("rubber"));
-        itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", getItemTexture("tapping_knife"));
+        itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", modLoc("item/latex_collector"));
+        itemModels().withExistingParent("item/amber", "item/generated").texture("layer0", modLoc("item/amber"));
+        itemModels().withExistingParent("item/motor_tier0", "item/generated").texture("layer0", modLoc("item/motor_tier0"));
+        itemModels().withExistingParent("item/motor_tier1", "item/generated").texture("layer0", modLoc("item/motor_tier1"));
+        itemModels().withExistingParent("item/motor_tier2", "item/generated").texture("layer0", modLoc("item/motor_tier2"));
+        itemModels().withExistingParent("item/motor_tier3", "item/generated").texture("layer0", modLoc("item/motor_tier3"));
+        itemModels().withExistingParent("item/grinder_wheel_tier0", "item/generated").texture("layer0", modLoc("item/grinder_wheel_tier0"));
+        itemModels().withExistingParent("item/grinder_wheel_tier1", "item/generated").texture("layer0", modLoc("item/grinder_wheel_tier1"));
+        itemModels().withExistingParent("item/grinder_wheel_tier2", "item/generated").texture("layer0", modLoc("item/grinder_wheel_tier2"));
+        itemModels().withExistingParent("item/grinder_wheel_tier3", "item/generated").texture("layer0", modLoc("item/grinder_wheel_tier3"));
+        itemModels().withExistingParent("item/grinder_wheel_tier4", "item/generated").texture("layer0", modLoc("item/grinder_wheel_tier4"));
+        itemModels().withExistingParent("item/milling_ball_tier0", "item/generated").texture("layer0", modLoc("item/milling_ball_tier0"));
+        itemModels().withExistingParent("item/milling_ball_tier1", "item/generated").texture("layer0", modLoc("item/milling_ball_tier1"));
+        itemModels().withExistingParent("item/milling_ball_tier2", "item/generated").texture("layer0", modLoc("item/milling_ball_tier2"));
+        itemModels().withExistingParent("item/milling_ball_tier3", "item/generated").texture("layer0", modLoc("item/milling_ball_tier3"));
+        itemModels().withExistingParent("item/milling_ball_tier4", "item/generated").texture("layer0", modLoc("item/milling_ball_tier4"));
+        itemModels().withExistingParent("item/power_socket", "item/generated").texture("layer0", modLoc("item/power_socket"));
+        itemModels().withExistingParent("item/battery", "item/generated").texture("layer0", modLoc("item/battery"));
+        itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", modLoc("item/wrench"));
+        itemModels().withExistingParent("item/coagulated_latex", "item/generated").texture("layer0", modLoc("item/coagulated_latex"));
+        itemModels().withExistingParent("item/ground_coal_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_coal_ore_rough"));
+        itemModels().withExistingParent("item/ground_diamond_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_diamond_ore_rough"));
+        itemModels().withExistingParent("item/ground_emerald_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_emerald_ore_rough"));
+        itemModels().withExistingParent("item/ground_gold_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_gold_ore_rough"));
+        itemModels().withExistingParent("item/ground_iron_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_iron_ore_rough"));
+        itemModels().withExistingParent("item/ground_lapis_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_lapis_ore_rough"));
+        itemModels().withExistingParent("item/ground_nether_quartz_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_nether_quartz_ore_rough"));
+        itemModels().withExistingParent("item/ground_redstone_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_redstone_ore_rough"));
+        itemModels().withExistingParent("item/ground_ancient_debris_rough", "item/generated").texture("layer0", modLoc("item/ground_ancient_debris_rough"));
+        itemModels().withExistingParent("item/ground_coal_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_coal_ore_fine"));
+        itemModels().withExistingParent("item/ground_diamond_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_diamond_ore_fine"));
+        itemModels().withExistingParent("item/ground_emerald_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_emerald_ore_fine"));
+        itemModels().withExistingParent("item/ground_gold_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_gold_ore_fine"));
+        itemModels().withExistingParent("item/ground_iron_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_iron_ore_fine"));
+        itemModels().withExistingParent("item/ground_lapis_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_lapis_ore_fine"));
+        itemModels().withExistingParent("item/ground_nether_quartz_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_nether_quartz_ore_fine"));
+        itemModels().withExistingParent("item/ground_redstone_ore_fine", "item/generated").texture("layer0", modLoc("item/ground_redstone_ore_fine"));
+        itemModels().withExistingParent("item/ground_ancient_debris_fine", "item/generated").texture("layer0", modLoc("item/ground_ancient_debris_fine"));
+        itemModels().withExistingParent("item/rubber", "item/generated").texture("layer0", modLoc("item/rubber"));
+        itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", modLoc("item/tapping_knife"));
 
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
         ModelFile powerCableSideModel = generatePartialPowerCableSideModel();
@@ -92,8 +92,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         generatePowerCableBlockState(powerCableCenterModel, powerCableSideModel, powerCableUpModel, powerCableDownModel);
         itemModels().getBuilder("power_cable").parent(powerCableCenterModel);
 
-        ResourceLocation daylightDetectorModelLoc = new ResourceLocation("minecraft", "block/daylight_detector");
-        ModelFile daylightDetectorModel = new ExistingModelFile(daylightDetectorModelLoc, exFileHelper);
+        ModelFile daylightDetectorModel = new ExistingModelFile(mcLoc("block/daylight_detector"), exFileHelper);
         ModelFile solarPanelModel = models().getBuilder("solar_panel").parent(daylightDetectorModel);
         simpleBlock(ModBlocks.SOLAR_PANEL.get(), solarPanelModel);
         itemModels().getBuilder("solar_panel").parent(solarPanelModel);
@@ -107,20 +106,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().getBuilder("ball_mill").parent(ballMillModel);
     }
 
-    private String getItemTexture(String texture) {
-        return String.format("%s:item/%s", Reference.MOD_ID, texture);
-    }
-
-    private String getBlockTexture(String texture) {
-        return String.format("%s:block/%s", Reference.MOD_ID, texture);
-    }
-
-    private String getMinecraftBlockTexture(String block) {
-        return String.format("minecraft:block/%s", block);
-    }
-
-    private ModelFile cubeAllWithTexture(Block block, String texture) {
-        return models().cubeAll(block.getRegistryName().getPath(), new ResourceLocation(texture));
+    private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {
+        return models().cubeAll(block.getRegistryName().getPath(), texture);
     }
 
     private ModelFile generateLatexCollectorEmptyModel() {
@@ -136,8 +123,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(5, 3, 1).to(6, 5, 5).allFaces((dir, face) -> face.texture("#collector")).end();
         // east_side
         builder.element().from(10, 3, 1).to(11, 5, 5).allFaces((dir, face) -> face.texture("#collector")).end();
-        builder.texture("collector", getMinecraftBlockTexture("dirt"));
-        builder.texture("particle", getMinecraftBlockTexture("dirt"));
+        builder.texture("collector", mcLoc("block/dirt"));
+        builder.texture("particle", mcLoc("block/dirt"));
         return builder;
     }
 
@@ -147,7 +134,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(6, 3, 1).to(10, 4, 5).face(Direction.UP).texture("#latex").end().end();
         // latex_stream
         builder.element().from(7, 5, 0).to(9, 12, 2).allFaces((dir, face) -> face.texture("#latex")).end();
-        builder.texture("latex", getMinecraftBlockTexture("quartz_block_top"));
+        builder.texture("latex", mcLoc("block/quartz_block_top"));
         return builder;
     }
 
@@ -155,7 +142,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         BlockModelBuilder builder = models().getBuilder("latex_collector_full");
         // latex_surface
         builder.element().from(6, 4, 1).to(10, 5, 5).face(Direction.UP).texture("#latex").end().end();
-        builder.texture("latex", getMinecraftBlockTexture("quartz_block_top"));
+        builder.texture("latex", mcLoc("block/quartz_block_top"));
         return builder;
     }
 
@@ -176,7 +163,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private ModelFile generatePowerCableCenterModel() {
-        BlockModelBuilder builder = models().getBuilder("power_cable");
+        BlockModelBuilder builder = models().getBuilder("power_cable").parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/block"), exFileHelper));
         // x_core
         builder.element().from(5, 2, 7).to(11, 4, 9).allFaces((dir, face) -> face.texture("#cable")).end();
         // y_core
@@ -189,8 +176,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(6, 2, 6).to(10, 4, 10).allFaces((dir, face) -> face.texture("#cable")).end();
         // z_corners
         builder.element().from(6, 1, 7).to(10, 5, 9).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
-        builder.texture("particle", getMinecraftBlockTexture("coal_block"));
+        builder.texture("cable", mcLoc("block/coal_block"));
+        builder.texture("particle", mcLoc("block/coal_block"));
         return builder;
     }
 
@@ -202,7 +189,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(7, 0, 0).to(9, 6, 7).allFaces((dir, face) -> face.texture("#cable")).end();
         // z_corners
         builder.element().from(6, 1, 0).to(10, 5, 7).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
+        builder.texture("cable", mcLoc("block/coal_block"));
         return builder;
     }
 
@@ -214,7 +201,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(7, 4, 5).to(9, 16, 11).allFaces((dir, face) -> face.texture("#cable")).end();
         // y_corners
         builder.element().from(6, 4, 6).to(10, 16, 10).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
+        builder.texture("cable", mcLoc("block/coal_block"));
         return builder;
     }
 
@@ -226,7 +213,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.element().from(7, 0, 5).to(9, 2, 11).allFaces((dir, face) -> face.texture("#cable")).end();
         // y_corners
         builder.element().from(6, 0, 6).to(10, 2, 10).allFaces((dir, face) -> face.texture("#cable")).end();
-        builder.texture("cable", getMinecraftBlockTexture("coal_block"));
+        builder.texture("cable", mcLoc("block/coal_block"));
         return builder;
     }
 
@@ -242,7 +229,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private ModelFile generateGrinderModel() {
-        BlockModelBuilder builder = models().getBuilder("grinder");
+        BlockModelBuilder builder = models().getBuilder("grinder").parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/block"), exFileHelper));
         // north_side
         builder.element().from(2, 0, 0).to(14, 16, 2)
             .face(Direction.NORTH).texture("#side").end()
@@ -276,13 +263,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
             .face(Direction.UP).texture("#bottom").end()
             .face(Direction.DOWN).texture("#bottom").end().end();
 
-        builder.texture("front", getBlockTexture("grinder_side"));
-        builder.texture("side", getBlockTexture("grinder_side"));
-        builder.texture("inside", getBlockTexture("grinder_inside"));
-        builder.texture("back", getBlockTexture("grinder_back_socket"));
-        builder.texture("top", getBlockTexture("grinder_top"));
-        builder.texture("bottom", getMinecraftBlockTexture("furnace_top"));
-        builder.texture("particle", getBlockTexture("grinder_side"));
+        builder.texture("front", modLoc("block/grinder_side"));
+        builder.texture("side", modLoc("block/grinder_side"));
+        builder.texture("inside", modLoc("block/grinder_inside"));
+        builder.texture("back", modLoc("block/grinder_back_socket"));
+        builder.texture("top", modLoc("block/grinder_top"));
+        builder.texture("bottom", mcLoc("block/furnace_top"));
+        builder.texture("particle", modLoc("block/grinder_side"));
         return builder;
     }
 
@@ -295,7 +282,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private ModelFile generateBallMillModel() {
-        BlockModelBuilder builder = models().getBuilder("ball_mill");
+        BlockModelBuilder builder = models().getBuilder("ball_mill").parent(new ExistingModelFile(mcLoc("block/block"), exFileHelper));;
         builder.element().from(0, 0, 0).to(16, 16, 16)
             .face(Direction.NORTH).texture("#side").end()
             .face(Direction.EAST).texture("#side").end()
@@ -304,12 +291,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
             .face(Direction.UP).texture("#top").end()
             .face(Direction.DOWN).texture("#bottom").end().end();
 
-        builder.texture("front", getBlockTexture("ball_mill_side"));
-        builder.texture("side", getBlockTexture("ball_mill_side"));
-        builder.texture("back", getBlockTexture("ball_mill_back_socket"));
-        builder.texture("top", getBlockTexture("ball_mill_top"));
-        builder.texture("bottom", getMinecraftBlockTexture("furnace_top"));
-        builder.texture("particle", getBlockTexture("ball_mill_side"));
+        builder.texture("front", modLoc("block/ball_mill_side"));
+        builder.texture("side", modLoc("block/ball_mill_side"));
+        builder.texture("back", modLoc("block/ball_mill_back_socket"));
+        builder.texture("top", modLoc("block/ball_mill_top"));
+        builder.texture("bottom", mcLoc("block/furnace_top"));
+        builder.texture("particle", modLoc("block/ball_mill_side"));
         return builder;
     }
 

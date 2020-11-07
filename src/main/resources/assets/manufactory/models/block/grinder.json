@@ -1,4 +1,5 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "front": "manufactory:block/grinder_side",
     "side": "manufactory:block/grinder_side",

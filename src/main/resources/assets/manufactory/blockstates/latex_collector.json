@@ -37,8 +37,8 @@
     },
     {
       "when": {
-        "facing": "north",
-        "fill_status": "filling"
+        "fill_status": "filling",
+        "facing": "north"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling"
@@ -46,8 +46,8 @@
     },
     {
       "when": {
-        "facing": "east",
-        "fill_status": "filling"
+        "fill_status": "filling",
+        "facing": "east"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling",
@@ -56,8 +56,8 @@
     },
     {
       "when": {
-        "facing": "south",
-        "fill_status": "filling"
+        "fill_status": "filling",
+        "facing": "south"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling",
@@ -66,8 +66,8 @@
     },
     {
       "when": {
-        "facing": "west",
-        "fill_status": "filling"
+        "fill_status": "filling",
+        "facing": "west"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling",
@@ -76,8 +76,8 @@
     },
     {
       "when": {
-        "facing": "north",
-        "fill_status": "full"
+        "fill_status": "full",
+        "facing": "north"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_full"
@@ -85,8 +85,8 @@
     },
     {
       "when": {
-        "facing": "east",
-        "fill_status": "full"
+        "fill_status": "full",
+        "facing": "east"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_full",
@@ -95,8 +95,8 @@
     },
     {
       "when": {
-        "facing": "south",
-        "fill_status": "full"
+        "fill_status": "full",
+        "facing": "south"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_full",
@@ -105,8 +105,8 @@
     },
     {
       "when": {
-        "facing": "west",
-        "fill_status": "full"
+        "fill_status": "full",
+        "facing": "west"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_full",
