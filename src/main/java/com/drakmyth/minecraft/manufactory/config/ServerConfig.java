@@ -20,7 +20,7 @@ public class ServerConfig {
         AmberTapSpawnCount = builder.comment("Number of Amber player receives if chance succeeds")
         .defineInRange("amberTapSpawnCount", 1, 0, Integer.MAX_VALUE);
         LatexFillSeconds = builder.comment("Time in seconds for Latex Collector to fill")
-        .defineInRange("latexFillSeconds", 60, 1, Integer.MAX_VALUE);
+        .defineInRange("latexFillSeconds", 600, 1, Integer.MAX_VALUE);
         FullLatexSpawnCount = builder.comment("Number of Coagulated Latex player receives from a full Latex Collector")
         .defineInRange("fullLatexSpawnCount", 1, 0, Integer.MAX_VALUE);
         builder.pop();
