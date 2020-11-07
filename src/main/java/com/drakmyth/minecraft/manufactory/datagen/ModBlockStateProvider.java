@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.blocks.BallMillBlock;
 import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
@@ -54,6 +55,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/grinder_wheel_tier2", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier2"));
         itemModels().withExistingParent("item/grinder_wheel_tier3", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier3"));
         itemModels().withExistingParent("item/grinder_wheel_tier4", "item/handheld").texture("layer0", getItemTexture("grinder_wheel_tier4"));
+        itemModels().withExistingParent("item/milling_ball_tier0", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier0"));
+        itemModels().withExistingParent("item/milling_ball_tier1", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier1"));
+        itemModels().withExistingParent("item/milling_ball_tier2", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier2"));
+        itemModels().withExistingParent("item/milling_ball_tier3", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier3"));
+        itemModels().withExistingParent("item/milling_ball_tier4", "item/handheld").texture("layer0", getItemTexture("milling_ball_tier4"));
         itemModels().withExistingParent("item/power_socket", "item/handheld").texture("layer0", getItemTexture("power_socket"));
         itemModels().withExistingParent("item/battery", "item/handheld").texture("layer0", getItemTexture("battery"));
         itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", getItemTexture("wrench"));
@@ -67,6 +73,15 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/ground_nether_quartz_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_nether_quartz_ore_rough"));
         itemModels().withExistingParent("item/ground_redstone_ore_rough", "item/handheld").texture("layer0", getItemTexture("ground_redstone_ore_rough"));
         itemModels().withExistingParent("item/ground_ancient_debris_rough", "item/handheld").texture("layer0", getItemTexture("ground_ancient_debris_rough"));
+        itemModels().withExistingParent("item/ground_coal_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_coal_ore_fine"));
+        itemModels().withExistingParent("item/ground_diamond_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_diamond_ore_fine"));
+        itemModels().withExistingParent("item/ground_emerald_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_emerald_ore_fine"));
+        itemModels().withExistingParent("item/ground_gold_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_gold_ore_fine"));
+        itemModels().withExistingParent("item/ground_iron_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_iron_ore_fine"));
+        itemModels().withExistingParent("item/ground_lapis_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_lapis_ore_fine"));
+        itemModels().withExistingParent("item/ground_nether_quartz_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_nether_quartz_ore_fine"));
+        itemModels().withExistingParent("item/ground_redstone_ore_fine", "item/handheld").texture("layer0", getItemTexture("ground_redstone_ore_fine"));
+        itemModels().withExistingParent("item/ground_ancient_debris_fine", "item/handheld").texture("layer0", getItemTexture("ground_ancient_debris_fine"));
         itemModels().withExistingParent("item/rubber", "item/handheld").texture("layer0", getItemTexture("rubber"));
         itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", getItemTexture("tapping_knife"));
 
@@ -86,6 +101,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile grinderModel = generateGrinderModel();
         generateGrinderBlockState(grinderModel);
         itemModels().getBuilder("grinder").parent(grinderModel);
+
+        ModelFile ballMillModel = generateBallMillModel();
+        generateBallMillBlockState(ballMillModel);
+        itemModels().getBuilder("ball_mill").parent(ballMillModel);
     }
 
     private String getItemTexture(String texture) {
@@ -271,6 +290,32 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.forAllStates(state -> {
             int yRotation = (int)state.get(GrinderBlock.HORIZONTAL_FACING).getOpposite().getHorizontalAngle();
             return ConfiguredModel.builder().modelFile(grinderModel).rotationY(yRotation).build();
+        });
+    }
+
+    private ModelFile generateBallMillModel() {
+        BlockModelBuilder builder = models().getBuilder("ball_mill");
+        builder.element().from(0, 0, 0).to(16, 16, 16)
+            .face(Direction.NORTH).texture("#side").end()
+            .face(Direction.EAST).texture("#side").end()
+            .face(Direction.SOUTH).texture("#back").end()
+            .face(Direction.WEST).texture("#side").end()
+            .face(Direction.UP).texture("#top").end()
+            .face(Direction.DOWN).texture("#bottom").end().end();
+
+        builder.texture("front", getBlockTexture("ball_mill_side"));
+        builder.texture("side", getBlockTexture("ball_mill_side"));
+        builder.texture("back", getBlockTexture("ball_mill_back_socket"));
+        builder.texture("top", getBlockTexture("ball_mill_top"));
+        builder.texture("bottom", getMinecraftBlockTexture("furnace_top"));
+        return builder;
+    }
+
+    private void generateBallMillBlockState(ModelFile ballMillModel) {
+        VariantBlockStateBuilder builder = getVariantBuilder(ModBlocks.BALL_MILL.get());
+        builder.forAllStates(state -> {
+            int yRotation = (int)state.get(BallMillBlock.HORIZONTAL_FACING).getOpposite().getHorizontalAngle();
+            return ConfiguredModel.builder().modelFile(ballMillModel).rotationY(yRotation).build();
         });
     }
 }

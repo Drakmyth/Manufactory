@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/ground_redstone_ore_fine"
+  }
+}

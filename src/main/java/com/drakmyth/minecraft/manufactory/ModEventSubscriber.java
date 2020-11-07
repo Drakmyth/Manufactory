@@ -9,6 +9,8 @@ import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
+import com.drakmyth.minecraft.manufactory.gui.BallMillGui;
+import com.drakmyth.minecraft.manufactory.gui.BallMillUpgradeGui;
 import com.drakmyth.minecraft.manufactory.gui.GrinderGui;
 import com.drakmyth.minecraft.manufactory.gui.GrinderUpgradeGui;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
@@ -62,5 +64,7 @@ public final class ModEventSubscriber {
     public static void fmlClientSetup(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(ModContainerTypes.GRINDER.get(), GrinderGui::new);
         ScreenManager.registerFactory(ModContainerTypes.GRINDER_UPGRADE.get(), GrinderUpgradeGui::new);
+        ScreenManager.registerFactory(ModContainerTypes.BALL_MILL.get(), BallMillGui::new);
+        ScreenManager.registerFactory(ModContainerTypes.BALL_MILL_UPGRADE.get(), BallMillUpgradeGui::new);
     }
 }

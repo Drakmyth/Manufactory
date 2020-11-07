@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "manufactory:ground_redstone_ore_fine"
+  },
+  "result": "minecraft:redstone",
+  "experience": 0.2,
+  "cookingtime": 200
+}

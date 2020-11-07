@@ -103,7 +103,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     private int getTier() {
-        if (!hasBothWheels()) return 0;
+        if (!hasBothWheels()) return -1;
         IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
         IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
         return Math.max(wheel1.getTier().getHarvestLevel(), wheel2.getTier().getHarvestLevel());
@@ -182,7 +182,6 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             return;
         }
 
-        if (!hasBothWheels()) return;
         if (getTier() < currentRecipe.getTierRequired()) return;
 
         IPowerProvider powerProvider = getPowerProvider();

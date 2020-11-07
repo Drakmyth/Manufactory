@@ -28,6 +28,6 @@ public class GrinderUpgradeContainerProvider implements INamedContainerProvider 
 
     @Override
     public ITextComponent getDisplayName() {
-        return new StringTextComponent("Grinder Upgrade");
+        return new StringTextComponent("Grinder");
     }
 }

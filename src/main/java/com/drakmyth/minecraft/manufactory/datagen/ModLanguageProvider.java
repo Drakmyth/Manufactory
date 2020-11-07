@@ -21,6 +21,7 @@ public class ModLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         addBlock(ModBlocks.AMBER_BLOCK, "Amber Block");
         addBlock(ModBlocks.GRINDER, "Grinder");
+        addBlock(ModBlocks.BALL_MILL, "Ball Mill");
         addBlock(ModBlocks.LATEX_COLLECTOR, "Latex Collector");
         addBlock(ModBlocks.POWER_CABLE, "Power Cable");
         addBlock(ModBlocks.SOLAR_PANEL, "Solar Panel");
@@ -35,6 +36,11 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.GRINDER_WHEEL_TIER2, "Iron Grinder Wheel");
         addItem(ModItems.GRINDER_WHEEL_TIER3, "Diamond Grinder Wheel");
         addItem(ModItems.GRINDER_WHEEL_TIER4, "Netherite Grinder Wheel");
+        addItem(ModItems.MILLING_BALL_TIER0, "Wooden Milling Ball");
+        addItem(ModItems.MILLING_BALL_TIER1, "Stone Milling Ball");
+        addItem(ModItems.MILLING_BALL_TIER2, "Iron Milling Ball");
+        addItem(ModItems.MILLING_BALL_TIER3, "Diamond Milling Ball");
+        addItem(ModItems.MILLING_BALL_TIER4, "Netherite Milling Ball");
         addItem(ModItems.POWER_SOCKET, "Power Socket");
         addItem(ModItems.BATTERY, "Battery");
         addItem(ModItems.WRENCH, "Wrench");
@@ -48,6 +54,15 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH, "Ground Nether Quartz Ore (Rough)");
         addItem(ModItems.GROUND_REDSTONE_ORE_ROUGH, "Ground Redstone Ore (Rough)");
         addItem(ModItems.GROUND_ANCIENT_DEBRIS_ROUGH, "Ground Ancient Debris (Rough)");
+        addItem(ModItems.GROUND_COAL_ORE_FINE, "Ground Coal Ore (Fine)");
+        addItem(ModItems.GROUND_DIAMOND_ORE_FINE, "Ground Diamond Ore (Fine)");
+        addItem(ModItems.GROUND_EMERALD_ORE_FINE, "Ground Emerald Ore (Fine)");
+        addItem(ModItems.GROUND_GOLD_ORE_FINE, "Ground Gold Ore (Fine)");
+        addItem(ModItems.GROUND_IRON_ORE_FINE, "Ground Iron Ore (Fine)");
+        addItem(ModItems.GROUND_LAPIS_ORE_FINE, "Ground Lapis Lazuli Ore (Fine)");
+        addItem(ModItems.GROUND_NETHER_QUARTZ_ORE_FINE, "Ground Nether Quartz Ore (Fine)");
+        addItem(ModItems.GROUND_REDSTONE_ORE_FINE, "Ground Redstone Ore (Fine)");
+        addItem(ModItems.GROUND_ANCIENT_DEBRIS_FINE, "Ground Ancient Debris (Fine)");
         addItem(ModItems.RUBBER, "Rubber");
         addItem(ModItems.TAPPING_KNIFE, "Tapping Knife");
 

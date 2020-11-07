@@ -63,6 +63,14 @@ public class ManufactoryRecipeBuilder {
       return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
    }
 
+   public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, IItemProvider result) {
+      return ballMillRecipe(ingredient, result, 1);
+   }
+
+   public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, IItemProvider result, int count) {
+      return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.BALL_MILL.get());
+   }
+
    public ManufactoryRecipeBuilder withExtraChance(float extraChance, int extraAmount) {
       return withExtraChance(extraChance, new int[]{extraAmount});
    }
