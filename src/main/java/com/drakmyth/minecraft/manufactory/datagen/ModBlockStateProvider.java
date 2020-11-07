@@ -163,7 +163,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private ModelFile generatePowerCableCenterModel() {
-        BlockModelBuilder builder = models().getBuilder("power_cable");
+        BlockModelBuilder builder = models().getBuilder("power_cable").parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/block"), exFileHelper));
         // x_core
         builder.element().from(5, 2, 7).to(11, 4, 9).allFaces((dir, face) -> face.texture("#cable")).end();
         // y_core
