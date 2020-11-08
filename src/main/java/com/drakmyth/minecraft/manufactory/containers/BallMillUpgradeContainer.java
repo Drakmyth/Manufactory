@@ -45,7 +45,7 @@ public class BallMillUpgradeContainer extends Container {
 
         // Ball Mill Slots
         // Milling Ball Slot
-        this.addSlot(new SlotItemHandler(upgradeInventory, 0, 62, 14) {
+        this.addSlot(new SlotItemHandler(upgradeInventory, 0, 44, 36) {
             @Override
             public boolean isItemValid(ItemStack stack) {
                 return stack.getItem() instanceof IMillingBallUpgrade;
