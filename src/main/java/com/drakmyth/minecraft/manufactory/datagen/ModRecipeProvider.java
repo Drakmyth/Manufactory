@@ -80,7 +80,7 @@ public class ModRecipeProvider extends RecipeProvider {
             .build(consumer);
 
         // Coupling = 4 Iron Ingot
-        ShapedRecipeBuilder.shapedRecipe(ModBlocks.SOLAR_PANEL.get())
+        ShapedRecipeBuilder.shapedRecipe(ModItems.COUPLING.get())
             .patternLine(" i ")
             .patternLine("i i")
             .patternLine(" i ")
