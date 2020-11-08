@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " d ",
+    "dcd",
+    " d "
+  ],
+  "key": {
+    "c": {
+      "item": "manufactory:coupling"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "manufactory:grinder_wheel_tier3"
+  }
+}

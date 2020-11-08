@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "w",
+    "n",
+    "r"
+  ],
+  "key": {
+    "w": {
+      "item": "manufactory:redstone_wire"
+    },
+    "n": {
+      "item": "minecraft:quartz"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "manufactory:battery"
+  }
+}

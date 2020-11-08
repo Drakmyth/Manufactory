@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:solar_panel"
+      "manufactory:motor_tier0"
     ]
   },
   "criteria": {
-    "has_iron_ingot": {
+    "has_redstone": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "item": "minecraft:redstone"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:solar_panel"
+        "recipe": "manufactory:motor_tier0"
       }
     }
   },
   "requirements": [
     [
-      "has_iron_ingot",
+      "has_redstone",
       "has_the_recipe"
     ]
   ]

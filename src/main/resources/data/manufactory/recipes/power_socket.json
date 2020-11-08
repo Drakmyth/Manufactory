@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "rrr",
-    "www"
+    "wlw",
+    "lll",
+    "lwl"
   ],
   "key": {
-    "r": {
-      "item": "manufactory:rubber"
-    },
     "w": {
       "item": "manufactory:redstone_wire"
+    },
+    "l": {
+      "item": "manufactory:coagulated_latex"
     }
   },
   "result": {
-    "item": "manufactory:power_cable",
-    "count": 3
+    "item": "manufactory:power_socket"
   }
 }

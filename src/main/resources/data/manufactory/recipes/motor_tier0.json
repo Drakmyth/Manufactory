@@ -2,15 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " i ",
-    "i i",
+    "cri",
     " i "
   ],
   "key": {
     "i": {
       "item": "minecraft:iron_ingot"
+    },
+    "c": {
+      "item": "manufactory:coupling"
+    },
+    "r": {
+      "item": "minecraft:redstone"
     }
   },
   "result": {
-    "item": "manufactory:solar_panel"
+    "item": "manufactory:motor_tier0"
   }
 }

@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:solar_panel"
+      "manufactory:battery"
     ]
   },
   "criteria": {
-    "has_iron_ingot": {
+    "has_nether_quartz": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "item": "minecraft:quartz"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:solar_panel"
+        "recipe": "manufactory:battery"
       }
     }
   },
   "requirements": [
     [
-      "has_iron_ingot",
+      "has_nether_quartz",
       "has_the_recipe"
     ]
   ]

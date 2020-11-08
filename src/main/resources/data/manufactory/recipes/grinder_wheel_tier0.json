@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " w ",
+    "wcw",
+    " w "
+  ],
+  "key": {
+    "c": {
+      "item": "manufactory:coupling"
+    },
+    "w": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "manufactory:grinder_wheel_tier0"
+  }
+}

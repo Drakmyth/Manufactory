@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_redstone": {
+    "has_coupling": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:redstone"
+            "item": "manufactory:coupling"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_redstone",
+      "has_coupling",
       "has_the_recipe"
     ]
   ]
