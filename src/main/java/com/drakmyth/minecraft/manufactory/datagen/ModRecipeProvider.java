@@ -79,6 +79,15 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_string", InventoryChangeTrigger.Instance.forItems(Items.STRING))
             .build(consumer);
 
+        // Coupling = 4 Iron Ingot
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.SOLAR_PANEL.get())
+            .patternLine(" i ")
+            .patternLine("i i")
+            .patternLine(" i ")
+            .key('i', Items.IRON_INGOT)
+            .addCriterion("has_iron_ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT))
+            .build(consumer);
+
         // 3 Power Cable = 3 Rubber + Redstone Wire
         ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.POWER_CABLE.get(), 3)
             .addIngredient(ModItems.RUBBER.get(), 3)
@@ -99,15 +108,16 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_daylight_detector", InventoryChangeTrigger.Instance.forItems(Items.DAYLIGHT_DETECTOR))
             .build(consumer);
 
-        // Grinder = 6 Stone + Redstone Dust + Power Cable
+        // Grinder = 2 Coupling + 2 Redstone Wire + 2 Stone + Power Cable
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.GRINDER.get())
-            .patternLine("s s")
-            .patternLine("srs")
+            .patternLine("c c")
+            .patternLine("w w")
             .patternLine("sps")
-            .key('s', Items.STONE)
-            .key('r', Items.REDSTONE)
+            .key('c', ModItems.COUPLING.get())
+            .key('w', ModItems.REDSTONE_WIRE.get())
             .key('p', ModBlocks.POWER_CABLE.get())
-            .addCriterion("has_redstone", InventoryChangeTrigger.Instance.forItems(Items.REDSTONE))
+            .key('s', Items.STONE)
+            .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
             .build(consumer);
 
         List<OreProcessingRecipeData> grinderOres = Arrays.asList(
