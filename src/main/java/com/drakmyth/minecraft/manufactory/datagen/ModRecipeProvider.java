@@ -72,16 +72,21 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
             .build(consumer);
 
-        // Power Cable
-        ShapedRecipeBuilder.shapedRecipe(ModBlocks.POWER_CABLE.get())
-            .patternLine("   ")
-            .patternLine("rrr")
-            .patternLine("   ")
-            .key('r', ModItems.RUBBER.get())
+        // 3 String + Redstone Dust -> 3 Redstone Wire
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.REDSTONE_WIRE.get(), 3)
+            .addIngredient(Items.REDSTONE)
+            .addIngredient(Items.STRING, 3)
+            .addCriterion("has_string", InventoryChangeTrigger.Instance.forItems(Items.STRING))
+            .build(consumer);
+
+        // 3 Rubber + Redstone Wire -> 3 Power Cable
+        ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.POWER_CABLE.get(), 3)
+            .addIngredient(ModItems.RUBBER.get(), 3)
+            .addIngredient(ModItems.REDSTONE_WIRE.get())
             .addCriterion("has_rubber", InventoryChangeTrigger.Instance.forItems(ModItems.RUBBER.get()))
             .build(consumer);
 
-        // Solar Panel
+        // 3 Daylight Detector + 2 Nether Quartz + Redstone Dust + 2 Wooden Slab -> Solar Panel
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.SOLAR_PANEL.get())
             .patternLine("ddd")
             .patternLine("qrq")
@@ -94,7 +99,7 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_daylight_detector", InventoryChangeTrigger.Instance.forItems(Items.DAYLIGHT_DETECTOR))
             .build(consumer);
 
-        // Grinder
+        // 6 Stone + Redstone Dust + Power Cable -> Grinder
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.GRINDER.get())
             .patternLine("s s")
             .patternLine("srs")
