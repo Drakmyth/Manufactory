@@ -62,6 +62,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/power_socket", "item/generated").texture("layer0", modLoc("item/power_socket"));
         itemModels().withExistingParent("item/battery", "item/generated").texture("layer0", modLoc("item/battery"));
         itemModels().withExistingParent("item/redstone_wire", "item/generated").texture("layer0", modLoc("item/redstone_wire"));
+        itemModels().withExistingParent("item/coupling", "item/generated").texture("layer0", modLoc("item/coupling"));
         itemModels().withExistingParent("item/wrench", "item/handheld").texture("layer0", modLoc("item/wrench"));
         itemModels().withExistingParent("item/coagulated_latex", "item/generated").texture("layer0", modLoc("item/coagulated_latex"));
         itemModels().withExistingParent("item/ground_coal_ore_rough", "item/generated").texture("layer0", modLoc("item/ground_coal_ore_rough"));

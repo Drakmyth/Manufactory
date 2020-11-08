@@ -44,6 +44,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.POWER_SOCKET, "Power Socket");
         addItem(ModItems.BATTERY, "Battery");
         addItem(ModItems.REDSTONE_WIRE, "Redstone Wire");
+        addItem(ModItems.COUPLING, "Coupling");
         addItem(ModItems.WRENCH, "Wrench");
         addItem(ModItems.COAGULATED_LATEX, "Coagulated Latex");
         addItem(ModItems.GROUND_COAL_ORE_ROUGH, "Ground Coal Ore (Rough)");

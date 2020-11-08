@@ -41,6 +41,7 @@ public final class ModItems {
     public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new PowerSocketItem(singleItemProperties()));
     public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new BatteryItem(singleItemProperties()));
     public static final RegistryObject<Item> REDSTONE_WIRE = ITEMS.register("redstone_wire", () -> new Item(singleItemProperties()));
+    public static final RegistryObject<Item> COUPLING = ITEMS.register("coupling", () -> new Item(singleItemProperties()));
     public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", () -> new Item(singleItemProperties()));
     public static final RegistryObject<Item> COAGULATED_LATEX = ITEMS.register("coagulated_latex", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_COAL_ORE_ROUGH = ITEMS.register("ground_coal_ore_rough", () -> new Item(defaultItemProperties()));
