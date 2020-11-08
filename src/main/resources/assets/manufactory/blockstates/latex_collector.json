@@ -73,45 +73,6 @@
         "model": "manufactory:block/latex_collector_filling",
         "y": 270
       }
-    },
-    {
-      "when": {
-        "fill_status": "full",
-        "facing": "north"
-      },
-      "apply": {
-        "model": "manufactory:block/latex_collector_full"
-      }
-    },
-    {
-      "when": {
-        "fill_status": "full",
-        "facing": "east"
-      },
-      "apply": {
-        "model": "manufactory:block/latex_collector_full",
-        "y": 90
-      }
-    },
-    {
-      "when": {
-        "fill_status": "full",
-        "facing": "south"
-      },
-      "apply": {
-        "model": "manufactory:block/latex_collector_full",
-        "y": 180
-      }
-    },
-    {
-      "when": {
-        "fill_status": "full",
-        "facing": "west"
-      },
-      "apply": {
-        "model": "manufactory:block/latex_collector_full",
-        "y": 270
-      }
     }
   ]
 }

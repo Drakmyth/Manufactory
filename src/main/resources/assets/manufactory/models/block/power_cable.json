@@ -1,4 +1,5 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "cable": "minecraft:block/coal_block",
     "particle": "minecraft:block/coal_block"

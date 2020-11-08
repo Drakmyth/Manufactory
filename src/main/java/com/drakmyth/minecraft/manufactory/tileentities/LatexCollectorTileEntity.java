@@ -8,6 +8,9 @@ package com.drakmyth.minecraft.manufactory.tileentities;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
+import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
+import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,8 +20,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-public class LatexCollectorTileEntity extends TileEntity implements ITickableTileEntity {
+public class LatexCollectorTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private int ticksRemaining = 0;
@@ -49,8 +54,16 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         World world = getWorld();
         if (world.isRemote()) return true;
         world.setBlockState(getPos(), state.with(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING));
+        updateClient();
         markDirty();
         return true;
+    }
+
+    private void updateClient() {
+        // TODO: Latex Collector should use a different packet, rather than hijacking MachineProgress
+        MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, 0, 0, 0, getPos());
+        Chunk chunk = world.getChunkAt(getPos());
+        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
     }
 
     private boolean isWaterlogged(BlockState state) {
@@ -59,6 +72,10 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
 
     private boolean isEmpty(BlockState state) {
         return state.get(LatexCollectorBlock.FILL_STATUS) == LatexCollectorBlock.FillStatus.EMPTY;
+    }
+
+    public int getTicksRemaining() {
+        return ticksRemaining;
     }
 
     @Override
@@ -88,8 +105,18 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         World world = this.getWorld();
         if (world.isRemote) return;
         ticksRemaining--;
+        updateClient();
         if (ticksRemaining > 0) return;
         world.setBlockState(getPos(), state.with(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL));
         reset();
+    }
+
+    @Override
+    public void onProgressUpdate(float progress, float total) {
+        ticksRemaining = (int)progress;
+    }
+
+    @Override
+    public void onPowerRateUpdate(float amount, float expected) {
     }
 }
