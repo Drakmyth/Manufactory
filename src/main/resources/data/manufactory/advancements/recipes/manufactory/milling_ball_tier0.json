@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:milling_ball_tier0"
+    ]
+  },
+  "criteria": {
+    "has_wood_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:oak_planks"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:milling_ball_tier0"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wood_planks",
+      "has_the_recipe"
+    ]
+  ]
+}

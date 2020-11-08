@@ -152,11 +152,11 @@ public class ModRecipeProvider extends RecipeProvider {
 
         // Grinder Wheel Tier 0 = Coupling + 4 Planks
         ShapedRecipeBuilder.shapedRecipe(ModItems.GRINDER_WHEEL_TIER0.get())
-            .patternLine(" w ")
-            .patternLine("wcw")
-            .patternLine(" w ")
+            .patternLine(" p ")
+            .patternLine("pcp")
+            .patternLine(" p ")
             .key('c', ModItems.COUPLING.get())
-            .key('w', ItemTags.PLANKS)
+            .key('p', ItemTags.PLANKS)
             .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
             .build(consumer);
 
@@ -246,8 +246,14 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
             .build(consumer);
 
-        // Milling Ball Tier 0
-
+        // 4 Milling Ball Tier 0 = 4 Planks
+        ShapedRecipeBuilder.shapedRecipe(ModItems.MILLING_BALL_TIER0.get(), 4)
+            .patternLine(" p ")
+            .patternLine("p p")
+            .patternLine(" p ")
+            .key('p', ItemTags.PLANKS)
+            .addCriterion("has_wood_planks", InventoryChangeTrigger.Instance.forItems(Items.OAK_PLANKS))
+            .build(consumer);
 
         // Milling Ball Tier 1 = Milling Ball Tier 0 + Cobblestone
         ShapelessRecipeBuilder.shapelessRecipe(ModItems.MILLING_BALL_TIER1.get())
