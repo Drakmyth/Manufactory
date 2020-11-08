@@ -24,8 +24,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class LatexCollectorRenderer extends TileEntityRenderer<LatexCollectorTileEntity> {
+
+    public static ResourceLocation LATEX_TEXTURE = new ResourceLocation("minecraft", "block/quartz_block_top");
 
     public LatexCollectorRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -41,7 +44,7 @@ public class LatexCollectorRenderer extends TileEntityRenderer<LatexCollectorTil
         float progress = (totalTime - remainingTime) / (float)totalTime;
 
         @SuppressWarnings("deprecation")
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(new ResourceLocation("minecraft", "block/quartz_block_top"));
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(LATEX_TEXTURE);
         IVertexBuilder vertexBuffer = buffer.getBuffer(RenderType.getSolid());
 
         matrixStack.push();
@@ -62,20 +65,21 @@ public class LatexCollectorRenderer extends TileEntityRenderer<LatexCollectorTil
         float yFull = -3f/16f;
         float y = MathHelper.lerp(progress, yEmpty, yFull);
 
-        addVertex(vertexBuffer, matrixStack, x1, y, z1, sprite.getMinU(), sprite.getMaxV(), combinedLight, combinedOverlay);
-        addVertex(vertexBuffer, matrixStack, x2, y, z2, sprite.getMaxU(), sprite.getMaxV(), combinedLight, combinedOverlay);
-        addVertex(vertexBuffer, matrixStack, x3, y, z3, sprite.getMaxU(), sprite.getMinV(), combinedLight, combinedOverlay);
-        addVertex(vertexBuffer, matrixStack, x4, y, z4, sprite.getMinU(), sprite.getMinV(), combinedLight, combinedOverlay);
+        addVertex(vertexBuffer, matrixStack, x1, y, z1, sprite.getMinU(), sprite.getMaxV(), combinedLight);
+        addVertex(vertexBuffer, matrixStack, x2, y, z2, sprite.getMinU(), sprite.getMinV(), combinedLight);
+        addVertex(vertexBuffer, matrixStack, x3, y, z3, sprite.getMaxU(), sprite.getMinV(), combinedLight);
+        addVertex(vertexBuffer, matrixStack, x4, y, z4, sprite.getMaxU(), sprite.getMaxV(), combinedLight);
 
         matrixStack.pop();
     }
 
-    private void addVertex(IVertexBuilder buffer, MatrixStack matrix, float x, float y, float z, float u, float v, int combinedLight, int combinedOverlay) {
+    private void addVertex(IVertexBuilder buffer, MatrixStack matrix, float x, float y, float z, float u, float v, int combinedLight) {
+        Vector3f normal = Direction.UP.toVector3f();
         buffer.pos(matrix.getLast().getMatrix(), x, y, z)
             .color(1, 1, 1, 1)
             .tex(u, v)
-            .lightmap(combinedLight)
-            .normal(0, 1, 0)
+            .lightmap(240)
+            .normal(normal.getX(), normal.getY(), normal.getZ())
             .endVertex();
     }
 }
