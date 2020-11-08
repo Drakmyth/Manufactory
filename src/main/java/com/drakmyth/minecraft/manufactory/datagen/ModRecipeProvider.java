@@ -36,7 +36,7 @@ public class ModRecipeProvider extends RecipeProvider {
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
 
-        // 9 Amber -> Amber Block
+        // Amber Block = 9 Amber
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.AMBER_BLOCK.get())
             .patternLine("aaa")
             .patternLine("aaa")
@@ -45,20 +45,20 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_amber", InventoryChangeTrigger.Instance.forItems(ModItems.AMBER.get()))
             .build(consumer);
 
-        // Amber Block -> 9 Amber
+        // 9 Amber = Amber Block
         ShapelessRecipeBuilder.shapelessRecipe(ModItems.AMBER.get(), 9)
             .addIngredient(ModBlocks.AMBER_BLOCK.get())
             .addCriterion("has_amber_block", InventoryChangeTrigger.Instance.forItems(ModBlocks.AMBER_BLOCK.get()))
             .build(consumer);
 
-        // String + Bowl -> Latex Collector
+        // Latex Collector = String + Bowl
         ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.LATEX_COLLECTOR.get())
             .addIngredient(Items.STRING)
             .addIngredient(Items.BOWL)
             .addCriterion("has_bowl", InventoryChangeTrigger.Instance.forItems(Items.BOWL))
             .build(consumer);
 
-        // 2 Iron Ingot + Stick -> Tapping Knife
+        // Tapping Knife = 2 Iron Ingot + Stick
         ShapedRecipeBuilder.shapedRecipe(ModItems.TAPPING_KNIFE.get())
             .patternLine("ii ")
             .patternLine("  s")
@@ -67,26 +67,26 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_iron_ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT))
             .build(consumer);
 
-        // Coagulated Latex -> Rubber
+        // Rubber = Coagulated Latex
         CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(ModItems.COAGULATED_LATEX.get()), ModItems.RUBBER.get(), 0.1f, 200)
             .addCriterion("has_coagulated_latex", InventoryChangeTrigger.Instance.forItems(ModItems.COAGULATED_LATEX.get()))
             .build(consumer);
 
-        // 3 String + Redstone Dust -> 3 Redstone Wire
+        // 3 Redstone Wire = 3 String + Redstone Dust
         ShapelessRecipeBuilder.shapelessRecipe(ModItems.REDSTONE_WIRE.get(), 3)
             .addIngredient(Items.REDSTONE)
             .addIngredient(Items.STRING, 3)
             .addCriterion("has_string", InventoryChangeTrigger.Instance.forItems(Items.STRING))
             .build(consumer);
 
-        // 3 Rubber + Redstone Wire -> 3 Power Cable
+        // 3 Power Cable = 3 Rubber + Redstone Wire
         ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.POWER_CABLE.get(), 3)
             .addIngredient(ModItems.RUBBER.get(), 3)
             .addIngredient(ModItems.REDSTONE_WIRE.get())
             .addCriterion("has_rubber", InventoryChangeTrigger.Instance.forItems(ModItems.RUBBER.get()))
             .build(consumer);
 
-        // 3 Daylight Detector + 2 Nether Quartz + Redstone Dust + 2 Wooden Slab -> Solar Panel
+        // Solar Panel = 3 Daylight Detector + 2 Nether Quartz + Redstone Dust + 2 Wooden Slab
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.SOLAR_PANEL.get())
             .patternLine("ddd")
             .patternLine("qrq")
@@ -99,7 +99,7 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_daylight_detector", InventoryChangeTrigger.Instance.forItems(Items.DAYLIGHT_DETECTOR))
             .build(consumer);
 
-        // 6 Stone + Redstone Dust + Power Cable -> Grinder
+        // Grinder = 6 Stone + Redstone Dust + Power Cable
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.GRINDER.get())
             .patternLine("s s")
             .patternLine("srs")
