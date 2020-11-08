@@ -54,6 +54,7 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         World world = getWorld();
         if (world.isRemote()) return true;
         world.setBlockState(getPos(), state.with(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING));
+        updateClient();
         markDirty();
         return true;
     }

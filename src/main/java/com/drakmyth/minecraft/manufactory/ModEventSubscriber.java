@@ -74,11 +74,4 @@ public final class ModEventSubscriber {
 
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
     }
-
-    @SubscribeEvent
-    public static void preTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) return;
-
-        event.addSprite(LatexCollectorRenderer.LATEX_TEXTURE);
-    }
 }

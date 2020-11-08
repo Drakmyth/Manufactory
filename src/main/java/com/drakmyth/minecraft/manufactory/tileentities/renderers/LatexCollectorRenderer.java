@@ -49,10 +49,10 @@ public class LatexCollectorRenderer extends TileEntityRenderer<LatexCollectorTil
 
         matrixStack.push();
         matrixStack.translate(0.5, 0.5, 0.5);
-        float x1 = -2f/16f; float z1 = -7f/16f;
-        float x2 = -2f/16f; float z2 = -3f/16f;
-        float x3 =  2f/16f; float z3 = -3f/16f;
-        float x4 =  2f/16f; float z4 = -7f/16f;
+        float x1 = -2f/16f; float z1 = -7f/16f; float u1 = sprite.getMinU(); float v1 = sprite.getMaxV();
+        float x2 = -2f/16f; float z2 = -3f/16f; float u2 = sprite.getMinU(); float v2 = sprite.getMinV();
+        float x3 =  2f/16f; float z3 = -3f/16f; float u3 = sprite.getMaxU(); float v3 = sprite.getMinV();
+        float x4 =  2f/16f; float z4 = -7f/16f; float u4 = sprite.getMaxU(); float v4 = sprite.getMaxV();
 
         Direction facing = state.get(LatexCollectorBlock.HORIZONTAL_FACING);
         if (facing == Direction.NORTH || facing == Direction.SOUTH) {
@@ -65,10 +65,10 @@ public class LatexCollectorRenderer extends TileEntityRenderer<LatexCollectorTil
         float yFull = -3f/16f;
         float y = MathHelper.lerp(progress, yEmpty, yFull);
 
-        addVertex(vertexBuffer, matrixStack, x1, y, z1, sprite.getMinU(), sprite.getMaxV(), combinedLight);
-        addVertex(vertexBuffer, matrixStack, x2, y, z2, sprite.getMinU(), sprite.getMinV(), combinedLight);
-        addVertex(vertexBuffer, matrixStack, x3, y, z3, sprite.getMaxU(), sprite.getMinV(), combinedLight);
-        addVertex(vertexBuffer, matrixStack, x4, y, z4, sprite.getMaxU(), sprite.getMaxV(), combinedLight);
+        addVertex(vertexBuffer, matrixStack, x1, y, z1, u1, v1, combinedLight);
+        addVertex(vertexBuffer, matrixStack, x2, y, z2, u2, v2, combinedLight);
+        addVertex(vertexBuffer, matrixStack, x3, y, z3, u3, v3, combinedLight);
+        addVertex(vertexBuffer, matrixStack, x4, y, z4, u4, v4, combinedLight);
 
         matrixStack.pop();
     }
@@ -76,9 +76,9 @@ public class LatexCollectorRenderer extends TileEntityRenderer<LatexCollectorTil
     private void addVertex(IVertexBuilder buffer, MatrixStack matrix, float x, float y, float z, float u, float v, int combinedLight) {
         Vector3f normal = Direction.UP.toVector3f();
         buffer.pos(matrix.getLast().getMatrix(), x, y, z)
-            .color(1, 1, 1, 1)
+            .color(1f, 1f, 1f, 1f)
             .tex(u, v)
-            .lightmap(240)
+            .lightmap(combinedLight)
             .normal(normal.getX(), normal.getY(), normal.getZ())
             .endVertex();
     }
