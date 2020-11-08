@@ -88,6 +88,74 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_iron_ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT))
             .build(consumer);
 
+        // Wrench = 4 Iron Ingot
+        ShapedRecipeBuilder.shapedRecipe(ModItems.WRENCH.get())
+            .patternLine("i i")
+            .patternLine(" i ")
+            .patternLine(" i ")
+            .key('i', Items.IRON_INGOT)
+            .addCriterion("has_iron_ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT))
+            .build(consumer);
+
+        // Motor Tier 0 = Coupling + Redstone Dust + 3 Iron Ingot
+        ShapedRecipeBuilder.shapedRecipe(ModItems.MOTOR_TIER0.get())
+            .patternLine(" i ")
+            .patternLine("cri")
+            .patternLine(" i ")
+            .key('i', Items.IRON_INGOT)
+            .key('c', ModItems.COUPLING.get())
+            .key('r', Items.REDSTONE)
+            .addCriterion("has_redstone", InventoryChangeTrigger.Instance.forItems(Items.REDSTONE))
+            .build(consumer);
+
+        // Motor Tier 1 = Motor Tier 0 + Gold Ingot
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.MOTOR_TIER1.get())
+            .addIngredient(ModItems.MOTOR_TIER0.get())
+            .addIngredient(Items.GOLD_INGOT)
+            .addCriterion("has_motor_tier_0", InventoryChangeTrigger.Instance.forItems(ModItems.MOTOR_TIER0.get()))
+            .build(consumer);
+
+        // Motor Tier 2 = Motor Tier 1 + Diamond
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.MOTOR_TIER2.get())
+            .addIngredient(ModItems.MOTOR_TIER1.get())
+            .addIngredient(Items.DIAMOND)
+            .addCriterion("has_motor_tier_1", InventoryChangeTrigger.Instance.forItems(ModItems.MOTOR_TIER1.get()))
+            .build(consumer);
+
+        // Motor Tier 3 = Motor Tier 2 + Netherite Ingot
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.MOTOR_TIER3.get())
+            .addIngredient(ModItems.MOTOR_TIER2.get())
+            .addIngredient(Items.NETHERITE_INGOT)
+            .addCriterion("has_motor_tier_2", InventoryChangeTrigger.Instance.forItems(ModItems.MOTOR_TIER2.get()))
+            .build(consumer);
+
+        // Battery = Redstone Wire + Nether Quartz + Redstone Dust
+        ShapedRecipeBuilder.shapedRecipe(ModItems.BATTERY.get())
+            .patternLine("w")
+            .patternLine("n")
+            .patternLine("r")
+            .key('w', ModItems.REDSTONE_WIRE.get())
+            .key('n', Items.QUARTZ)
+            .key('r', Items.REDSTONE)
+            .addCriterion("has_nether_quartz", InventoryChangeTrigger.Instance.forItems(Items.QUARTZ))
+            .build(consumer);
+
+        // Power Socket = 3 Redstone Wire + 6 Coagulated Latex
+        ShapedRecipeBuilder.shapedRecipe(ModItems.POWER_SOCKET.get())
+            .patternLine("wlw")
+            .patternLine("lll")
+            .patternLine("lwl")
+            .key('w', ModItems.REDSTONE_WIRE.get())
+            .key('l', ModItems.COAGULATED_LATEX.get())
+            .addCriterion("has_redstone_wire", InventoryChangeTrigger.Instance.forItems(ModItems.REDSTONE_WIRE.get()))
+            .build(consumer);
+
+        // grinder wheel 0
+        // grinder wheel 1
+        // grinder wheel 2
+        // grinder wheel 3
+        // grinder wheel 4
+
         // 3 Power Cable = 3 Rubber + 3 Redstone Wire
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.POWER_CABLE.get(), 3)
             .patternLine("rrr")
