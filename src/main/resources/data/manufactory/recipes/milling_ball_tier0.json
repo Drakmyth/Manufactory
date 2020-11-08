@@ -2,18 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " p ",
-    "pcp",
+    "p p",
     " p "
   ],
   "key": {
-    "c": {
-      "item": "manufactory:coupling"
-    },
     "p": {
       "tag": "minecraft:planks"
     }
   },
   "result": {
-    "item": "manufactory:grinder_wheel_tier0"
+    "item": "manufactory:milling_ball_tier0",
+    "count": 4
   }
 }
