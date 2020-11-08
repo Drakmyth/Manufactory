@@ -1,16 +1,21 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "   ",
-    "rrr",
-    "   "
-  ],
-  "key": {
-    "r": {
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
       "item": "manufactory:rubber"
+    },
+    {
+      "item": "manufactory:rubber"
+    },
+    {
+      "item": "manufactory:rubber"
+    },
+    {
+      "item": "manufactory:redstone_wire"
     }
-  },
+  ],
   "result": {
-    "item": "manufactory:power_cable"
+    "item": "manufactory:power_cable",
+    "count": 3
   }
 }

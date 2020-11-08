@@ -1,19 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "s s",
-    "srs",
+    "c c",
+    "w w",
     "sps"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stone"
+    "c": {
+      "item": "manufactory:coupling"
     },
-    "r": {
-      "item": "minecraft:redstone"
+    "w": {
+      "item": "manufactory:redstone_wire"
     },
     "p": {
       "item": "manufactory:power_cable"
+    },
+    "s": {
+      "item": "minecraft:stone"
     }
   },
   "result": {
