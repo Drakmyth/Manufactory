@@ -88,10 +88,12 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_iron_ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT))
             .build(consumer);
 
-        // 3 Power Cable = 3 Rubber + Redstone Wire
-        ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.POWER_CABLE.get(), 3)
-            .addIngredient(ModItems.RUBBER.get(), 3)
-            .addIngredient(ModItems.REDSTONE_WIRE.get())
+        // 3 Power Cable = 3 Rubber + 3 Redstone Wire
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.POWER_CABLE.get(), 3)
+            .patternLine("rrr")
+            .patternLine("www")
+            .key('r', ModItems.RUBBER.get())
+            .key('w', ModItems.REDSTONE_WIRE.get())
             .addCriterion("has_rubber", InventoryChangeTrigger.Instance.forItems(ModItems.RUBBER.get()))
             .build(consumer);
 
