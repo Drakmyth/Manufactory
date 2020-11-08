@@ -41,8 +41,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         ModelFile latexCollectorEmptyModel = generateLatexCollectorEmptyModel();
         ModelFile latexCollectorFillingModel = generatePartialLatexCollectorFillingModel();
-        ModelFile latexCollectorFullModel = generatePartialLatexCollectorFullModel();
-        generateLatexCollectorBlockState(latexCollectorEmptyModel, latexCollectorFillingModel, latexCollectorFullModel);
+        generateLatexCollectorBlockState(latexCollectorEmptyModel, latexCollectorFillingModel);
 
         itemModels().withExistingParent("item/latex_collector", "item/handheld").texture("layer0", modLoc("item/latex_collector"));
         itemModels().withExistingParent("item/amber", "item/generated").texture("layer0", modLoc("item/amber"));
@@ -130,23 +129,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private ModelFile generatePartialLatexCollectorFillingModel() {
         BlockModelBuilder builder = models().getBuilder("latex_collector_filling");
-        // latex_surface
-        builder.element().from(6, 3, 1).to(10, 4, 5).face(Direction.UP).texture("#latex").end().end();
         // latex_stream
-        builder.element().from(7, 5, 0).to(9, 12, 2).allFaces((dir, face) -> face.texture("#latex")).end();
+        builder.element().from(7, 3, 0).to(9, 12, 2)
+            .face(Direction.EAST).texture("#latex").end()
+            .face(Direction.SOUTH).texture("#latex").end()
+            .face(Direction.WEST).texture("#latex").end()
+            .face(Direction.UP).texture("#latex").end();
         builder.texture("latex", mcLoc("block/quartz_block_top"));
         return builder;
     }
 
-    private ModelFile generatePartialLatexCollectorFullModel() {
-        BlockModelBuilder builder = models().getBuilder("latex_collector_full");
-        // latex_surface
-        builder.element().from(6, 4, 1).to(10, 5, 5).face(Direction.UP).texture("#latex").end().end();
-        builder.texture("latex", mcLoc("block/quartz_block_top"));
-        return builder;
-    }
-
-    private void generateLatexCollectorBlockState(ModelFile emptyModel, ModelFile fillingModel, ModelFile fullModel) {
+    private void generateLatexCollectorBlockState(ModelFile emptyModel, ModelFile fillingModel) {
         MultiPartBlockStateBuilder builder = getMultipartBuilder(ModBlocks.LATEX_COLLECTOR.get());
         builder.part().modelFile(emptyModel).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.NORTH);
         builder.part().modelFile(emptyModel).rotationY(90).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.EAST);
@@ -156,10 +149,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         builder.part().modelFile(fillingModel).rotationY(90).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.EAST).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING);
         builder.part().modelFile(fillingModel).rotationY(180).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.SOUTH).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING);
         builder.part().modelFile(fillingModel).rotationY(270).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.WEST).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING);
-        builder.part().modelFile(fullModel).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.NORTH).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL);
-        builder.part().modelFile(fullModel).rotationY(90).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.EAST).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL);
-        builder.part().modelFile(fullModel).rotationY(180).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.SOUTH).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL);
-        builder.part().modelFile(fullModel).rotationY(270).addModel().condition(LatexCollectorBlock.HORIZONTAL_FACING, Direction.WEST).condition(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL);
     }
 
     private ModelFile generatePowerCableCenterModel() {

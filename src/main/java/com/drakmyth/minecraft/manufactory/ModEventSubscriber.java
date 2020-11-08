@@ -15,6 +15,8 @@ import com.drakmyth.minecraft.manufactory.gui.GrinderGui;
 import com.drakmyth.minecraft.manufactory.gui.GrinderUpgradeGui;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.tileentities.renderers.LatexCollectorRenderer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +28,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -66,5 +69,7 @@ public final class ModEventSubscriber {
         ScreenManager.registerFactory(ModContainerTypes.GRINDER_UPGRADE.get(), GrinderUpgradeGui::new);
         ScreenManager.registerFactory(ModContainerTypes.BALL_MILL.get(), BallMillGui::new);
         ScreenManager.registerFactory(ModContainerTypes.BALL_MILL_UPGRADE.get(), BallMillUpgradeGui::new);
+
+        ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
     }
 }
