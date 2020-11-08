@@ -234,6 +234,49 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
             .build(consumer);
 
+        // Ball Mill = 1 Coupling + 3 Redstone Wire + 4 Stone + Power Cable
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.BALL_MILL.get())
+            .patternLine("sws")
+            .patternLine("wcw")
+            .patternLine("sps")
+            .key('c', ModItems.COUPLING.get())
+            .key('w', ModItems.REDSTONE_WIRE.get())
+            .key('p', ModBlocks.POWER_CABLE.get())
+            .key('s', Items.STONE)
+            .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
+            .build(consumer);
+
+        // Milling Ball Tier 0
+
+
+        // Milling Ball Tier 1 = Milling Ball Tier 0 + Cobblestone
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.MILLING_BALL_TIER1.get())
+            .addIngredient(ModItems.MILLING_BALL_TIER0.get())
+            .addIngredient(Items.COBBLESTONE)
+            .addCriterion("has_milling_ball_tier0", InventoryChangeTrigger.Instance.forItems(ModItems.MILLING_BALL_TIER0.get()))
+            .build(consumer);
+
+        // Milling Ball Tier 2 = Milling Ball Tier 1 + Iron Ingot
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.MILLING_BALL_TIER2.get())
+            .addIngredient(ModItems.MILLING_BALL_TIER1.get())
+            .addIngredient(Items.IRON_INGOT)
+            .addCriterion("has_milling_ball_tier1", InventoryChangeTrigger.Instance.forItems(ModItems.MILLING_BALL_TIER1.get()))
+            .build(consumer);
+
+        // Milling Ball Tier 3 = Milling Ball Tier 2 + Diamond
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.MILLING_BALL_TIER3.get())
+            .addIngredient(ModItems.MILLING_BALL_TIER2.get())
+            .addIngredient(Items.DIAMOND)
+            .addCriterion("has_milling_ball_tier2", InventoryChangeTrigger.Instance.forItems(ModItems.MILLING_BALL_TIER2.get()))
+            .build(consumer);
+
+        // Milling Ball Tier 4 = Milling Ball Tier 3 + Netherite Ingot
+        ShapelessRecipeBuilder.shapelessRecipe(ModItems.MILLING_BALL_TIER4.get())
+            .addIngredient(ModItems.MILLING_BALL_TIER3.get())
+            .addIngredient(Items.NETHERITE_INGOT)
+            .addCriterion("has_milling_ball_tier3", InventoryChangeTrigger.Instance.forItems(ModItems.MILLING_BALL_TIER3.get()))
+            .build(consumer);
+
         List<OreProcessingRecipeData> grinderOres = Arrays.asList(
             new OreProcessingRecipeData(Items.COAL_ORE, ItemTier.WOOD, ModItems.GROUND_COAL_ORE_ROUGH.get(), Items.COAL),
             new OreProcessingRecipeData(Items.DIAMOND_ORE, ItemTier.IRON, ModItems.GROUND_DIAMOND_ORE_ROUGH.get(), Items.DIAMOND),
