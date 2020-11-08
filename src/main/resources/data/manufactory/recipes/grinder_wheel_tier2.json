@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " i ",
+    "ici",
+    " i "
+  ],
+  "key": {
+    "c": {
+      "item": "manufactory:coupling"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "manufactory:grinder_wheel_tier2"
+  }
+}

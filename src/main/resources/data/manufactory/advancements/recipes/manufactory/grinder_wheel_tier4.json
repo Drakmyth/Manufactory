@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:grinder_wheel_tier4"
+    ]
+  },
+  "criteria": {
+    "has_coupling": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "manufactory:coupling"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:grinder_wheel_tier4"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_coupling",
+      "has_the_recipe"
+    ]
+  ]
+}

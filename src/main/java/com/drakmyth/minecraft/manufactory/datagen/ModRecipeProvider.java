@@ -21,8 +21,8 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.item.ItemTier;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemTier;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
@@ -150,11 +150,55 @@ public class ModRecipeProvider extends RecipeProvider {
             .addCriterion("has_redstone_wire", InventoryChangeTrigger.Instance.forItems(ModItems.REDSTONE_WIRE.get()))
             .build(consumer);
 
-        // grinder wheel 0
-        // grinder wheel 1
-        // grinder wheel 2
-        // grinder wheel 3
-        // grinder wheel 4
+        // Grinder Wheel Tier 0 = Coupling + 4 Planks
+        ShapedRecipeBuilder.shapedRecipe(ModItems.GRINDER_WHEEL_TIER0.get())
+            .patternLine(" w ")
+            .patternLine("wcw")
+            .patternLine(" w ")
+            .key('c', ModItems.COUPLING.get())
+            .key('w', ItemTags.PLANKS)
+            .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
+            .build(consumer);
+
+        // Grinder Wheel Tier 1 = Coupling + 4 Cobblestone
+        ShapedRecipeBuilder.shapedRecipe(ModItems.GRINDER_WHEEL_TIER1.get())
+            .patternLine(" s ")
+            .patternLine("scs")
+            .patternLine(" s ")
+            .key('c', ModItems.COUPLING.get())
+            .key('s', ItemTags.STONE_CRAFTING_MATERIALS)
+            .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
+            .build(consumer);
+
+        // Grinder Wheel Tier 2 = Coupling + 4 Iron Ingot
+        ShapedRecipeBuilder.shapedRecipe(ModItems.GRINDER_WHEEL_TIER2.get())
+            .patternLine(" i ")
+            .patternLine("ici")
+            .patternLine(" i ")
+            .key('c', ModItems.COUPLING.get())
+            .key('i', Items.IRON_INGOT)
+            .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
+            .build(consumer);
+
+        // Grinder Wheel Tier 3 = Coupling + 4 Diamond
+        ShapedRecipeBuilder.shapedRecipe(ModItems.GRINDER_WHEEL_TIER3.get())
+            .patternLine(" d ")
+            .patternLine("dcd")
+            .patternLine(" d ")
+            .key('c', ModItems.COUPLING.get())
+            .key('d', Items.DIAMOND)
+            .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
+            .build(consumer);
+
+        // Grinder Wheel Tier 4 = Coupling + 4 Netherite Ingot
+        ShapedRecipeBuilder.shapedRecipe(ModItems.GRINDER_WHEEL_TIER4.get())
+            .patternLine(" n ")
+            .patternLine("ncn")
+            .patternLine(" n ")
+            .key('c', ModItems.COUPLING.get())
+            .key('n', Items.NETHERITE_INGOT)
+            .addCriterion("has_coupling", InventoryChangeTrigger.Instance.forItems(ModItems.COUPLING.get()))
+            .build(consumer);
 
         // 3 Power Cable = 3 Rubber + 3 Redstone Wire
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.POWER_CABLE.get(), 3)
