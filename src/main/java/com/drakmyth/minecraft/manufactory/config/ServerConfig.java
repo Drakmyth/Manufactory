@@ -5,15 +5,22 @@
 
 package com.drakmyth.minecraft.manufactory.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ServerConfig {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public final ForgeConfigSpec.DoubleValue AmberChance;
     public final ForgeConfigSpec.IntValue AmberTapSpawnCount;
     public final ForgeConfigSpec.IntValue LatexFillSeconds;
     public final ForgeConfigSpec.IntValue FullLatexSpawnCount;
 
     ServerConfig(ForgeConfigSpec.Builder builder) {
+        LOGGER.debug("Initializing SERVER config...");
+
         builder.push("general");
         AmberChance = builder.comment("Chance to get Amber after a successful latex tap")
         .defineInRange("amberChance", 0.1, 0.0, 1.0);
