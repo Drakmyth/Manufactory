@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory;
 
+import com.drakmyth.minecraft.manufactory.commands.PowerNetworkArgument;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
@@ -25,6 +26,8 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -34,6 +37,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -64,6 +68,13 @@ public final class ModEventSubscriber {
         generator.addProvider(new ModLootTableProvider(generator));
         generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModLanguageProvider(generator, "en_us"));
+    }
+
+    @SubscribeEvent
+    public static void fmlCommonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            ArgumentTypes.register("power_network", PowerNetworkArgument.class, new ArgumentSerializer<>(PowerNetworkArgument::getPowerNetwork));
+        });
     }
 
     @SubscribeEvent

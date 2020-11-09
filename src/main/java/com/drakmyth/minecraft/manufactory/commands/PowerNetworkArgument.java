@@ -13,6 +13,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -21,8 +22,7 @@ import net.minecraft.world.server.ServerWorld;
 
 public class PowerNetworkArgument implements ArgumentType<String> {
 
-    public static SuggestionProvider<CommandSource> SUGGESTIONS = (ctx,
-            sb) -> net.minecraft.command.ISuggestionProvider.suggest(PowerNetworkArgument.getPowerNetworkIdsForDimension(ctx), sb);
+    public static SuggestionProvider<CommandSource> SUGGESTIONS = (ctx, sb) -> ISuggestionProvider.suggest(PowerNetworkArgument.getPowerNetworkIdsForDimension(ctx), sb);
 
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
