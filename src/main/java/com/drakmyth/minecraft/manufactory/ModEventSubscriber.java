@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory;
 
+import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
@@ -20,6 +21,7 @@ import com.drakmyth.minecraft.manufactory.tileentities.renderers.LatexCollectorR
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScreenManager;
@@ -30,6 +32,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -71,5 +74,10 @@ public final class ModEventSubscriber {
         ScreenManager.registerFactory(ModContainerTypes.BALL_MILL_UPGRADE.get(), BallMillUpgradeGui::new);
 
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void modConfig(ModConfigEvent event) {
+        Configurator.setAllLevels("com.drakmyth.minecraft.manufactory", ConfigData.COMMON.LoggingLevel.get().getLevel());
     }
 }
