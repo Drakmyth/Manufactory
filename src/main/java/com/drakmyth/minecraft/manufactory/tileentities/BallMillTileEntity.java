@@ -76,7 +76,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
-        LOGGER.debug("Ball Mill at (%d, %d, %d) synced progress with powerRequired %f and powerRemaining %f", getPos().getX(), getPos().getY(), getPos().getZ(), powerRequired, powerRemaining);
+        LOGGER.trace("Ball Mill at (%d, %d, %d) synced progress with powerRequired %f and powerRemaining %f", getPos().getX(), getPos().getY(), getPos().getZ(), powerRequired, powerRemaining);
     }
 
     // Client-Side Only
@@ -85,7 +85,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = amount;
         maxPowerPerTick = expected;
-        LOGGER.debug("Ball Mill at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getPos().getX(), getPos().getY(), getPos().getZ(), lastPowerReceived, maxPowerPerTick);
+        LOGGER.trace("Ball Mill at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getPos().getX(), getPos().getY(), getPos().getZ(), lastPowerReceived, maxPowerPerTick);
     }
 
     @Override
