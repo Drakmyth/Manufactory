@@ -16,6 +16,9 @@ import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,6 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
     private ItemStackHandler grinderInventory;
@@ -45,6 +49,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         firstTick = true;
         grinderInventory = new ItemStackHandler(2);
         grinderUpgradeInventory = new ItemStackHandler(4);
+        LOGGER.debug("Grinder tile entity initialized with %d inventory slots and %d upgrade inventory slots", grinderInventory.getSlots(), grinderUpgradeInventory.getSlots());
     }
 
     public ItemStackHandler getInventory() {
@@ -71,6 +76,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
+        LOGGER.debug("Grinder at (%d, %d, %d) synced progress with powerRequired %f and powerRemaining %f", getPos().getX(), getPos().getY(), getPos().getZ(), powerRequired, powerRemaining);
     }
 
     // Client-Side Only
@@ -79,11 +85,13 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = amount;
         maxPowerPerTick = expected;
+        LOGGER.debug("Grinder at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getPos().getX(), getPos().getY(), getPos().getZ(), lastPowerReceived, maxPowerPerTick);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
+        LOGGER.trace("Writing Grinder at (%d, %d, %d) to NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
         compound.put("inventory", grinderInventory.serializeNBT());
         compound.put("upgradeInventory", grinderUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
@@ -95,11 +103,13 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
+        LOGGER.debug("Reading Grinder at (%d, %d, %d) from NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
         grinderInventory.deserializeNBT(nbt.getCompound("inventory"));
         grinderUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
         powerRequired = nbt.getFloat("powerRequired");
         powerRemaining = nbt.getFloat("powerRemaining");
         maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
+        LOGGER.debug("Grinder Loaded!");
     }
 
     private int getTier() {
@@ -124,24 +134,40 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     private boolean tryStartRecipe() {
+        LOGGER.trace("Trying to start Grinder recipe...");
         GrinderRecipe recipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
-        if (recipe == null) return false;
-        if (!hasBothWheels()) return false;
-        if (getTier() < recipe.getTierRequired()) return false;
+        if (recipe == null) {
+            LOGGER.trace("No recipe matches input. Skipping...");
+            return false;
+        }
+        if (!hasBothWheels()) {
+            LOGGER.trace("Missing one or both grinder wheels. Skipping...");
+            return false;
+        }
+        if (getTier() < recipe.getTierRequired()) {
+            LOGGER.trace("Tier %d not sufficient for matching recipe. Needed %d. Skipping...", getTier(), recipe.getTierRequired());
+            return false;
+        }
         ItemStack maxResult = recipe.getMaxOutput();
-        if (!grinderInventory.insertItem(1, maxResult, true).isEmpty()) return false;
+        if (!grinderInventory.insertItem(1, maxResult, true).isEmpty()) {
+            LOGGER.trace("Simulation shows this recipe may not have enough room in output to complete. Skipping...");
+            return false;
+        }
         lastPowerReceived = 0;
         powerRequired = recipe.getPowerRequired();
         powerRemaining = recipe.getPowerRequired();
         maxPowerPerTick = recipe.getPowerRequired() / (float)recipe.getProcessTime();
         currentRecipe = recipe;
+        LOGGER.debug("Recipe started: %s", maxResult.getDisplayName());
         return true;
     }
 
     private void updateClientGui() {
+        LOGGER.trace("Sending MachineProgress packet to update gui at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
         MachineProgressPacket msg = new MachineProgressPacket(powerRemaining, powerRequired, lastPowerReceived, maxPowerPerTick, getPos());
         Chunk chunk = world.getChunkAt(getPos());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
+        LOGGER.trace("Packet sent");
     }
 
     private float getMotorSpeed() {
@@ -163,6 +189,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             firstTick = false;
             if (!grinderInventory.getStackInSlot(0).isEmpty()) {
                 currentRecipe = world.getRecipeManager().getRecipe(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), world).orElse(null);
+                LOGGER.debug("Grinder input at (%d, %d, %d) not empty on first tick, initialized current recipe", getPos().getX(), getPos().getY(), getPos().getZ());
             }
         }
 
@@ -172,6 +199,7 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
         }
 
         if (!currentRecipe.getIngredient().test(grinderInventory.getStackInSlot(0))) {
+            LOGGER.warn("The item in the input slot changed out from under us. Bail!");
             currentRecipe = null;
             lastPowerReceived = 0;
             powerRequired = 0;
@@ -182,17 +210,23 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
             return;
         }
 
-        if (getTier() < currentRecipe.getTierRequired()) return;
+        if (getTier() < currentRecipe.getTierRequired()) {
+            LOGGER.debug("Tier %d not sufficient for current recipe. Needed %d.", getTier(), currentRecipe.getTierRequired());
+            return;
+        }
 
         IPowerProvider powerProvider = getPowerProvider();
         lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerWorld)world, pos);
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
+            LOGGER.debug("Grinder operation complete, processing results...");
             grinderInventory.extractItem(0, 1, false);
             ItemStack resultStack = currentRecipe.getRecipeOutput().copy();
             Random rand = world.getRandom();
             if (getEfficiencyModifier() > 0) {
+                LOGGER.debug("Rolling to determine if extra results happen...");
                 if (currentRecipe.hasExtraChance() && rand.nextFloat() <= (currentRecipe.getExtraChance() * getEfficiencyModifier())) {
+                    LOGGER.debug("Success!");
                     resultStack.grow(currentRecipe.getRandomExtraAmount(rand));
                 }
             }

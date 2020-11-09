@@ -61,9 +61,11 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
 
     private void updateClient() {
         // TODO: Latex Collector should use a different packet, rather than hijacking MachineProgress
+        LOGGER.trace("Sending MachineProgress packet to update animation at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
         MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, 0, 0, 0, getPos());
         Chunk chunk = world.getChunkAt(getPos());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
+        LOGGER.trace("Packet sent");
     }
 
     private boolean isWaterlogged(BlockState state) {
@@ -81,6 +83,7 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
+        LOGGER.trace("Writing Latex Collector at (%d, %d, %d) to NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
         compound.putInt("ticksRemaining", ticksRemaining);
         return compound;
     }
@@ -88,7 +91,9 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
+        LOGGER.debug("Reading Latex Collector at (%d, %d, %d) from NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
         ticksRemaining = nbt.getInt("ticksRemaining");
+        LOGGER.debug("Latex Collector Loaded!");
     }
 
     private void reset() {
@@ -99,14 +104,23 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     @Override
     public void tick() {
         BlockState state = getBlockState();
-        if (isWaterlogged(state) && ticksRemaining > 0) reset();
+        if (isWaterlogged(state) && ticksRemaining > 0) {
+            LOGGER.debug("Latex Collector flooded! Stop filling");
+            reset();
+        }
+
         if (ticksRemaining <= 0) return;
-        if (!this.hasWorld()) return;
+        if (!this.hasWorld()) {
+            LOGGER.warn("Latex Collector at (%d, %d, %d) has no world!", getPos().getX(), getPos().getY(), getPos().getZ());
+            return;
+        }
+
         World world = this.getWorld();
         if (world.isRemote) return;
         ticksRemaining--;
         updateClient();
         if (ticksRemaining > 0) return;
+        LOGGER.debug("Latex Collector fill complete! Transitioning to FULL state...");
         world.setBlockState(getPos(), state.with(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL));
         reset();
     }
@@ -114,6 +128,7 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     @Override
     public void onProgressUpdate(float progress, float total) {
         ticksRemaining = (int)progress;
+        LOGGER.debug("Latex Collector at (%d, %d, %d) synced progress with ticksRemaining %d", getPos().getX(), getPos().getY(), getPos().getZ(), ticksRemaining);
     }
 
     @Override
