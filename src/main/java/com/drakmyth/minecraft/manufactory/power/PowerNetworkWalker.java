@@ -12,11 +12,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class PowerNetworkWalker {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static List<PowerNetworkNode> walk(Map<BlockPos, Direction[]> allNodes, BlockPos start) {
+        LOGGER.debug("Beginning Power Network branch walk from (%d, %d, %d)...", start.getX(), start.getY(), start.getZ());
         Queue<PowerNetworkNode> nodesToVisit = new ArrayDeque<>();
         Map<BlockPos, PowerNetworkNode> visitedNodes = new HashMap<>();
         nodesToVisit.add(new PowerNetworkNode(start, allNodes.get(start)));
@@ -31,6 +37,7 @@ public class PowerNetworkWalker {
             visitedNodes.put(currentNode.getPos(), currentNode);
         }
 
+        LOGGER.debug("Power Network branch walk complete");
         return new ArrayList<>(visitedNodes.values());
     }
 }

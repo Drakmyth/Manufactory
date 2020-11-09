@@ -19,6 +19,9 @@ import java.util.stream.Stream;
 
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,6 +32,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 public class PowerNetwork {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private String networkId;
     private Map<BlockPos, Direction[]> nodes;
     private Queue<BlockPos> spreading_window;
@@ -74,6 +79,7 @@ public class PowerNetwork {
         sources.addAll(network.getSources());
         sinks.addAll(network.getSinks());
         markDirty();
+        LOGGER.debug("Network %s merged into network %s", network.getId(), networkId);
     }
 
     public PowerNetwork split(List<PowerNetworkNode> splitNodes) {
@@ -93,13 +99,15 @@ public class PowerNetwork {
     }
 
     public void addNode(PowerNetworkNode node, Type type) {
-        nodes.put(node.getPos(), node.getDirections());
+        BlockPos pos = node.getPos();
+        LOGGER.debug("Adding node type %s at (%d, %d, %d) to Power Network %s...", type, pos.getX(), pos.getY(), pos.getZ(), networkId);
+        nodes.put(pos, node.getDirections());
         switch(type) {
             case SOURCE:
-                sources.add(node.getPos());
+                sources.add(pos);
                 break;
             case SINK:
-                sinks.add(node.getPos());
+                sinks.add(pos);
                 break;
             case NONE:
                 break;
@@ -114,6 +122,7 @@ public class PowerNetwork {
         nodes.remove(pos);
         sources.remove(pos);
         sinks.remove(pos);
+        LOGGER.debug("Removed (%d, %d, %d) from Power Network %s", pos.getX(), pos.getY(), pos.getZ(), networkId);
     }
 
     public Map<BlockPos, Direction[]> getNodes() {
@@ -133,7 +142,11 @@ public class PowerNetwork {
     }
 
     public void tick(World world) {
-        if (sinks.isEmpty()) return;
+        LOGGER.trace("Ticking network %s...", networkId);
+        if (sinks.isEmpty()) {
+            LOGGER.trace("No sinks on network %s, skipping...", networkId);
+            return;
+        }
         totalPower = sources.stream().reduce(0f, (powerFromSources, source) -> {
             if (!world.isAreaLoaded(source, 1)) return powerFromSources;
             BlockState sourceBlockState = world.getBlockState(source);
@@ -142,25 +155,34 @@ public class PowerNetwork {
             return powerFromSources + ((IPowerBlock)sourceBlock).getAvailablePower(sourceBlockState, world, source);
         }, (a, b) -> a + b);
         remainingPower = totalPower;
+        LOGGER.trace("Network %s Received %f power from sources. Marking network dirty...", networkId, totalPower);
         markDirty();
     }
 
     public float consumePower(float requested, BlockPos pos) {
-        if (requested <= 0) return 0;
+        LOGGER.trace("Request to consume %f power received from (%d, %d, %d) by network %s", requested, pos.getX(), pos.getY(), pos.getZ(), networkId);
+        if (requested <= 0) {
+            LOGGER.warn("Negative power requested from network %s by (%d, %d, %d). Rejecting request...", networkId, pos.getX(), pos.getY(), pos.getZ());
+            return 0;
+        }
         spreading_window.add(pos);
         while(spreading_window.size() > sinks.size()) {
             spreading_window.remove();
         }
+        LOGGER.trace("Network %s spreading window updated", networkId);
         long activeSinks = spreading_window.stream().distinct().count();
+        LOGGER.trace("Network %s has identified %d active sinks", networkId, activeSinks);
         float available = Math.min(requested, totalPower/activeSinks);
         available = Math.min(available, remainingPower);
         remainingPower -= available;
         markDirty();
+        LOGGER.trace("Network %s is returning %f power and has %f power remaining.", networkId, available, remainingPower);
         return available;
     }
 
     public static PowerNetwork fromNBT(CompoundNBT nbt) {
         String networkId = nbt.getString("networkId");
+        LOGGER.debug("Creating Power Network %s from NBT...", networkId);
         ListNBT nodeListNBT = nbt.getList("nodes", Constants.NBT.TAG_COMPOUND);
         List<PowerNetworkNode> nodes = nodeListNBT.stream().map(compound -> {
             CompoundNBT nodeNBT = (CompoundNBT)compound;
@@ -172,6 +194,7 @@ public class PowerNetwork {
                 .boxed()
                 .map(index -> Direction.byIndex(index))
                 .toArray(Direction[]::new);
+            LOGGER.debug("Loaded node at (%d, %d, %d) with directions %s", x, y, z, Arrays.toString(directions));
             return new PowerNetworkNode(pos, directions);
         }).collect(Collectors.toList());
 
@@ -181,6 +204,7 @@ public class PowerNetwork {
             int x = sourcePosNBT.getInt("x");
             int y = sourcePosNBT.getInt("y");
             int z = sourcePosNBT.getInt("z");
+            LOGGER.debug("Loaded node at (%d, %d, %d) as SOURCE", x, y, z);
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
 
@@ -190,14 +214,17 @@ public class PowerNetwork {
             int x = sinkPosNBT.getInt("x");
             int y = sinkPosNBT.getInt("y");
             int z = sinkPosNBT.getInt("z");
+            LOGGER.debug("Loaded node at (%d, %d, %d) as SINK", x, y, z);
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
 
+        LOGGER.debug("Power Network %s successfully loaded from NBT!", networkId);
         return new PowerNetwork(networkId, nodes, sources, sinks);
     }
 
     public CompoundNBT write(CompoundNBT compound) {
         isDirty = false;
+        LOGGER.trace("Saving Power Network %s to NBT...", networkId);
         compound.putString("networkId", networkId);
         ListNBT nodeListNBT = new ListNBT();
         nodes.entrySet().stream().forEach(node -> {
@@ -213,6 +240,7 @@ public class PowerNetwork {
             nodeListNBT.add(nodeNBT);
         });
         compound.put("nodes", nodeListNBT);
+        LOGGER.trace("Power Network %s finished serializing nodes", networkId);
 
         ListNBT sourceListNBT = new ListNBT();
         sources.stream().forEach(source -> {
@@ -223,6 +251,7 @@ public class PowerNetwork {
             sourceListNBT.add(sourcePosNBT);
         });
         compound.put("sources", sourceListNBT);
+        LOGGER.trace("Power Network %s finished serializing sources", networkId);
 
         ListNBT sinkListNBT = new ListNBT();
         sinks.stream().forEach(sink -> {
@@ -233,6 +262,7 @@ public class PowerNetwork {
             sinkListNBT.add(sinkPosNBT);
         });
         compound.put("sinks", sinkListNBT);
+        LOGGER.trace("Power Network %s finished serializing sinks");
         return compound;
     }
 }
