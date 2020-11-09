@@ -57,6 +57,7 @@ public class GrinderBlock extends Block implements IPowerBlock {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        LOGGER.trace("Creating Grinder tile entity...");
         return ModTileEntityTypes.GRINDER.get().create();
     }
 
@@ -82,6 +83,7 @@ public class GrinderBlock extends Block implements IPowerBlock {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        LOGGER.debug("Interacted with Grinder at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote) return ActionResultType.SUCCESS;
         interactWith(state, world, pos, player, player.getHeldItem(hand), hit.getFace());
         return ActionResultType.CONSUME;
@@ -89,6 +91,7 @@ public class GrinderBlock extends Block implements IPowerBlock {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        LOGGER.debug("Grinder placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
         pnm.trackBlock(pos, new Direction[] {state.get(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
@@ -96,11 +99,17 @@ public class GrinderBlock extends Block implements IPowerBlock {
 
     private void interactWith(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItem, Direction face) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (!(tileEntity instanceof GrinderTileEntity)) return;
+        if (!(tileEntity instanceof GrinderTileEntity)) {
+            LOGGER.warn("Tile entity not instance of GrinderTileEntity!");
+            return;
+        }
+
         INamedContainerProvider containerProvider;
         if (heldItem.getItem() == ModItems.WRENCH.get() && face == state.get(HORIZONTAL_FACING).getOpposite()) {
+            LOGGER.debug("Used wrench on back face. Opening upgrade gui...");
             containerProvider = new GrinderUpgradeContainerProvider(pos);
         } else {
+            LOGGER.debug("Opening main gui...");
             containerProvider = new GrinderContainerProvider(pos);
         }
         NetworkHooks.openGui((ServerPlayerEntity)player, containerProvider, pos);
@@ -113,24 +122,32 @@ public class GrinderBlock extends Block implements IPowerBlock {
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        LOGGER.debug("Grinder at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
-        if (!state.isIn(newState.getBlock())) {
-            PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-            pnm.untrackBlock(pos);
+        if (state.isIn(newState.getBlock())) return;
 
-            TileEntity tileentity = world.getTileEntity(pos);
-            if (!(tileentity instanceof GrinderTileEntity)) return;
-            GrinderTileEntity grinderTE = (GrinderTileEntity)tileentity;
-            ItemStackHandler inventory = grinderTE.getInventory();
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                spawnAsEntity(world, pos, inventory.getStackInSlot(i));
-            }
-            ItemStackHandler upgradeInventory = grinderTE.getUpgradeInventory();
-            for (int i = 0; i < upgradeInventory.getSlots(); i++) {
-                spawnAsEntity(world, pos, upgradeInventory.getStackInSlot(i));
-            }
-            world.removeTileEntity(pos);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        pnm.untrackBlock(pos);
+
+        TileEntity tileentity = world.getTileEntity(pos);
+        if (!(tileentity instanceof GrinderTileEntity)) {
+            LOGGER.warn("Tile entity not instance of GrinderTileEntity!");
+            return;
         }
+
+        GrinderTileEntity grinderTE = (GrinderTileEntity)tileentity;
+        ItemStackHandler inventory = grinderTE.getInventory();
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            LOGGER.debug("Spawning inventory contents in world...");
+            spawnAsEntity(world, pos, inventory.getStackInSlot(i));
+        }
+
+        ItemStackHandler upgradeInventory = grinderTE.getUpgradeInventory();
+        for (int i = 0; i < upgradeInventory.getSlots(); i++) {
+            LOGGER.debug("Spawning upgrade inventory contents in world...");
+            spawnAsEntity(world, pos, upgradeInventory.getStackInSlot(i));
+        }
+        world.removeTileEntity(pos);
     }
 
     @Override
