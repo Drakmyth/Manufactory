@@ -14,6 +14,9 @@ import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -40,6 +43,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class BallMillBlock extends Block implements IPowerBlock {
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public BallMillBlock(Properties properties) {
@@ -57,6 +61,7 @@ public class BallMillBlock extends Block implements IPowerBlock {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        LOGGER.trace("Creating Ball Mill tile entity...");
         return ModTileEntityTypes.BALL_MILL.get().create();
     }
 
@@ -82,6 +87,7 @@ public class BallMillBlock extends Block implements IPowerBlock {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        LOGGER.debug("Interacted with Ball Mill at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote) return ActionResultType.SUCCESS;
         interactWith(state, world, pos, player, player.getHeldItem(hand), hit.getFace());
         return ActionResultType.CONSUME;
@@ -89,6 +95,7 @@ public class BallMillBlock extends Block implements IPowerBlock {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        LOGGER.debug("Ball Mill placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
         pnm.trackBlock(pos, new Direction[] {state.get(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
@@ -96,11 +103,17 @@ public class BallMillBlock extends Block implements IPowerBlock {
 
     private void interactWith(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack heldItem, Direction face) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (!(tileEntity instanceof BallMillTileEntity)) return;
+        if (!(tileEntity instanceof BallMillTileEntity)) {
+            LOGGER.warn("Tile entity not instance of BallMillTileEntity!");
+            return;
+        }
+
         INamedContainerProvider containerProvider;
         if (heldItem.getItem() == ModItems.WRENCH.get() && face == state.get(HORIZONTAL_FACING).getOpposite()) {
+            LOGGER.debug("Used wrench on back face. Opening upgrade gui...");
             containerProvider = new BallMillUpgradeContainerProvider(pos);
         } else {
+            LOGGER.debug("Opening main gui...");
             containerProvider = new BallMillContainerProvider(pos);
         }
         NetworkHooks.openGui((ServerPlayerEntity)player, containerProvider, pos);
@@ -113,24 +126,32 @@ public class BallMillBlock extends Block implements IPowerBlock {
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        LOGGER.debug("Ball Mill at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
-        if (!state.isIn(newState.getBlock())) {
-            PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-            pnm.untrackBlock(pos);
+        if (state.isIn(newState.getBlock())) return;
 
-            TileEntity tileentity = world.getTileEntity(pos);
-            if (!(tileentity instanceof BallMillTileEntity)) return;
-            BallMillTileEntity ballMillTE = (BallMillTileEntity)tileentity;
-            ItemStackHandler inventory = ballMillTE.getInventory();
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                spawnAsEntity(world, pos, inventory.getStackInSlot(i));
-            }
-            ItemStackHandler upgradeInventory = ballMillTE.getUpgradeInventory();
-            for (int i = 0; i < upgradeInventory.getSlots(); i++) {
-                spawnAsEntity(world, pos, upgradeInventory.getStackInSlot(i));
-            }
-            world.removeTileEntity(pos);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        pnm.untrackBlock(pos);
+
+        TileEntity tileentity = world.getTileEntity(pos);
+        if (!(tileentity instanceof BallMillTileEntity)) {
+            LOGGER.warn("Tile entity not instance of BallMillTileEntity!");
+            return;
         }
+
+        BallMillTileEntity ballMillTE = (BallMillTileEntity)tileentity;
+        ItemStackHandler inventory = ballMillTE.getInventory();
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            LOGGER.debug("Spawning inventory contents in world...");
+            spawnAsEntity(world, pos, inventory.getStackInSlot(i));
+        }
+
+        ItemStackHandler upgradeInventory = ballMillTE.getUpgradeInventory();
+        for (int i = 0; i < upgradeInventory.getSlots(); i++) {
+            LOGGER.debug("Spawning upgrade inventory contents in world...");
+            spawnAsEntity(world, pos, upgradeInventory.getStackInSlot(i));
+        }
+        world.removeTileEntity(pos);
     }
 
     @Override
