@@ -5,6 +5,9 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -15,6 +18,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class GrinderUpgradeContainerProvider implements INamedContainerProvider {
+    private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos pos;
 
     public GrinderUpgradeContainerProvider(BlockPos pos) {
@@ -23,6 +27,7 @@ public class GrinderUpgradeContainerProvider implements INamedContainerProvider 
 
     @Override
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
+        LOGGER.debug("Creating Grinder upgrade gui...");
         return new GrinderUpgradeContainer(windowId, new InvWrapper(playerInventory), player, pos);
     }
 

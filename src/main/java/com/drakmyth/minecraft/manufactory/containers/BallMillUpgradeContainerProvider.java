@@ -5,6 +5,9 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -15,6 +18,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class BallMillUpgradeContainerProvider implements INamedContainerProvider {
+    private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos pos;
 
     public BallMillUpgradeContainerProvider(BlockPos pos) {
@@ -23,6 +27,7 @@ public class BallMillUpgradeContainerProvider implements INamedContainerProvider
 
     @Override
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
+        LOGGER.debug("Creating Ball Mill upgrade gui...");
         return new BallMillUpgradeContainer(windowId, new InvWrapper(playerInventory), player, pos);
     }
 
