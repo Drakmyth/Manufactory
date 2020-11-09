@@ -9,6 +9,9 @@ import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.DimensionArgument;
@@ -16,9 +19,12 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
 
 public class PNetCommand {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     static ArgumentBuilder<CommandSource, ?> register()
     {
-        return Commands.literal("pnet")
+        LOGGER.debug("Registering PNetCommand...");
+        ArgumentBuilder<CommandSource, ?> builder = Commands.literal("pnet")
             .requires(cs->cs.hasPermissionLevel(0)) //permission
             .then(Commands.argument("dim", DimensionArgument.getDimension())
                 .then(Commands.literal("list")
@@ -35,6 +41,8 @@ public class PNetCommand {
                 )
             )
         ;
+        LOGGER.debug("PNetCommand registered");
+        return builder;
     }
 
     private static int listNetworksInDimension(CommandSource cs, ServerWorld dim) throws CommandSyntaxException {
