@@ -8,6 +8,9 @@ package com.drakmyth.minecraft.manufactory;
 import com.drakmyth.minecraft.manufactory.commands.ManufactoryCommand;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -18,6 +21,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
 public final class ForgeEventSubscriber {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
     public static void worldTick(TickEvent.WorldTickEvent event) {
@@ -29,6 +33,8 @@ public final class ForgeEventSubscriber {
 
     @SubscribeEvent
     public static void registerCommands(final RegisterCommandsEvent event) {
+        LOGGER.info("Registering commands...");
         ManufactoryCommand.register(event.getDispatcher());
+        LOGGER.info("Command registration complete");
     }
 }
