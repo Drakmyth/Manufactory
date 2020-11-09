@@ -31,6 +31,7 @@ public class TappingKnifeItem extends Item {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
+        LOGGER.debug("Tapping knife used");
         World world = context.getWorld();
         if (world.isRemote) return ActionResultType.SUCCESS;
         BlockPos tePos = context.getPos().offset(context.getFace());
@@ -45,21 +46,25 @@ public class TappingKnifeItem extends Item {
         if (tapped) {
             tryGiveAmber(context.getPlayer(), context.getHand());
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.CONSUME;
     }
 
     private void tryGiveAmber(PlayerEntity player, Hand hand) {
         double configAmberSpawnChance = ConfigData.SERVER.AmberChance.get();
+        LOGGER.debug("Rolling for amber against chance %f...", configAmberSpawnChance);
         if (configAmberSpawnChance <= 0) return;
         if (random.nextDouble() >= configAmberSpawnChance ) return;
+        LOGGER.debug("Roll success!");
 
         int configAmberSpawnCount = ConfigData.SERVER.AmberTapSpawnCount.get();
         ItemStack holdingItem = player.getHeldItem(hand);
         ItemStack amberItemStack = new ItemStack(ModItems.AMBER.get(), configAmberSpawnCount);
         if (holdingItem.isEmpty()) {
-           player.setHeldItem(hand, amberItemStack);
+            player.setHeldItem(hand, amberItemStack);
+            LOGGER.debug("%d amber put in player's hand", configAmberSpawnCount);
         } else if (!player.addItemStackToInventory(amberItemStack)) {
-           player.dropItem(amberItemStack, false);
+            player.dropItem(amberItemStack, false);
+            LOGGER.debug("Player inventory full. %d amber spawned into world", configAmberSpawnCount);
         }
     }
 }
