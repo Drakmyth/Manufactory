@@ -16,6 +16,9 @@ import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,6 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 public class BallMillTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
     private ItemStackHandler ballMillInventory;
@@ -45,6 +49,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         firstTick = true;
         ballMillInventory = new ItemStackHandler(2);
         ballMillUpgradeInventory = new ItemStackHandler(3);
+        LOGGER.debug("Ball Mill tile entity initialized with %d inventory slots and %d upgrade inventory slots", ballMillInventory.getSlots(), ballMillUpgradeInventory.getSlots());
     }
 
     public ItemStackHandler getInventory() {
@@ -71,6 +76,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
+        LOGGER.trace("Ball Mill at (%d, %d, %d) synced progress with powerRequired %f and powerRemaining %f", getPos().getX(), getPos().getY(), getPos().getZ(), powerRequired, powerRemaining);
     }
 
     // Client-Side Only
@@ -79,11 +85,13 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = amount;
         maxPowerPerTick = expected;
+        LOGGER.trace("Ball Mill at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getPos().getX(), getPos().getY(), getPos().getZ(), lastPowerReceived, maxPowerPerTick);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
+        LOGGER.trace("Writing Ball Mill at (%d, %d, %d) to NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
         compound.put("inventory", ballMillInventory.serializeNBT());
         compound.put("upgradeInventory", ballMillUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
@@ -95,11 +103,13 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
+        LOGGER.debug("Reading Ball Mill at (%d, %d, %d) from NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
         ballMillInventory.deserializeNBT(nbt.getCompound("inventory"));
         ballMillUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
         powerRequired = nbt.getFloat("powerRequired");
         powerRemaining = nbt.getFloat("powerRemaining");
         maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
+        LOGGER.debug("Ball Mill Loaded!");
     }
 
     private int getTier() {
@@ -124,23 +134,36 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     }
 
     private boolean tryStartRecipe() {
+        LOGGER.trace("Trying to start Ball Mill recipe...");
         BallMillRecipe recipe = world.getRecipeManager().getRecipe(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), world).orElse(null);
-        if (recipe == null) return false;
-        if (getTier() < recipe.getTierRequired()) return false;
+        if (recipe == null) {
+            LOGGER.trace("No recipe matches input. Skipping...");
+            return false;
+        }
+        if (getTier() < recipe.getTierRequired()) {
+            LOGGER.trace("Tier %d not sufficient for matching recipe. Needed %d. Skipping...", getTier(), recipe.getTierRequired());
+            return false;
+        }
         ItemStack maxResult = recipe.getMaxOutput();
-        if (!ballMillInventory.insertItem(1, maxResult, true).isEmpty()) return false;
+        if (!ballMillInventory.insertItem(1, maxResult, true).isEmpty()) {
+            LOGGER.trace("Simulation shows this recipe may not have enough room in output to complete. Skipping...");
+            return false;
+        }
         lastPowerReceived = 0;
         powerRequired = recipe.getPowerRequired();
         powerRemaining = recipe.getPowerRequired();
         maxPowerPerTick = recipe.getPowerRequired() / (float)recipe.getProcessTime();
         currentRecipe = recipe;
+        LOGGER.debug("Recipe started: %s", maxResult.getDisplayName());
         return true;
     }
 
     private void updateClientGui() {
+        LOGGER.trace("Sending MachineProgress packet to update gui at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
         MachineProgressPacket msg = new MachineProgressPacket(powerRemaining, powerRequired, lastPowerReceived, maxPowerPerTick, getPos());
         Chunk chunk = world.getChunkAt(getPos());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
+        LOGGER.trace("Packet sent");
     }
 
     private float getMotorSpeed() {
@@ -162,6 +185,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
             firstTick = false;
             if (!ballMillInventory.getStackInSlot(0).isEmpty()) {
                 currentRecipe = world.getRecipeManager().getRecipe(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), world).orElse(null);
+                LOGGER.debug("Ball Mill input at (%d, %d, %d) not empty on first tick, initialized current recipe", getPos().getX(), getPos().getY(), getPos().getZ());
             }
         }
 
@@ -171,6 +195,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         }
 
         if (!currentRecipe.getIngredient().test(ballMillInventory.getStackInSlot(0))) {
+            LOGGER.warn("The item in the input slot changed out from under us. Bail!");
             currentRecipe = null;
             lastPowerReceived = 0;
             powerRequired = 0;
@@ -181,22 +206,32 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
             return;
         }
 
-        if (getTier() < currentRecipe.getTierRequired()) return;
+        if (getTier() < currentRecipe.getTierRequired()) {
+            LOGGER.debug("Tier %d not sufficient for current recipe. Needed %d.", getTier(), currentRecipe.getTierRequired());
+            return;
+        }
 
         IPowerProvider powerProvider = getPowerProvider();
         lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerWorld)world, pos);
         powerRemaining -= lastPowerReceived; // TODO: Consider making PowerRateUpdate its own packet and only sending if different from last tick
         if (powerRemaining <= 0) {
+            LOGGER.debug("Ball Mill operation complete, processing results...");
             Random rand = world.getRandom();
             ItemStack resultStack;
+            LOGGER.debug("Rolling to determine if process was successful...");
             if (rand.nextFloat() > getProcessChance()) {
+                LOGGER.debug("Failed!");
                 resultStack = ItemStack.EMPTY;
             } else {
+                LOGGER.debug("Success!");
                 ballMillInventory.extractItem(0, 1, false);
                 resultStack = currentRecipe.getRecipeOutput().copy();
             }
+
             if (!resultStack.isEmpty() && getEfficiencyModifier() > 0) {
+                LOGGER.debug("Rolling to determine if extra results happen...");
                 if (currentRecipe.hasExtraChance() && rand.nextFloat() <= (currentRecipe.getExtraChance() * getEfficiencyModifier())) {
+                    LOGGER.debug("Success!");
                     resultStack.grow(currentRecipe.getRandomExtraAmount(rand));
                 }
             }

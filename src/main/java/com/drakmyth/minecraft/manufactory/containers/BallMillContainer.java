@@ -9,6 +9,9 @@ import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -24,6 +27,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class BallMillContainer extends Container {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public final ItemStackHandler ballMillInventory;
     private final IWorldPosCallable posCallable;
@@ -35,6 +39,7 @@ public class BallMillContainer extends Container {
 
     public BallMillContainer(int windowId, IItemHandler playerInventory, PlayerEntity player, BlockPos pos) {
         super(ModContainerTypes.BALL_MILL.get(), windowId);
+        LOGGER.debug("Initializing BallMillContainer...");
         World world = player.getEntityWorld();
         posCallable = IWorldPosCallable.of(world, pos);
         tileEntity = (BallMillTileEntity)world.getTileEntity(pos);
@@ -43,6 +48,7 @@ public class BallMillContainer extends Container {
         // Grinder Slots
         // Input Slot
         this.addSlot(new SlotItemHandler(ballMillInventory, 0, 56, 35));
+        LOGGER.debug("Input slot added with index 0");
         // Output Slot
         this.addSlot(new SlotItemHandler(ballMillInventory, 1, 116, 35) {
             @Override
@@ -50,6 +56,7 @@ public class BallMillContainer extends Container {
                 return false;
             }
         });
+        LOGGER.debug("Output slot added with index 1");
 
         // Player Inventory
         for (int j = 0; j < 3; j++) {
@@ -57,11 +64,13 @@ public class BallMillContainer extends Container {
                 this.addSlot(new SlotItemHandler(playerInventory, i + (j * 9) + 9, (i + 1) * 8 + (i * 10), j * 18 + 84));
             }
         }
+        LOGGER.debug("Player inventory slots added with indices 9-35");
 
         // Player Hotbar
         for (int i = 0; i < 9; i++) {
             this.addSlot(new SlotItemHandler(playerInventory, i, (i + 1) * 8 + (i * 10), 142));
         }
+        LOGGER.debug("Player hotbar slots added with indices 0-8");
     }
 
     @Override
@@ -73,10 +82,13 @@ public class BallMillContainer extends Container {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
             if (index < ballMillInventory.getSlots()) { // transfer from ball mill to inventory
+                LOGGER.debug("Transferring stack from ball mill slot %d to player inventory...", index);
                 if (!this.mergeItemStack(itemstack1, ballMillInventory.getSlots(), this.inventorySlots.size(), false)) {
+                    LOGGER.debug("Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
             } else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { // transfer from inventory to ball mill
+                LOGGER.debug("Transfer of stack from player inventory slot %d to ball mill failed because ball mill input is full", index);
                 return ItemStack.EMPTY;
             }
 

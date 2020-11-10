@@ -9,6 +9,9 @@ import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -39,6 +42,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class LatexCollectorBlock extends Block implements IWaterLoggable {
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<FillStatus> FILL_STATUS = EnumProperty.create("fill_status", FillStatus.class);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -60,14 +64,16 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        LOGGER.debug("Interacted with Latex Collector at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote) return ActionResultType.SUCCESS;
         if (state.get(FILL_STATUS) == FillStatus.FULL) {
             int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
             ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get(), configLatexSpawnCount);
+            LOGGER.debug("Spawning coagulated latex and setting collector to EMPTY...");
             spawnAsEntity(world, pos, latexItemStack);
             world.setBlockState(pos, state.with(FILL_STATUS, FillStatus.EMPTY));
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.CONSUME;
     }
 
     @Override
@@ -82,6 +88,7 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        LOGGER.trace("Creating Latex Collector tile entity...");
         return ModTileEntityTypes.LATEX_COLLECTOR.get().create();
     }
 
@@ -105,6 +112,7 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         final Direction face = context.getFace();
         if (!isFaceHorizontal(face) || !isBlockLog(context.getWorld(), context.getPos().offset(face.getOpposite()))) {
+            LOGGER.debug("Latex Collector must be placed on the side of a log");
             return null;
         }
 
@@ -129,11 +137,11 @@ public class LatexCollectorBlock extends Block implements IWaterLoggable {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighbor, BlockPos neighborPos, boolean isMoving) {
         Direction facing = state.get(HORIZONTAL_FACING);
-        if (!pos.offset(facing).equals(neighborPos)) {
-            return;
-        }
+        // Only pay attention to the neighbor we're attached to
+        if (!pos.offset(facing).equals(neighborPos)) return;
 
         if (!isBlockLog(world, neighborPos)) {
+            LOGGER.debug("Log destroyed. Destroying attached latex collector...");
             world.destroyBlock(pos, true);
         }
     }

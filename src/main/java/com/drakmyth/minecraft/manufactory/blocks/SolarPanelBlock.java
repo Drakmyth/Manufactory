@@ -8,6 +8,9 @@ package com.drakmyth.minecraft.manufactory.blocks;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -28,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBlock {
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -73,6 +77,7 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        LOGGER.debug("Solar Panel placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
         pnm.trackBlock(pos, new Direction[] {state.get(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
@@ -80,11 +85,12 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        LOGGER.debug("Solar Panel at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
-        if (!state.isIn(newState.getBlock())) {
-            PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-            pnm.untrackBlock(pos);
-        }
+        if (state.isIn(newState.getBlock())) return;
+
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        pnm.untrackBlock(pos);
     }
 
     @Override
@@ -106,9 +112,10 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
         float timeFactor = (float)Math.cos(celestialAngle);
 
         // TODO: change pos.up() to pos once solar panel is no longer a full block size
-        // world.getLight automatically accounts for weather
-        float lightFactor = world.getLight(pos.up()) / 15f;
-
-        return 0.03125f * timeFactor * lightFactor;
+        float lightAndWeatherFactor = world.getLight(pos.up()) / 15f;
+        // TODO: make 0.03125f read from config file
+        float availablePower = 0.03125f * timeFactor * lightAndWeatherFactor;
+        LOGGER.trace("Solar Panel at (%d, %d, %d) made %f power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);
+        return availablePower;
     }
 }

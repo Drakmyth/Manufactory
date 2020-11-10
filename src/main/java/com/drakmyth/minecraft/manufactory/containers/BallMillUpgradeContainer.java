@@ -12,6 +12,9 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -27,7 +30,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class BallMillUpgradeContainer extends Container {
-
+    private static final Logger LOGGER = LogManager.getLogger();
     public final ItemStackHandler upgradeInventory;
     private final IWorldPosCallable posCallable;
     private final BallMillTileEntity tileEntity;
@@ -38,6 +41,7 @@ public class BallMillUpgradeContainer extends Container {
 
     public BallMillUpgradeContainer(int windowId, IItemHandler playerInventory, PlayerEntity player, BlockPos pos) {
         super(ModContainerTypes.BALL_MILL_UPGRADE.get(), windowId);
+        LOGGER.debug("Initializing BallMillUpgradeContainer...");
         World world = player.getEntityWorld();
         posCallable = IWorldPosCallable.of(world, pos);
         tileEntity = (BallMillTileEntity)world.getTileEntity(pos);
@@ -51,6 +55,7 @@ public class BallMillUpgradeContainer extends Container {
                 return stack.getItem() instanceof IMillingBallUpgrade;
             }
         });
+        LOGGER.debug("Milling ball slot added with index 0");
         // Motor Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 1, 80, 36) {
             @Override
@@ -58,6 +63,7 @@ public class BallMillUpgradeContainer extends Container {
                 return stack.getItem() instanceof IMotorUpgrade;
             }
         });
+        LOGGER.debug("Motor slot added with index 1");
         // Power Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 2, 80, 58) {
             @Override
@@ -68,9 +74,11 @@ public class BallMillUpgradeContainer extends Container {
             @Override
             public void onSlotChanged() {
                 super.onSlotChanged();
+                LOGGER.debug("Power slot contents changed. Notifying neighbors...");
                 tileEntity.getBlockState().updateNeighbours(world, pos, 3);
             }
         });
+        LOGGER.debug("Power slot added with index 2");
 
         // Player Inventory
         for (int j = 0; j < 3; j++) {
@@ -78,11 +86,13 @@ public class BallMillUpgradeContainer extends Container {
                 this.addSlot(new SlotItemHandler(playerInventory, i + (j * 9) + 9, (i + 1) * 8 + (i * 10), j * 18 + 84));
             }
         }
+        LOGGER.debug("Player inventory slots added with indices 9-35");
 
         // Player Hotbar
         for (int i = 0; i < 9; i++) {
             this.addSlot(new SlotItemHandler(playerInventory, i, (i + 1) * 8 + (i * 10), 142));
         }
+        LOGGER.debug("Player hotbar slots added with indices 0-8");
     }
 
     @Override
@@ -94,10 +104,13 @@ public class BallMillUpgradeContainer extends Container {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
             if (index < upgradeInventory.getSlots()) { // transfer from ball mill to inventory
+                LOGGER.debug("Transferring stack from ball mill upgrade slot %d to player inventory...", index);
                 if (!this.mergeItemStack(itemstack1, upgradeInventory.getSlots(), this.inventorySlots.size(), false)) {
+                    LOGGER.debug("Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { // transfer from inventory to ball mill
+            } else if (!this.mergeItemStack(itemstack1, 0, upgradeInventory.getSlots(), false)) { // transfer from inventory to ball mill
+                LOGGER.debug("Transfer of stack from player inventory slot %d to ball mill upgrade inventory failed because upgrade inputs are full", index);
                 return ItemStack.EMPTY;
             }
 

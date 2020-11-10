@@ -11,6 +11,9 @@ import java.util.List;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -33,6 +36,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBlock {
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
     public static final BooleanProperty EAST = BlockStateProperties.EAST;
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
@@ -156,6 +160,7 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        LOGGER.debug("Power Cable placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
         pnm.trackBlock(pos, Direction.values(), getPowerBlockType());
@@ -163,11 +168,12 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        LOGGER.debug("Power Cable at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
         if (world.isRemote()) return;
-        if (!state.isIn(newState.getBlock())) {
-            PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-            pnm.untrackBlock(pos);
-        }
+        if (state.isIn(newState.getBlock())) return;
+
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        pnm.untrackBlock(pos);
     }
 
     @Override
