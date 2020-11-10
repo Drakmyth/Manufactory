@@ -5,8 +5,6 @@
 
 package com.drakmyth.minecraft.manufactory.config;
 
-import com.drakmyth.minecraft.manufactory.util.LogLevel;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,13 +13,14 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class CommonConfig {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public final ForgeConfigSpec.EnumValue<LogLevel> LoggingLevel;
+    // public final ForgeConfigSpec.IntValue Field;
 
     CommonConfig(ForgeConfigSpec.Builder builder) {
         LOGGER.debug("Initializing COMMON config...");
 
-        builder.push("logging");
-        LoggingLevel = builder.defineEnum("logLevel", LogLevel.INFO);
-        builder.pop();
+        // builder.push("general");
+        // Field = builder.comment("This is a comment for the field")
+        // .defineInRange("field", 13, 0, 20);
+        // builder.pop();
     }
 }
