@@ -24,14 +24,15 @@ group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).r
 archivesBaseName = project.modid
 version = "${project.minecraftversion}-${project.modversion}"
 
-dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraftversion}-${project.forgeversion}"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+repositories {
+    maven { url = 'https://jitpack.io' }
 }
 
-test {
-    useJUnitPlatform()
+dependencies {
+    minecraft "net.minecraftforge:forge:${project.minecraftversion}-${project.forgeversion}"
+    testImplementation fg.deobf("com.github.alcatrazEscapee:mcjunitlib:${project.mcjunitlibversion}-${project.minecraftversion}") {
+        transitive = false
+    }
 }
 
 minecraft {
@@ -84,6 +85,25 @@ minecraft {
             mods {
                 manufactory {
                     source sourceSets.main // TODO: Use a dedicated datagen sourceset to exclude non-texture resources
+                }
+            }
+        }
+
+        serverTest {
+            parent server
+            workingDirectory project.file('run')
+            main 'com.alcatrazescapee.mcjunitlib.DedicatedTestServerLauncher'
+            property 'forge.logging.console.level', 'unittest'
+            environment 'MOD_CLASSES', String.join(File.pathSeparator,
+                "${project.modid}%%${sourceSets.main.output.resourcesDir}",
+                "${project.modid}%%${sourceSets.main.output.classesDir}",
+                "${project.modid}%%${sourceSets.test.output.resourcesDir}",
+                "${project.modid}%%${sourceSets.test.output.classesDir}",
+            )
+            environment 'target', 'fmltestserver'
+            mods {
+                manufactory {
+                    sources sourceSets.test
                 }
             }
         }
