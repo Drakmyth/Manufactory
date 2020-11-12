@@ -132,6 +132,11 @@ public class PowerNetworkManager extends WorldSavedData {
     public void untrackBlock(BlockPos pos) {
         LOGGER.debug("Request received to untrack block (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         PowerNetwork currentNetwork = networks.get(blockCache.get(pos));
+        if(currentNetwork == null) {
+            LOGGER.warn("Tried to untrack block (%d, %d, %d), but block wasn't being tracked", pos.getX(), pos.getY(), pos.getZ());
+            return;
+        }
+
         PowerNetworkNode node = currentNetwork.getNode(pos);
         List<BlockPos> networkedNeighbors = getSurroundingNetworkedBlocks(node);
 

@@ -17,6 +17,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'jacoco'
 
 sourceCompatibility = targetCompatibility = project.javaversion
 
@@ -24,8 +25,15 @@ group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).r
 archivesBaseName = project.modid
 version = "${project.minecraftversion}-${project.modversion}"
 
+repositories {
+    maven { url = 'https://jitpack.io' }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraftversion}-${project.forgeversion}"
+    testImplementation fg.deobf("com.github.alcatrazEscapee:mcjunitlib:${project.mcjunitlibversion}-${project.minecraftversion}") {
+        transitive = false
+    }
 }
 
 minecraft {
@@ -81,6 +89,60 @@ minecraft {
                 }
             }
         }
+
+        serverTest {
+            parent server
+            workingDirectory project.file('run')
+            main 'com.alcatrazescapee.mcjunitlib.DedicatedTestServerLauncher'
+            property 'forge.logging.console.level', 'unittest'
+            environment 'MOD_CLASSES', String.join(File.pathSeparator,
+                "${project.modid}%%${sourceSets.main.output.resourcesDir}",
+                "${project.modid}%%${sourceSets.main.output.classesDir}",
+                "${project.modid}%%${sourceSets.test.output.resourcesDir}",
+                "${project.modid}%%${sourceSets.test.output.classesDir}",
+            )
+            environment 'target', 'fmltestserver'
+            mods {
+                manufactory {
+                    sources sourceSets.test
+                }
+            }
+        }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name.equals('runServerTest')) {
+
+        jacoco {
+            applyTo task
+            toolVersion = '0.8.6'
+            reportsDir = file("$buildDir/reports/jacoco")
+        }
+
+        task.jacoco {
+            enabled = true
+            destinationFile = file("$buildDir/jacoco/runServerTest.exec")
+            includes = []
+            excludes = []
+            excludeClassLoaders = []
+            includeNoLocationClasses = true
+        }
+    }
+}
+
+task generateCoverageReport(type:JacocoReport) {
+    // TODO: Run this automatically after runServerTest
+    enabled = true
+    group = 'fg_runs'
+
+    sourceSets sourceSets.main
+    executionData = files("$buildDir/jacoco/runServerTest.exec")
+
+    reports {
+        xml.enabled = false
+        csv.enabled = false
+        html.destination = file("$buildDir/reports/html")
     }
 }
 
