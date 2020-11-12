@@ -25,13 +25,20 @@ import org.junit.jupiter.api.Test;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class BallMillBlockTests {
+
     public static class Constructor extends BallMillBlockTests {
         @Test
         public void horizontalFacingDefaultsToNorth() {
@@ -158,6 +165,31 @@ public class BallMillBlockTests {
 
             // Assert
             assertFalse(canConnectToFace);
+        }
+    }
+
+    public static class GetStateForPlacement extends BallMillBlockTests {
+        @Test
+        public void returnsStateWithOppositeFacing() {
+            // Arrange
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            Direction playerFacing = Direction.EAST;
+            PlayerEntity player = TestUtils.getPlayer();
+            player.setPositionAndRotation(0, 0, 0, playerFacing.getHorizontalAngle(), 0);
+            Hand hand = player.getActiveHand();
+            ItemStack stack = player.getHeldItem(hand);
+
+            Vector3d hitVec = new Vector3d(0, 0, 0);
+            BlockPos pos = new BlockPos(0, 0, 0);
+            BlockRayTraceResult raytrace = new BlockRayTraceResult(hitVec, playerFacing.getOpposite(), pos, false);
+            BlockItemUseContext context = new BlockItemUseContext(player, hand, stack, raytrace);
+
+            // Act
+            BlockState state = block.getStateForPlacement(context);
+            Direction facing = state.get(BallMillBlock.HORIZONTAL_FACING);
+
+            // Assert
+            assertEquals(playerFacing.getOpposite(), facing);
         }
     }
 
