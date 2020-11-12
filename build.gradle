@@ -17,6 +17,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'jacoco'
 
 sourceCompatibility = targetCompatibility = project.javaversion
 
@@ -107,6 +108,41 @@ minecraft {
                 }
             }
         }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name.equals('runServerTest')) {
+
+        jacoco {
+            applyTo task
+            toolVersion = '0.8.6'
+            reportsDir = file("$buildDir/reports/jacoco")
+        }
+
+        task.jacoco {
+            enabled = true
+            destinationFile = file("$buildDir/jacoco/runServerTest.exec")
+            includes = []
+            excludes = []
+            excludeClassLoaders = []
+            includeNoLocationClasses = true
+        }
+    }
+}
+
+task runServerTestWithCoverage(type:JacocoReport) {
+    // TODO: Run this automatically after runServerTest
+    enabled = true
+    group = 'fg_runs'
+
+    sourceSets sourceSets.main
+    executionData = files("$buildDir/jacoco/runServerTest.exec")
+
+    reports {
+        xml.enabled = false
+        csv.enabled = false
+        html.destination = file("$buildDir/reports/html")
     }
 }
 
