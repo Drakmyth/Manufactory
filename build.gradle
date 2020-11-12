@@ -131,7 +131,7 @@ tasks.whenTaskAdded { task ->
     }
 }
 
-task runServerTestWithCoverage(type:JacocoReport) {
+task generateCoverageReport(type:JacocoReport) {
     // TODO: Run this automatically after runServerTest
     enabled = true
     group = 'fg_runs'

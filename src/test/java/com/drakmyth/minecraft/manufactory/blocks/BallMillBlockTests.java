@@ -32,61 +32,136 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BallMillBlockTests {
-    @Test
-    public void testHorizontalFacingDefaultsToNorth() {
-        // Arrange
-        DirectionProperty property = BallMillBlock.HORIZONTAL_FACING;
+    public static class Constructor extends BallMillBlockTests {
+        @Test
+        public void horizontalFacingDefaultsToNorth() {
+            // Arrange
+            DirectionProperty property = BallMillBlock.HORIZONTAL_FACING;
 
-        // Act
-        BallMillBlock block = new BallMillBlock(defaultProperties());
+            // Act
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            Direction facing = block.getDefaultState().get(property);
 
-        // Assert
-        assertEquals(Direction.NORTH, block.getDefaultState().get(property));
-    }
-
-    @Test
-    public void testCreatesAssociatedTileEntity() {
-        // Arrange
-        BallMillBlock block = new BallMillBlock(defaultProperties());
-        BlockState state = block.getDefaultState();
-        World world = TestUtils.getWorld();
-
-        // Act
-        boolean hasTileEntity = block.hasTileEntity(state);
-        TileEntity tileEntity = block.createTileEntity(state, world);
-
-        // Assert
-        assertTrue(hasTileEntity);
-        assertTrue(tileEntity instanceof BallMillTileEntity);
-    }
-
-    @Test
-    public void testCanConnectToFaceReturnsFalseForAllNonBackFaces() {
-        // Arrange
-        BallMillBlock block = new BallMillBlock(defaultProperties());
-        // North is default, but let's be explicit for the test
-        Direction facing = Direction.NORTH;
-        BlockState state = block.getDefaultState().with(BallMillBlock.HORIZONTAL_FACING, facing);
-        BlockPos pos = new BlockPos(0, 0, 0);
-        List<Direction> nonBackFaces = new ArrayList<>(Arrays.asList(Direction.values()));
-        nonBackFaces.remove(facing.getOpposite());
-        World world = TestUtils.getWorld();
-        Map<Direction, Boolean> results = new HashMap<>();
-
-        // Act
-        for (Direction dir : nonBackFaces) {
-            boolean result = block.canConnectToFace(state, pos, world, dir);
-            results.put(dir, result);
-        }
-
-        // Assert
-        for (Entry<Direction, Boolean> entry : results.entrySet()) {
-            assertNotEquals(facing.getOpposite(), entry.getKey());
-            assertFalse(entry.getValue());
+            // Assert
+            assertEquals(Direction.NORTH, facing);
         }
     }
 
-    private Properties defaultProperties() {
+    public static class HasTileEntity extends BallMillBlockTests {
+        @Test
+        public void returnsTrue() {
+            // Arrange
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            BlockState state = block.getDefaultState();
+
+            // Act
+            boolean hasTileEntity = block.hasTileEntity(state);
+
+            // Assert
+            assertTrue(hasTileEntity);
+        }
+    }
+
+    public static class CreateTileEntity extends BallMillBlockTests {
+        @Test
+        public void createsBallMillTileEntity() {
+            // Arrange
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            BlockState state = block.getDefaultState();
+            World world = TestUtils.getWorld();
+
+            // Act
+            TileEntity tileEntity = block.createTileEntity(state, world);
+
+            // Assert
+            assertTrue(tileEntity instanceof BallMillTileEntity);
+        }
+    }
+
+    public static class CanConnectToFace extends BallMillBlockTests {
+
+        @Test
+        public void returnsFalseIfTileEntityDoesNotExist() {
+            // Arrange
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            BlockState state = block.getDefaultState();
+            BlockPos pos = new BlockPos(0, 0, 0);
+            World world = TestUtils.getWorld();
+            Direction dir = Direction.NORTH;
+
+            // Act
+            boolean canConnectToFace = block.canConnectToFace(state, pos, world, dir);
+
+            // Assert
+            assertFalse(canConnectToFace);
+        }
+
+        @Test
+        public void returnsFalseIfTileEntityWrongType() {
+            // Arrange
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            GrinderBlock grinder = new GrinderBlock(defaultProperties());
+            BlockState state = block.getDefaultState();
+            BlockState grinderState = grinder.getDefaultState();
+            BlockPos pos = new BlockPos(0, 0, 0);
+            World world = TestUtils.getWorld();
+            world.setBlockState(pos, grinderState);
+            Direction dir = Direction.NORTH;
+
+            // Act
+            boolean canConnectToFace = block.canConnectToFace(state, pos, world, dir);
+
+            // Assert
+            assertFalse(canConnectToFace);
+        }
+
+        @Test
+        public void returnsFalseForAllNonBackFaces() {
+            // Arrange
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            // North is default, but let's be explicit for the test
+            Direction facing = Direction.NORTH;
+            BlockState state = block.getDefaultState().with(BallMillBlock.HORIZONTAL_FACING, facing);
+            BlockPos pos = new BlockPos(0, 0, 0);
+            World world = TestUtils.getWorld();
+            world.setBlockState(pos, state);
+            List<Direction> nonBackFaces = new ArrayList<>(Arrays.asList(Direction.values()));
+            nonBackFaces.remove(facing.getOpposite());
+            Map<Direction, Boolean> results = new HashMap<>();
+
+            // Act
+            for (Direction dir : nonBackFaces) {
+                boolean canConnectToFace = block.canConnectToFace(state, pos, world, dir);
+                results.put(dir, canConnectToFace);
+            }
+
+            // Assert
+            for (Entry<Direction, Boolean> entry : results.entrySet()) {
+                assertNotEquals(facing.getOpposite(), entry.getKey());
+                assertFalse(entry.getValue());
+            }
+        }
+
+        @Test
+        public void returnsFalseIfNoPowerUpgradeInstalled() {
+            // Arrange
+            BallMillBlock block = new BallMillBlock(defaultProperties());
+            // North is default, but let's be explicit for the test
+            Direction facing = Direction.NORTH;
+            BlockState state = block.getDefaultState().with(BallMillBlock.HORIZONTAL_FACING, facing);
+            BlockPos pos = new BlockPos(0, 0, 0);
+            World world = TestUtils.getWorld();
+            world.setBlockState(pos, state);
+
+            // Act
+            boolean canConnectToFace = block.canConnectToFace(state, pos, world, facing.getOpposite());
+
+            // Assert
+            assertFalse(canConnectToFace);
+        }
+    }
+
+    protected Properties defaultProperties() {
         return Properties.create(Material.ROCK);
     }
 }
