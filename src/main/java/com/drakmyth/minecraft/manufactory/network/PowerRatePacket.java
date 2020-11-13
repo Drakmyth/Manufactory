@@ -19,25 +19,25 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class MachineProgressPacket {
+public class PowerRatePacket {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private float progress;
-    private float total;
+    private float received;
+    private float expected;
     private BlockPos pos;
 
-    public MachineProgressPacket(float progress, float total, BlockPos pos) {
-        this.progress = progress;
-        this.total = total;
+    public PowerRatePacket(float received, float expected, BlockPos pos) {
+        this.received = received;
+        this.expected = expected;
         this.pos = pos;
     }
 
-    public float getProgress() {
-        return progress;
+    public float getReceived() {
+        return received;
     }
 
-    public float getTotal() {
-        return total;
+    public float getExpected() {
+        return expected;
     }
 
     public BlockPos getPos() {
@@ -45,18 +45,18 @@ public class MachineProgressPacket {
     }
 
     public void encode(PacketBuffer data) {
-        data.writeFloat(progress);
-        data.writeFloat(total);
+        data.writeFloat(received);
+        data.writeFloat(expected);
         data.writeBlockPos(pos);
-        LOGGER.trace("MachineProgress packet encoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace("PowerRate packet encoded { received: %f, expected: %f, pos: (%d, %d, %d) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static MachineProgressPacket decode(PacketBuffer data) {
-        float progress = data.readFloat();
-        float total = data.readFloat();
+    public static PowerRatePacket decode(PacketBuffer data) {
+        float received = data.readFloat();
+        float expected = data.readFloat();
         BlockPos pos = data.readBlockPos();
-        LOGGER.trace("MachineProgress packet decoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
-        return new MachineProgressPacket(progress, total, pos);
+        LOGGER.trace("PowerRate packet decoded { received: %f, expected: %f, pos: (%d, %d, %d) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
+        return new PowerRatePacket(received, expected, pos);
     }
 
     public void handle(Supplier<Context> contextSupplier) {
@@ -67,7 +67,7 @@ public class MachineProgressPacket {
 
                 @Override
                 public void run() {
-                    LOGGER.trace("Processing MachineProgress packet...");
+                    LOGGER.trace("Processing PowerRate packet...");
                     Minecraft minecraft = Minecraft.getInstance();
                     World world = minecraft.world;
                     if (!world.isAreaLoaded(pos, 1)) {
@@ -75,17 +75,17 @@ public class MachineProgressPacket {
                         return;
                     }
                     TileEntity te = world.getTileEntity(pos);
-                    if (!(te instanceof IMachineProgressListener)) {
-                        LOGGER.warn("Position (%d, %d, %d) does not contain an IMachineProgressListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                    if (!(te instanceof IPowerRateListener)) {
+                        LOGGER.warn("Position (%d, %d, %d) does not contain an IPowerRateListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    IMachineProgressListener mpl = (IMachineProgressListener) te;
-                    mpl.onProgressUpdate(progress, total);
-                    LOGGER.trace("Machine progress synced - progress %f, total %f", progress, total);
+                    IPowerRateListener prl = (IPowerRateListener) te;
+                    prl.onPowerRateUpdate(received, expected);
+                    LOGGER.trace("Power rate synced - received %f, expected %f", received, expected);
                 }
             });
         });
         ctx.setPacketHandled(true);
-        LOGGER.trace("MachineProgress packet received and queued");
+        LOGGER.trace("PowerRate packet received and queued");
     }
 }

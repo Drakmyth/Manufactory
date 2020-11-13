@@ -5,6 +5,6 @@
 
 package com.drakmyth.minecraft.manufactory.network;
 
-public interface IMachineProgressListener {
-    void onProgressUpdate(float progress, float total);
+public interface IPowerRateListener {
+    void onPowerRateUpdate(float received, float expected);
 }
