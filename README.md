@@ -1,5 +1,7 @@
 Manufactory
 ===========
+![GitHub CI](https://github.com/Drakmyth/Manufactory/workflows/GitHub%20CI/badge.svg)
+
 Manufactory is a tech mod for Minecraft focused on automation and resource generation.
 
 Issues
