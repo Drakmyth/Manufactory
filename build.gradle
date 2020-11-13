@@ -49,6 +49,9 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
+            // Stop forge from killing the Gradle daemon on exit
+            forceExit false
+
             mods {
                 manufactory {
                     source sourceSets.main
@@ -65,6 +68,9 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
+            // Stop forge from killing the Gradle daemon on exit
+            forceExit false
+
             mods {
                 manufactory {
                     source sourceSets.main
@@ -80,6 +86,9 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+
+            // Stop forge from killing the Gradle daemon on exit
+            forceExit false
 
             args '--mod', project.modid, '--all', '--existing', file('src/main/resources/'), '--output', file('src/generated/resources/')
 
@@ -102,6 +111,7 @@ minecraft {
                 "${project.modid}%%${sourceSets.test.output.classesDir}",
             )
             environment 'target', 'fmltestserver'
+            forceExit false
             mods {
                 manufactory {
                     sources sourceSets.test
