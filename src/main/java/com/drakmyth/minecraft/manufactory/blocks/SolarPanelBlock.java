@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.blocks;
 
+import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
@@ -113,8 +114,8 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
 
         // TODO: change pos.up() to pos once solar panel is no longer a full block size
         float lightAndWeatherFactor = world.getLight(pos.up()) / 15f;
-        // TODO: make 0.03125f read from config file
-        float availablePower = 0.03125f * timeFactor * lightAndWeatherFactor;
+        float peakPowerGen = ConfigData.SERVER.SolarPanelPeakPowerGeneration.get().floatValue();
+        float availablePower = peakPowerGen * timeFactor * lightAndWeatherFactor;
         LOGGER.trace("Solar Panel at (%d, %d, %d) made %f power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);
         return availablePower;
     }
