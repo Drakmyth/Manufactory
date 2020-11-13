@@ -26,6 +26,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 public class LatexCollectorTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private int totalTicks = 0;
     private int ticksRemaining = 0;
 
     public LatexCollectorTileEntity() {
@@ -49,7 +50,8 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
         LOGGER.debug("Tapped, starting countdown...");
 
         int configFillTimeSeconds = ConfigData.SERVER.LatexFillSeconds.get();
-        ticksRemaining = 20 * configFillTimeSeconds;
+        totalTicks = 20 * configFillTimeSeconds;
+        ticksRemaining = totalTicks;
 
         World world = getWorld();
         if (world.isRemote()) return true;
@@ -60,9 +62,8 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     }
 
     private void updateClient() {
-        // TODO: Latex Collector should use a different packet, rather than hijacking MachineProgress
         LOGGER.trace("Sending MachineProgress packet to update animation at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
-        MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, 0, 0, 0, getPos());
+        MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, totalTicks, getPos());
         Chunk chunk = world.getChunkAt(getPos());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
         LOGGER.trace("Packet sent");
@@ -84,6 +85,7 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
         LOGGER.trace("Writing Latex Collector at (%d, %d, %d) to NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
+        compound.putInt("totalTicks", totalTicks);
         compound.putInt("ticksRemaining", ticksRemaining);
         return compound;
     }
@@ -92,11 +94,13 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
     public void read(BlockState state, CompoundNBT nbt) {
         super.read(state, nbt);
         LOGGER.debug("Reading Latex Collector at (%d, %d, %d) from NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
+        totalTicks = nbt.getInt("totalTicks");
         ticksRemaining = nbt.getInt("ticksRemaining");
         LOGGER.debug("Latex Collector Loaded!");
     }
 
     private void reset() {
+        totalTicks = 0;
         ticksRemaining = 0;
         markDirty();
     }
@@ -127,11 +131,8 @@ public class LatexCollectorTileEntity extends TileEntity implements ITickableTil
 
     @Override
     public void onProgressUpdate(float progress, float total) {
+        totalTicks = (int)total;
         ticksRemaining = (int)progress;
-        LOGGER.debug("Latex Collector at (%d, %d, %d) synced progress with ticksRemaining %d", getPos().getX(), getPos().getY(), getPos().getZ(), ticksRemaining);
-    }
-
-    @Override
-    public void onPowerRateUpdate(float amount, float expected) {
+        LOGGER.debug("Latex Collector at (%d, %d, %d) synced progress with ticksRemaining %d and totalTicks %d", getPos().getX(), getPos().getY(), getPos().getZ(), ticksRemaining, totalTicks);
     }
 }

@@ -34,5 +34,12 @@ public class ModPacketHandler {
                 .decoder(MachineProgressPacket::decode)
                 .consumer(MachineProgressPacket::handle)
                 .add();
+
+        LOGGER.info("Registering PowerRatePacket with id %d...", messageId);
+        INSTANCE.messageBuilder(PowerRatePacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(PowerRatePacket::encode)
+                .decoder(PowerRatePacket::decode)
+                .consumer(PowerRatePacket::handle)
+                .add();
     }
 }

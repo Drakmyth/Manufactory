@@ -12,8 +12,10 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
+import com.drakmyth.minecraft.manufactory.network.IPowerRateListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
+import com.drakmyth.minecraft.manufactory.network.PowerRatePacket;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +33,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener {
+public class GrinderTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener, IPowerRateListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
@@ -81,9 +83,9 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
 
     // Client-Side Only
     @Override
-    public void onPowerRateUpdate(float amount, float expected) {
+    public void onPowerRateUpdate(float received, float expected) {
         // TODO: Consider using a rolling window to display ramp up/down
-        lastPowerReceived = amount;
+        lastPowerReceived = received;
         maxPowerPerTick = expected;
         LOGGER.trace("Grinder at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getPos().getX(), getPos().getY(), getPos().getZ(), lastPowerReceived, maxPowerPerTick);
     }
@@ -163,10 +165,13 @@ public class GrinderTileEntity extends TileEntity implements ITickableTileEntity
     }
 
     private void updateClientGui() {
-        LOGGER.trace("Sending MachineProgress packet to update gui at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
-        MachineProgressPacket msg = new MachineProgressPacket(powerRemaining, powerRequired, lastPowerReceived, maxPowerPerTick, getPos());
+        MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getPos());
+        PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getPos());
         Chunk chunk = world.getChunkAt(getPos());
-        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
+        LOGGER.trace("Sending MachineProgress packet to update gui at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
+        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
+        LOGGER.trace("Sending PowerRate packet to update gui at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
+        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
         LOGGER.trace("Packet sent");
     }
 
