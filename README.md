@@ -1,6 +1,8 @@
 Manufactory
 ===========
-![GitHub CI](https://github.com/Drakmyth/Manufactory/workflows/GitHub%20CI/badge.svg)
+[![GitHub CI](https://github.com/Drakmyth/Manufactory/workflows/GitHub%20CI/badge.svg)](https://github.com/Drakmyth/Manufactory/actions?query=workflow%3A%22GitHub+CI%22+branch%3Amaster)
+[![Codecov](https://img.shields.io/codecov/c/github/Drakmyth/Manufactory)](https://codecov.io/gh/Drakmyth/Manufactory)
+[![License](https://img.shields.io/github/license/Drakmyth/Manufactory)](https://github.com/Drakmyth/Manufactory/blob/master/LICENSE.md)
 
 Manufactory is a tech mod for Minecraft focused on automation and resource generation.
 
