@@ -142,7 +142,22 @@ tasks.whenTaskAdded { task ->
 }
 
 task generateCoverageReport(type:JacocoReport) {
-    // TODO: Run this automatically after runServerTest
+    enabled = true
+
+    sourceSets sourceSets.main
+    executionData = files("$buildDir/jacoco/runServerTest.exec")
+
+    reports {
+        xml {
+            enabled = true
+            destination = file("$buildDir/reports/coverage.xml")
+        }
+        csv.enabled = false
+        html.enabled = false
+    }
+}
+
+task runServerTestWithCoverage(type:JacocoReport, dependsOn: 'runServerTest') {
     enabled = true
     group = 'fg_runs'
 
@@ -152,7 +167,10 @@ task generateCoverageReport(type:JacocoReport) {
     reports {
         xml.enabled = false
         csv.enabled = false
-        html.destination = file("$buildDir/reports/html")
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/html")
+        }
     }
 }
 
