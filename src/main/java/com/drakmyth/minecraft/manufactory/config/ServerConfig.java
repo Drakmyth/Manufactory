@@ -17,6 +17,7 @@ public class ServerConfig {
     public final ForgeConfigSpec.IntValue AmberTapSpawnCount;
     public final ForgeConfigSpec.IntValue LatexFillSeconds;
     public final ForgeConfigSpec.IntValue FullLatexSpawnCount;
+    public final ForgeConfigSpec.DoubleValue SolarPanelPeakPowerGeneration;
 
     ServerConfig(ForgeConfigSpec.Builder builder) {
         LOGGER.debug("Initializing SERVER config...");
@@ -30,6 +31,8 @@ public class ServerConfig {
         .defineInRange("latexFillSeconds", 600, 1, Integer.MAX_VALUE);
         FullLatexSpawnCount = builder.comment("Number of Coagulated Latex player receives from a full Latex Collector")
         .defineInRange("fullLatexSpawnCount", 1, 0, Integer.MAX_VALUE);
+        SolarPanelPeakPowerGeneration = builder.comment("Amount of power a Solar Panel will generate per tick at noon when it's not raining")
+        .defineInRange("solarPanelPeakPowerGeneration", 0.03125, 0, Double.MAX_VALUE);
         builder.pop();
     }
 }
