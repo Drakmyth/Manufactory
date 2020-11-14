@@ -7,12 +7,14 @@ package com.drakmyth.minecraft.manufactory.datagen;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -23,7 +25,7 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class AnimatedTextureProvider implements IDataProvider {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-    private final Map<ResourceLocation, Integer> data = new TreeMap<>();
+    private final Map<ResourceLocation, Builder> data = new TreeMap<>();
     private final DataGenerator gen;
     private final String modid;
 
@@ -39,10 +41,10 @@ public abstract class AnimatedTextureProvider implements IDataProvider {
         registerAnimatedTextures();
         if (data.isEmpty()) return;
 
-        for (Entry<ResourceLocation, Integer> entry : data.entrySet()) {
+        for (Entry<ResourceLocation, Builder> entry : data.entrySet()) {
             ResourceLocation key = entry.getKey();
             Path path = this.gen.getOutputFolder().resolve("assets/" + key.getNamespace() + "/textures/" + key.getPath() + ".mcmeta");
-            IDataProvider.save(GSON, cache, toJson(entry.getValue()), path);
+            IDataProvider.save(GSON, cache, entry.getValue().toJson(), path);
         }
     }
 
@@ -51,12 +53,10 @@ public abstract class AnimatedTextureProvider implements IDataProvider {
         return "AnimatedTextures: " + modid;
     }
 
-    public void texture(ResourceLocation texture) {
-        texture(texture, null);
-    }
-
-    public void texture(ResourceLocation texture, Integer frametime) {
-        data.put(texture, frametime);
+    public Builder getBuilder(ResourceLocation texture) {
+        Builder builder = new Builder();
+        data.put(texture, builder);
+        return builder;
     }
 
     public ResourceLocation mcLoc(String path) {
@@ -67,13 +67,38 @@ public abstract class AnimatedTextureProvider implements IDataProvider {
         return new ResourceLocation(modid, path);
     }
 
-    private JsonElement toJson(Integer frametime) {
-        JsonObject animation = new JsonObject();
-        if (frametime != null) {
-            animation.addProperty("frametime", frametime);
+    public class Builder {
+        private Integer frametime;
+        private int[] frames;
+
+        public Builder() {
+            frametime = null;
+            frames = new int[0];
         }
-        JsonObject root = new JsonObject();
-        root.add("animation", animation);
-        return root;
+
+        public Builder frametime(int frametime) {
+            this.frametime = frametime;
+            return this;
+        }
+
+        public Builder frames(int... frames) {
+            this.frames = frames;
+            return this;
+        }
+
+        public JsonElement toJson() {
+            JsonObject animation = new JsonObject();
+            if (frametime != null) {
+                animation.addProperty("frametime", frametime);
+            }
+            if (frames.length > 0) {
+                JsonArray framesArray = new JsonArray();
+                Arrays.stream(frames).forEach(frame -> framesArray.add(frame));
+                animation.add("frames", framesArray);
+            }
+            JsonObject root = new JsonObject();
+            root.add("animation", animation);
+            return root;
+        }
     }
 }
