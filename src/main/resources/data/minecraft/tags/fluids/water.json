@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "manufactory:test_fluid",
-    "manufactory:test_flowing"
+    "manufactory:slurried_coal_ore",
+    "manufactory:slurried_coal_ore_flowing"
   ]
 }
