@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "manufactory:test_fluid",
+    "manufactory:test_flowing"
+  ]
+}
