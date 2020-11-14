@@ -3,7 +3,7 @@
   "textures": {
     "front": "manufactory:block/grinder_side",
     "side": "manufactory:block/grinder_side",
-    "inside": "manufactory:block/grinder_inside",
+    "inside": "manufactory:block/grinder_side",
     "back": "manufactory:block/grinder_back_socket",
     "top": "manufactory:block/grinder_top",
     "bottom": "minecraft:block/furnace_top",
