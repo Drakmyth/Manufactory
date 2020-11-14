@@ -18,6 +18,7 @@ import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.blocks.SolarPanelBlock;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -38,6 +39,8 @@ public final class ModBlocks {
     public static final RegistryObject<Block> POWER_CABLE = BLOCKS.register("power_cable", () -> new PowerCableBlock(Block.Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0.7f).sound(SoundType.METAL)));
     public static final RegistryObject<Block> SOLAR_PANEL = BLOCKS.register("solar_panel", () -> new SolarPanelBlock(defaultMachineProperties()));
 
+    public static final RegistryObject<FlowingFluidBlock> TEST_FLUID_BLOCK = BLOCKS.register("test_fluid", () -> new FlowingFluidBlock(() -> ModFluids.TEST_FLUID.get(), defaultFluidProperties()));
+
     private static Block.Properties defaultDecorProperties(MaterialColor color) {
         return Block.Properties.create(Material.IRON, color)
             .setRequiresTool()
@@ -53,6 +56,13 @@ public final class ModBlocks {
             .harvestTool(ToolType.PICKAXE)
             .harvestLevel(ItemTier.WOOD.getHarvestLevel())
             .hardnessAndResistance(3.5f);
+    }
+
+    private static Block.Properties defaultFluidProperties() {
+        return Block.Properties.create(Material.WATER)
+            .doesNotBlockMovement()
+            .hardnessAndResistance(100f)
+            .noDrops();
     }
 
     public static final Map<RegistryObject<Block>, Item.Properties> BLOCKITEM_PROPS = Stream.of(

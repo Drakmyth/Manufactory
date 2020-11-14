@@ -8,6 +8,7 @@ package com.drakmyth.minecraft.manufactory;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModFluids;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
@@ -41,6 +42,8 @@ public class ManufactoryMod {
         LOGGER.info("Registering items...");
         ModItems.ITEMS.register(modEventBus);
         LOGGER.info("Item registration complete");
+
+        ModFluids.FLUIDS.register(modEventBus);
 
         LOGGER.info("Registering tile entity types...");
         ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);

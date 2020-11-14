@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory;
 
 import com.drakmyth.minecraft.manufactory.commands.PowerNetworkArgument;
+import com.drakmyth.minecraft.manufactory.datagen.ModAnimatedTextureProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
@@ -23,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
@@ -48,6 +50,7 @@ public final class ModEventSubscriber {
         final IForgeRegistry<Item> registry = event.getRegistry();
 
         ModBlocks.BLOCKS.getEntries().stream()
+            .filter(blockRegistryObject -> !(blockRegistryObject.get() instanceof FlowingFluidBlock))
             .forEach(blockRegistryObject -> {
                 final Item.Properties properties = ModBlocks.BLOCKITEM_PROPS.getOrDefault(blockRegistryObject, ModBlocks.defaultBlockItemProps());
                 final Block block = blockRegistryObject.get();
@@ -66,6 +69,7 @@ public final class ModEventSubscriber {
         generator.addProvider(new ModLootTableProvider(generator));
         generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModLanguageProvider(generator, "en_us"));
+        generator.addProvider(new ModAnimatedTextureProvider(generator));
         LOGGER.info("Data generator registration complete");
     }
 

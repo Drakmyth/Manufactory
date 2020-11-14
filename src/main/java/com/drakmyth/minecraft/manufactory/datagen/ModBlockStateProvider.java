@@ -86,6 +86,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/rubber", "item/generated").texture("layer0", modLoc("item/rubber"));
         itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", modLoc("item/tapping_knife"));
 
+        ModelFile testFluidModel = models().getBuilder("test_fluid").texture("particle", mcLoc("block/water_still"));
+        simpleBlock(ModBlocks.TEST_FLUID_BLOCK.get(), testFluidModel);
+        // getVariantBuilder(ModBlocks.TEST_FLUID_BLOCK.get()).forAllStates(state -> {
+        //     return ConfiguredModel.builder().modelFile(testFluidModel).build();
+        // });
+
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
         ModelFile powerCableSideModel = generatePartialPowerCableSideModel();
         ModelFile powerCableUpModel = generatePartialPowerCableUpModel();
@@ -256,7 +262,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         builder.texture("front", modLoc("block/grinder_side"));
         builder.texture("side", modLoc("block/grinder_side"));
-        builder.texture("inside", modLoc("block/grinder_inside"));
+        builder.texture("inside", modLoc("block/grinder_side"));
         builder.texture("back", modLoc("block/grinder_back_socket"));
         builder.texture("top", modLoc("block/grinder_top"));
         builder.texture("bottom", mcLoc("block/furnace_top"));
