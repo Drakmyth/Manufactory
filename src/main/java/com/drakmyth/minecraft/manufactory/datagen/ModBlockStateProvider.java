@@ -85,6 +85,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/ground_ancient_debris_fine", "item/generated").texture("layer0", modLoc("item/ground_ancient_debris_fine"));
         itemModels().withExistingParent("item/rubber", "item/generated").texture("layer0", modLoc("item/rubber"));
         itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", modLoc("item/tapping_knife"));
+        itemModels().withExistingParent("item/test_fluid_bucket", "item/handheld").texture("layer0", mcLoc("item/bucket"));
 
         ModelFile testFluidModel = models().getBuilder("test_fluid").texture("particle", mcLoc("block/water_still"));
         simpleBlock(ModBlocks.TEST_FLUID_BLOCK.get(), testFluidModel);

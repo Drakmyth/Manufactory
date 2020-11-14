@@ -29,6 +29,8 @@ public final class ModFluids {
 
     private static Properties defaultProperties() {
         Builder attributes = FluidAttributes.builder(TEST_FLUID_STILL, TEST_FLUID_FLOWING);
-        return new Properties(() -> TEST_FLUID.get(), () -> TEST_FLOWING.get(), attributes).block(() -> ModBlocks.TEST_FLUID_BLOCK.get());
+        return new Properties(() -> TEST_FLUID.get(), () -> TEST_FLOWING.get(), attributes)
+            .block(() -> ModBlocks.TEST_FLUID_BLOCK.get())
+            .bucket(() -> ModItems.TEST_FLUID_BUCKET.get());
     }
 }
