@@ -2,6 +2,6 @@
   "replace": false,
   "values": [
     "manufactory:slurried_coal_ore",
-    "manufactory:slurried_coal_ore_flowing"
+    "manufactory:flowing_slurried_coal_ore"
   ]
 }
