@@ -87,7 +87,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", modLoc("item/tapping_knife"));
         itemModels().withExistingParent("item/slurried_coal_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_coal_ore_bucket"));
 
-        ModelFile slurriedCoalOreModel = models().getBuilder("slurried_coal_ore").texture("particle", mcLoc("block/water_still"));
+        ModelFile slurriedCoalOreModel = models().getBuilder("slurried_coal_ore").texture("particle", modLoc("block/slurried_coal_ore_still"));
         simpleBlock(ModBlocks.SLURRIED_COAL_ORE.get(), slurriedCoalOreModel);
 
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
