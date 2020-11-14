@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "manufactory:item/slurried_redstone_ore_bucket"
+  }
+}

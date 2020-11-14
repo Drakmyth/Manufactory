@@ -68,6 +68,14 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.RUBBER, "Rubber");
         addItem(ModItems.TAPPING_KNIFE, "Tapping Knife");
         addItem(ModItems.SLURRIED_COAL_ORE_BUCKET, "Slurried Coal Ore Bucket");
+        addItem(ModItems.SLURRIED_DIAMOND_ORE_BUCKET, "Slurried Diamond Ore Bucket");
+        addItem(ModItems.SLURRIED_EMERALD_ORE_BUCKET, "Slurried Emerald Ore Bucket");
+        addItem(ModItems.SLURRIED_GOLD_ORE_BUCKET, "Slurried Gold Ore Bucket");
+        addItem(ModItems.SLURRIED_IRON_ORE_BUCKET, "Slurried Iron Ore Bucket");
+        addItem(ModItems.SLURRIED_LAPIS_ORE_BUCKET, "Slurried Lapis Lazuli Ore Bucket");
+        addItem(ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET, "Slurried Nether Quartz Ore Bucket");
+        addItem(ModItems.SLURRIED_REDSTONE_ORE_BUCKET, "Slurried Redstone Ore Bucket");
+        addItem(ModItems.SLURRIED_ANCIENT_DEBRIS_BUCKET, "Slurried Ancient Debris Bucket");
 
         add("itemGroup.manufactory", "Manufactory");
     }

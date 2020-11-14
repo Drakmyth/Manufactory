@@ -86,9 +86,33 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("item/rubber", "item/generated").texture("layer0", modLoc("item/rubber"));
         itemModels().withExistingParent("item/tapping_knife", "item/handheld").texture("layer0", modLoc("item/tapping_knife"));
         itemModels().withExistingParent("item/slurried_coal_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_coal_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_diamond_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_diamond_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_emerald_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_emerald_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_gold_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_gold_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_iron_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_iron_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_lapis_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_lapis_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_nether_quartz_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_nether_quartz_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_redstone_ore_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_redstone_ore_bucket"));
+        itemModels().withExistingParent("item/slurried_ancient_debris_bucket", "item/handheld").texture("layer0", modLoc("item/slurried_ancient_debris_bucket"));
 
         ModelFile slurriedCoalOreModel = models().getBuilder("slurried_coal_ore").texture("particle", modLoc("block/slurried_coal_ore_still"));
         simpleBlock(ModBlocks.SLURRIED_COAL_ORE.get(), slurriedCoalOreModel);
+        ModelFile slurriedDiamondOreModel = models().getBuilder("slurried_diamond_ore").texture("particle", modLoc("block/slurried_diamond_ore_still"));
+        simpleBlock(ModBlocks.SLURRIED_DIAMOND_ORE.get(), slurriedDiamondOreModel);
+        ModelFile slurriedEmeraldOreModel = models().getBuilder("slurried_emerald_ore").texture("particle", modLoc("block/slurried_emerald_ore_still"));
+        simpleBlock(ModBlocks.SLURRIED_EMERALD_ORE.get(), slurriedEmeraldOreModel);
+        ModelFile slurriedGoldOreModel = models().getBuilder("slurried_gold_ore").texture("particle", modLoc("block/slurried_gold_ore_still"));
+        simpleBlock(ModBlocks.SLURRIED_GOLD_ORE.get(), slurriedGoldOreModel);
+        ModelFile slurriedIronOreModel = models().getBuilder("slurried_iron_ore").texture("particle", modLoc("block/slurried_iron_ore_still"));
+        simpleBlock(ModBlocks.SLURRIED_IRON_ORE.get(), slurriedIronOreModel);
+        ModelFile slurriedLapisOreModel = models().getBuilder("slurried_lapis_ore").texture("particle", modLoc("block/slurried_lapis_ore_still"));
+        simpleBlock(ModBlocks.SLURRIED_LAPIS_ORE.get(), slurriedLapisOreModel);
+        ModelFile slurriedNetherQuartzOreModel = models().getBuilder("slurried_nether_quartz_ore").texture("particle", modLoc("block/slurried_nether_quartz_ore_still"));
+        simpleBlock(ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get(), slurriedNetherQuartzOreModel);
+        ModelFile slurriedRedstoneOreModel = models().getBuilder("slurried_redstone_ore").texture("particle", modLoc("block/slurried_redstone_ore_still"));
+        simpleBlock(ModBlocks.SLURRIED_REDSTONE_ORE.get(), slurriedRedstoneOreModel);
+        ModelFile slurriedAncientDebrisModel = models().getBuilder("slurried_ancient_debris").texture("particle", modLoc("block/slurried_ancient_debris_still"));
+        simpleBlock(ModBlocks.SLURRIED_ANCIENT_DEBRIS.get(), slurriedAncientDebrisModel);
 
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
         ModelFile powerCableSideModel = generatePartialPowerCableSideModel();

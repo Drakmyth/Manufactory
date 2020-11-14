@@ -21,8 +21,24 @@ public class ModTagsProvider {
 
         @Override
         protected void registerTags() {
-            getOrCreateBuilder(FluidTags.WATER).add(ModFluids.SLURRIED_COAL_ORE.get());
-            getOrCreateBuilder(FluidTags.WATER).add(ModFluids.SLURRIED_COAL_ORE_FLOWING.get());
+            getOrCreateBuilder(FluidTags.WATER).add(ModFluids.SLURRIED_COAL_ORE.get())
+                                               .add(ModFluids.SLURRIED_COAL_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_DIAMOND_ORE.get())
+                                               .add(ModFluids.SLURRIED_DIAMOND_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_EMERALD_ORE.get())
+                                               .add(ModFluids.SLURRIED_EMERALD_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_GOLD_ORE.get())
+                                               .add(ModFluids.SLURRIED_GOLD_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_IRON_ORE.get())
+                                               .add(ModFluids.SLURRIED_IRON_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_LAPIS_ORE.get())
+                                               .add(ModFluids.SLURRIED_LAPIS_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get())
+                                               .add(ModFluids.SLURRIED_NETHER_QUARTZ_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_REDSTONE_ORE.get())
+                                               .add(ModFluids.SLURRIED_REDSTONE_ORE_FLOWING.get())
+                                               .add(ModFluids.SLURRIED_ANCIENT_DEBRIS.get())
+                                               .add(ModFluids.SLURRIED_ANCIENT_DEBRIS_FLOWING.get());
         }
     }
 

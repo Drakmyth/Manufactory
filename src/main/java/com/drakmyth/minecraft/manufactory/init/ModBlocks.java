@@ -40,6 +40,14 @@ public final class ModBlocks {
     public static final RegistryObject<Block> SOLAR_PANEL = BLOCKS.register("solar_panel", () -> new SolarPanelBlock(defaultMachineProperties()));
 
     public static final RegistryObject<FlowingFluidBlock> SLURRIED_COAL_ORE = BLOCKS.register("slurried_coal_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_COAL_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_DIAMOND_ORE = BLOCKS.register("slurried_diamond_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_DIAMOND_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_EMERALD_ORE = BLOCKS.register("slurried_emerald_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_EMERALD_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_GOLD_ORE = BLOCKS.register("slurried_gold_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_GOLD_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_IRON_ORE = BLOCKS.register("slurried_iron_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_IRON_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_LAPIS_ORE = BLOCKS.register("slurried_lapis_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_LAPIS_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_NETHER_QUARTZ_ORE = BLOCKS.register("slurried_nether_quartz_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_REDSTONE_ORE = BLOCKS.register("slurried_redstone_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_ANCIENT_DEBRIS = BLOCKS.register("slurried_ancient_debris", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), defaultFluidProperties()));
 
     private static Block.Properties defaultDecorProperties(MaterialColor color) {
         return Block.Properties.create(Material.IRON, color)
