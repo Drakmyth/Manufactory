@@ -70,7 +70,7 @@ public final class ModEventSubscriber {
         generator.addProvider(new ModLootTableProvider(generator));
         generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModLanguageProvider(generator, "en_us"));
-        generator.addProvider(new ModAnimatedTextureProvider(generator));
+        generator.addProvider(new ModAnimatedTextureProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModTagsProvider.Fluids(generator, event.getExistingFileHelper()));
         LOGGER.info("Data generator registration complete");
     }

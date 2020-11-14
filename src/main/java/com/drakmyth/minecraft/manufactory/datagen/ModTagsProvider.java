@@ -21,8 +21,8 @@ public class ModTagsProvider {
 
         @Override
         protected void registerTags() {
-            getOrCreateBuilder(FluidTags.WATER).add(ModFluids.TEST_FLUID.get());
-            getOrCreateBuilder(FluidTags.WATER).add(ModFluids.TEST_FLOWING.get());
+            getOrCreateBuilder(FluidTags.WATER).add(ModFluids.SLURRIED_COAL_ORE.get());
+            getOrCreateBuilder(FluidTags.WATER).add(ModFluids.SLURRIED_COAL_ORE_FLOWING.get());
         }
     }
 

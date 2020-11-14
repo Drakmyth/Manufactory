@@ -39,7 +39,7 @@ public final class ModBlocks {
     public static final RegistryObject<Block> POWER_CABLE = BLOCKS.register("power_cable", () -> new PowerCableBlock(Block.Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0.7f).sound(SoundType.METAL)));
     public static final RegistryObject<Block> SOLAR_PANEL = BLOCKS.register("solar_panel", () -> new SolarPanelBlock(defaultMachineProperties()));
 
-    public static final RegistryObject<FlowingFluidBlock> TEST_FLUID_BLOCK = BLOCKS.register("test_fluid", () -> new FlowingFluidBlock(() -> ModFluids.TEST_FLUID.get(), defaultFluidProperties()));
+    public static final RegistryObject<FlowingFluidBlock> SLURRIED_COAL_ORE = BLOCKS.register("slurried_coal_ore", () -> new FlowingFluidBlock(() -> ModFluids.SLURRIED_COAL_ORE.get(), defaultFluidProperties()));
 
     private static Block.Properties defaultDecorProperties(MaterialColor color) {
         return Block.Properties.create(Material.IRON, color)

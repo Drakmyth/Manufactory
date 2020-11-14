@@ -65,8 +65,7 @@ public final class ModItems {
     public static final RegistryObject<Item> GROUND_ANCIENT_DEBRIS_FINE = ITEMS.register("ground_ancient_debris_fine", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> RUBBER = ITEMS.register("rubber", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> TAPPING_KNIFE = ITEMS.register("tapping_knife", () -> new TappingKnifeItem(singleItemProperties()));
-    public static final RegistryObject<Item> TEST_FLUID_BUCKET = ITEMS.register("test_fluid_bucket", () -> new BucketItem(() -> ModFluids.TEST_FLUID.get(), singleItemProperties()));
-    // public static final RegistryObject<Item> SLURRIED_COAL_ORE_BUCKET = ITEMS.register("slurried_coal_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_COAL_ORE.get(), singleItemProperties()));
+    public static final RegistryObject<Item> SLURRIED_COAL_ORE_BUCKET = ITEMS.register("slurried_coal_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_COAL_ORE.get(), singleItemProperties()));
     // public static final RegistryObject<Item> SLURRIED_DIAMOND_ORE_BUCKET = ITEMS.register("slurried_diamond_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_DIAMOND_ORE.get(), singleItemProperties()));
     // public static final RegistryObject<Item> SLURRIED_EMERALD_ORE_BUCKET = ITEMS.register("slurried_emerald_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_EMERALD_ORE.get(), singleItemProperties()));
     // public static final RegistryObject<Item> SLURRIED_GOLD_ORE_BUCKET = ITEMS.register("slurried_gold_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_GOLD_ORE.get(), singleItemProperties()));

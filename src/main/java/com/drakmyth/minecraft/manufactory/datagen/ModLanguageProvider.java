@@ -67,6 +67,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.GROUND_ANCIENT_DEBRIS_FINE, "Ground Ancient Debris (Fine)");
         addItem(ModItems.RUBBER, "Rubber");
         addItem(ModItems.TAPPING_KNIFE, "Tapping Knife");
+        addItem(ModItems.SLURRIED_COAL_ORE_BUCKET, "Slurried Coal Ore Bucket");
 
         add("itemGroup.manufactory", "Manufactory");
     }
