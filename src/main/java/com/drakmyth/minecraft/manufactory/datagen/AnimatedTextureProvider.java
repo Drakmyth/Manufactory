@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -21,17 +22,21 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
+import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public abstract class AnimatedTextureProvider implements IDataProvider {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
     private final Map<ResourceLocation, Builder> data = new TreeMap<>();
     private final DataGenerator gen;
     private final String modid;
+    private final ExistingFileHelper existingFileHelper;
 
-    public AnimatedTextureProvider(DataGenerator gen, String modid) {
+    public AnimatedTextureProvider(DataGenerator gen, String modid, ExistingFileHelper existingFileHelper) {
         this.gen = gen;
         this.modid = modid;
+        this.existingFileHelper = existingFileHelper;
     }
 
     protected abstract void registerAnimatedTextures();
@@ -43,7 +48,7 @@ public abstract class AnimatedTextureProvider implements IDataProvider {
 
         for (Entry<ResourceLocation, Builder> entry : data.entrySet()) {
             ResourceLocation key = entry.getKey();
-            Path path = this.gen.getOutputFolder().resolve("assets/" + key.getNamespace() + "/textures/" + key.getPath() + ".mcmeta");
+            Path path = this.gen.getOutputFolder().resolve("assets/" + key.getNamespace() + "/textures/" + key.getPath() + ".png.mcmeta");
             IDataProvider.save(GSON, cache, entry.getValue().toJson(), path);
         }
     }
@@ -54,6 +59,9 @@ public abstract class AnimatedTextureProvider implements IDataProvider {
     }
 
     public Builder getBuilder(ResourceLocation texture) {
+        Preconditions.checkNotNull(texture, "Texture must not be null");
+        Preconditions.checkArgument(existingFileHelper.exists(texture, ResourcePackType.CLIENT_RESOURCES, ".png", "textures"),
+                "Texture %s does not exist in any known resource pack", texture);
         Builder builder = new Builder();
         data.put(texture, builder);
         return builder;
