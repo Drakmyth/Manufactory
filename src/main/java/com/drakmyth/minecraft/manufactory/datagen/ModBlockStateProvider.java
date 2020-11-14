@@ -12,7 +12,6 @@ import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +34,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        ModelFile amberBlockModel = cubeAllWithTexture(ModBlocks.AMBER_BLOCK.get(), modLoc("block/amber_block"));
+        ModelFile amberBlockModel = cubeAll(ModBlocks.AMBER_BLOCK.get());
         simpleBlock(ModBlocks.AMBER_BLOCK.get(), amberBlockModel);
         itemModels().getBuilder("amber_block").parent(amberBlockModel);
 
@@ -81,10 +80,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile ballMillModel = generateBallMillModel();
         generateBallMillBlockState(ballMillModel);
         itemModels().getBuilder("ball_mill").parent(ballMillModel);
-    }
-
-    private ModelFile cubeAllWithTexture(Block block, ResourceLocation texture) {
-        return models().cubeAll(block.getRegistryName().getPath(), texture);
     }
 
     private ModelFile generateLatexCollectorEmptyModel() {
