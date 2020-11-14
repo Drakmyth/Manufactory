@@ -259,12 +259,17 @@ task refreshGeneratedAssets {
             into 'src/main/resources'
             exclude '**/.cache'
         }
+        // TODO: genericize this so we don't need a separate copy block for each psd
         copy {
             from 'psd/spritesheet-assets'
             into 'src/main/resources/assets/manufactory/textures'
         }
         copy {
             from 'psd/guis-assets'
+            into 'src/main/resources/assets/manufactory/textures'
+        }
+        copy {
+            from 'psd/fluids-assets'
             into 'src/main/resources/assets/manufactory/textures'
         }
     }

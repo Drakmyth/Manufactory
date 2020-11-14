@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "manufactory:slurried_coal_ore",
+    "manufactory:flowing_slurried_coal_ore",
+    "manufactory:slurried_diamond_ore",
+    "manufactory:flowing_slurried_diamond_ore",
+    "manufactory:slurried_emerald_ore",
+    "manufactory:flowing_slurried_emerald_ore",
+    "manufactory:slurried_gold_ore",
+    "manufactory:flowing_slurried_gold_ore",
+    "manufactory:slurried_iron_ore",
+    "manufactory:flowing_slurried_iron_ore",
+    "manufactory:slurried_lapis_ore",
+    "manufactory:flowing_slurried_lapis_ore",
+    "manufactory:slurried_nether_quartz_ore",
+    "manufactory:flowing_slurried_nether_quartz_ore",
+    "manufactory:slurried_redstone_ore",
+    "manufactory:flowing_slurried_redstone_ore",
+    "manufactory:slurried_ancient_debris",
+    "manufactory:flowing_slurried_ancient_debris"
+  ]
+}
