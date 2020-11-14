@@ -12,6 +12,7 @@ import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -34,32 +35,21 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        ModelFile amberBlockModel = cubeAll(ModBlocks.AMBER_BLOCK.get());
-        simpleBlock(ModBlocks.AMBER_BLOCK.get(), amberBlockModel);
-        itemModels().getBuilder("amber_block").parent(amberBlockModel);
+        registerCubeBlock(ModBlocks.AMBER_BLOCK.get());
 
         ModelFile latexCollectorEmptyModel = generateLatexCollectorEmptyModel();
         ModelFile latexCollectorFillingModel = generatePartialLatexCollectorFillingModel();
         generateLatexCollectorBlockState(latexCollectorEmptyModel, latexCollectorFillingModel);
 
-        ModelFile slurriedCoalOreModel = models().getBuilder("slurried_coal_ore").texture("particle", modLoc("block/slurried_coal_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_COAL_ORE.get(), slurriedCoalOreModel);
-        ModelFile slurriedDiamondOreModel = models().getBuilder("slurried_diamond_ore").texture("particle", modLoc("block/slurried_diamond_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_DIAMOND_ORE.get(), slurriedDiamondOreModel);
-        ModelFile slurriedEmeraldOreModel = models().getBuilder("slurried_emerald_ore").texture("particle", modLoc("block/slurried_emerald_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_EMERALD_ORE.get(), slurriedEmeraldOreModel);
-        ModelFile slurriedGoldOreModel = models().getBuilder("slurried_gold_ore").texture("particle", modLoc("block/slurried_gold_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_GOLD_ORE.get(), slurriedGoldOreModel);
-        ModelFile slurriedIronOreModel = models().getBuilder("slurried_iron_ore").texture("particle", modLoc("block/slurried_iron_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_IRON_ORE.get(), slurriedIronOreModel);
-        ModelFile slurriedLapisOreModel = models().getBuilder("slurried_lapis_ore").texture("particle", modLoc("block/slurried_lapis_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_LAPIS_ORE.get(), slurriedLapisOreModel);
-        ModelFile slurriedNetherQuartzOreModel = models().getBuilder("slurried_nether_quartz_ore").texture("particle", modLoc("block/slurried_nether_quartz_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get(), slurriedNetherQuartzOreModel);
-        ModelFile slurriedRedstoneOreModel = models().getBuilder("slurried_redstone_ore").texture("particle", modLoc("block/slurried_redstone_ore_still"));
-        simpleBlock(ModBlocks.SLURRIED_REDSTONE_ORE.get(), slurriedRedstoneOreModel);
-        ModelFile slurriedAncientDebrisModel = models().getBuilder("slurried_ancient_debris").texture("particle", modLoc("block/slurried_ancient_debris_still"));
-        simpleBlock(ModBlocks.SLURRIED_ANCIENT_DEBRIS.get(), slurriedAncientDebrisModel);
+        registerFluidBlock(ModBlocks.SLURRIED_COAL_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_DIAMOND_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_EMERALD_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_GOLD_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_IRON_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_LAPIS_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_REDSTONE_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_ANCIENT_DEBRIS.get());
 
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
         ModelFile powerCableSideModel = generatePartialPowerCableSideModel();
@@ -80,6 +70,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile ballMillModel = generateBallMillModel();
         generateBallMillBlockState(ballMillModel);
         itemModels().getBuilder("ball_mill").parent(ballMillModel);
+    }
+
+    private void registerCubeBlock(Block block) {
+        String name = block.getRegistryName().getPath();
+        ModelFile model = cubeAll(block);
+        simpleBlock(block, model);
+        itemModels().getBuilder(name).parent(model);
+    };
+
+    private void registerFluidBlock(Block block) {
+        String name = block.getRegistryName().getPath();
+        ModelFile model = models().getBuilder(name).texture("particle", modLoc("block/" + name + "_still"));
+        simpleBlock(block, model);
     }
 
     private ModelFile generateLatexCollectorEmptyModel() {
@@ -191,47 +194,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private ModelFile generateGrinderModel() {
-        BlockModelBuilder builder = models().getBuilder("grinder").parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/block"), exFileHelper));
-        // north_side
-        builder.element().from(2, 0, 0).to(14, 16, 2)
-            .face(Direction.NORTH).texture("#side").end()
-            .face(Direction.SOUTH).texture("#inside").end()
-            .face(Direction.UP).texture("#top").end()
-            .face(Direction.DOWN).texture("#bottom").end().end();
-        // east_side
-        builder.element().from(14, 0, 0).to(16, 16, 16)
-            .face(Direction.NORTH).texture("#side").end()
-            .face(Direction.EAST).texture("#side").end()
-            .face(Direction.SOUTH).texture("#back").end()
-            .face(Direction.WEST).texture("#inside").end()
-            .face(Direction.UP).texture("#top").end()
-            .face(Direction.DOWN).texture("#bottom").end().end();
-        // south_side
-        builder.element().from(2, 0, 14).to(14, 16, 16)
-            .face(Direction.NORTH).texture("#inside").end()
-            .face(Direction.SOUTH).texture("#back").end()
-            .face(Direction.UP).texture("#top").end()
-            .face(Direction.DOWN).texture("#bottom").end().end();
-        // west_side
-        builder.element().from(0, 0, 0).to(2, 16, 16)
-            .face(Direction.NORTH).texture("#side").end()
-            .face(Direction.EAST).texture("#inside").end()
-            .face(Direction.SOUTH).texture("#back").end()
-            .face(Direction.WEST).texture("#side").end()
-            .face(Direction.UP).texture("#top").end()
-            .face(Direction.DOWN).texture("#bottom").end().end();
-        // bottom_side
-        builder.element().from(2, 0, 2).to(14, 2, 14)
-            .face(Direction.UP).texture("#bottom").end()
-            .face(Direction.DOWN).texture("#bottom").end().end();
-
-        builder.texture("front", modLoc("block/grinder_side"));
-        builder.texture("side", modLoc("block/grinder_side"));
-        builder.texture("inside", modLoc("block/grinder_side"));
-        builder.texture("back", modLoc("block/grinder_back_socket"));
-        builder.texture("top", modLoc("block/grinder_top"));
-        builder.texture("bottom", mcLoc("block/furnace_top"));
-        builder.texture("particle", modLoc("block/grinder_side"));
+        BlockModelBuilder builder = models().getBuilder("grinder").parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/cube"), exFileHelper));
+        builder.texture("up", modLoc("block/grinder_top"));
+        builder.texture("down", modLoc("block/grinder_top"));
+        builder.texture("north", modLoc("block/grinder_front"));
+        builder.texture("east", modLoc("block/grinder_side"));
+        builder.texture("south", modLoc("block/grinder_back_socket"));
+        builder.texture("west", modLoc("block/grinder_side"));
+        builder.texture("particle", modLoc("block/grinder_top"));
         return builder;
     }
 

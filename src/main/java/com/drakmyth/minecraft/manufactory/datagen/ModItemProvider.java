@@ -73,7 +73,7 @@ public class ModItemProvider extends ItemModelProvider {
     }
 
     private void registerOreTool(String name, String prefix, String suffix) {
-        registerGenerated("item/" + prefix + "_" + name + "_" + suffix);
+        registerHandheld("item/" + prefix + "_" + name + "_" + suffix);
     }
 
     private void registerGenerated(String name) {
