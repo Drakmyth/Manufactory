@@ -88,9 +88,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         ModelFile testFluidModel = models().getBuilder("test_fluid").texture("particle", mcLoc("block/water_still"));
         simpleBlock(ModBlocks.TEST_FLUID_BLOCK.get(), testFluidModel);
-        // getVariantBuilder(ModBlocks.TEST_FLUID_BLOCK.get()).forAllStates(state -> {
-        //     return ConfiguredModel.builder().modelFile(testFluidModel).build();
-        // });
 
         ModelFile powerCableCenterModel = generatePowerCableCenterModel();
         ModelFile powerCableSideModel = generatePartialPowerCableSideModel();
