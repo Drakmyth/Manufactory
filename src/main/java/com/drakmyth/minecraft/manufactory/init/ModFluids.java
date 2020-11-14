@@ -19,9 +19,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public final class ModFluids {
-    private static final ResourceLocation TEST_FLUID_STILL = new ResourceLocation(Reference.MOD_ID, "block/test_fluid_still");
-    private static final ResourceLocation TEST_FLUID_FLOWING = new ResourceLocation(Reference.MOD_ID, "block/test_fluid_flow");
-    private static final ResourceLocation TEST_FLUID_OVERLAY = new ResourceLocation(Reference.MOD_ID, "block/test_fluid_overlay");
+    private static final ResourceLocation TEST_FLUID_STILL = new ResourceLocation(Reference.MOD_ID, "block/slurried_coal_ore_still");
+    private static final ResourceLocation TEST_FLUID_FLOWING = new ResourceLocation(Reference.MOD_ID, "block/slurried_coal_ore_flow");
 
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Reference.MOD_ID);
 
@@ -29,7 +28,7 @@ public final class ModFluids {
     public static final RegistryObject<Fluid> TEST_FLOWING = FLUIDS.register("test_flowing", () -> new ForgeFlowingFluid.Flowing(defaultProperties()));
 
     private static Properties defaultProperties() {
-        Builder attributes = FluidAttributes.builder(TEST_FLUID_STILL, TEST_FLUID_FLOWING).overlay(TEST_FLUID_OVERLAY);
+        Builder attributes = FluidAttributes.builder(TEST_FLUID_STILL, TEST_FLUID_FLOWING);
         return new Properties(() -> TEST_FLUID.get(), () -> TEST_FLOWING.get(), attributes).block(() -> ModBlocks.TEST_FLUID_BLOCK.get());
     }
 }

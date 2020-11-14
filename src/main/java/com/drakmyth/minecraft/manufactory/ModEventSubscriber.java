@@ -11,6 +11,7 @@ import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModTagsProvider;
 import com.drakmyth.minecraft.manufactory.gui.BallMillGui;
 import com.drakmyth.minecraft.manufactory.gui.BallMillUpgradeGui;
 import com.drakmyth.minecraft.manufactory.gui.GrinderGui;
@@ -70,6 +71,7 @@ public final class ModEventSubscriber {
         generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModLanguageProvider(generator, "en_us"));
         generator.addProvider(new ModAnimatedTextureProvider(generator));
+        generator.addProvider(new ModTagsProvider.Fluids(generator, event.getExistingFileHelper()));
         LOGGER.info("Data generator registration complete");
     }
 
