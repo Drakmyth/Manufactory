@@ -5,39 +5,40 @@
 
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'jacoco'
+// apply plugin: 'jacoco'
 
-sourceCompatibility = targetCompatibility = project.javaversion
+java.toolchain.languageVersion = JavaLanguageVersion.of(project.javaversion)
+// sourceCompatibility = targetCompatibility = project.javaversion
 
 group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).replace('/', '.')
 archivesBaseName = project.modid
 version = "${project.minecraftversion}-${project.modversion}"
 
-repositories {
-    maven { url = 'https://jitpack.io' }
-}
+// repositories {
+//     maven { url = 'https://jitpack.io' }
+// }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraftversion}-${project.forgeversion}"
-    testImplementation fg.deobf("com.github.alcatrazEscapee:mcjunitlib:${project.mcjunitlibversion}-${project.minecraftversion}") {
-        transitive = false
-    }
+    // testImplementation fg.deobf("com.github.alcatrazEscapee:mcjunitlib:${project.mcjunitlibversion}-${project.minecraftversion}") {
+    //     transitive = false
+    // }
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: project.mappingsversion
+    mappings channel: 'official', version: project.mappingsversion
 
     runs {
         client {
@@ -50,7 +51,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Stop forge from killing the Gradle daemon on exit
-            forceExit false
+            // forceExit false
 
             mods {
                 manufactory {
@@ -69,7 +70,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Stop forge from killing the Gradle daemon on exit
-            forceExit false
+            // forceExit false
 
             mods {
                 manufactory {
@@ -88,7 +89,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Stop forge from killing the Gradle daemon on exit
-            forceExit false
+            // forceExit false
 
             args '--mod', project.modid, '--all', '--existing', file('src/main/resources/'), '--output', file('src/generated/resources/')
 
@@ -99,80 +100,80 @@ minecraft {
             }
         }
 
-        serverTest {
-            parent server
-            workingDirectory project.file('run')
-            main 'com.alcatrazescapee.mcjunitlib.DedicatedTestServerLauncher'
-            property 'forge.logging.console.level', 'unittest'
-            environment 'MOD_CLASSES', String.join(File.pathSeparator,
-                "${project.modid}%%${sourceSets.main.output.resourcesDir}",
-                "${project.modid}%%${sourceSets.main.output.classesDir}",
-                "${project.modid}%%${sourceSets.test.output.resourcesDir}",
-                "${project.modid}%%${sourceSets.test.output.classesDir}",
-            )
-            environment 'target', 'fmltestserver'
-            forceExit false
-            mods {
-                manufactory {
-                    sources sourceSets.test
-                }
-            }
-        }
+        // serverTest {
+        //     parent server
+        //     workingDirectory project.file('run')
+        //     main 'com.alcatrazescapee.mcjunitlib.DedicatedTestServerLauncher'
+        //     property 'forge.logging.console.level', 'unittest'
+        //     environment 'MOD_CLASSES', String.join(File.pathSeparator,
+        //         "${project.modid}%%${sourceSets.main.output.resourcesDir}",
+        //         "${project.modid}%%${sourceSets.main.output.classesDir}",
+        //         "${project.modid}%%${sourceSets.test.output.resourcesDir}",
+        //         "${project.modid}%%${sourceSets.test.output.classesDir}",
+        //     )
+        //     environment 'target', 'fmltestserver'
+        //     forceExit false
+        //     mods {
+        //         manufactory {
+        //             sources sourceSets.test
+        //         }
+        //     }
+        // }
     }
 }
 
-tasks.whenTaskAdded { task ->
-    if (task.name.equals('runServerTest')) {
+// tasks.whenTaskAdded { task ->
+//     if (task.name.equals('runServerTest')) {
 
-        jacoco {
-            applyTo task
-            toolVersion = '0.8.6'
-            reportsDir = file("$buildDir/reports/jacoco")
-        }
+//         jacoco {
+//             applyTo task
+//             toolVersion = '0.8.6'
+//             reportsDir = file("$buildDir/reports/jacoco")
+//         }
 
-        task.jacoco {
-            enabled = true
-            destinationFile = file("$buildDir/jacoco/runServerTest.exec")
-            includes = []
-            excludes = []
-            excludeClassLoaders = []
-            includeNoLocationClasses = true
-        }
-    }
-}
+//         task.jacoco {
+//             enabled = true
+//             destinationFile = file("$buildDir/jacoco/runServerTest.exec")
+//             includes = []
+//             excludes = []
+//             excludeClassLoaders = []
+//             includeNoLocationClasses = true
+//         }
+//     }
+// }
 
-task generateCoverageReport(type:JacocoReport) {
-    enabled = true
+// task generateCoverageReport(type:JacocoReport) {
+//     enabled = true
 
-    sourceSets sourceSets.main
-    executionData = files("$buildDir/jacoco/runServerTest.exec")
+//     sourceSets sourceSets.main
+//     executionData = files("$buildDir/jacoco/runServerTest.exec")
 
-    reports {
-        xml {
-            enabled = true
-            destination = file("$buildDir/reports/coverage.xml")
-        }
-        csv.enabled = false
-        html.enabled = false
-    }
-}
+//     reports {
+//         xml {
+//             enabled = true
+//             destination = file("$buildDir/reports/coverage.xml")
+//         }
+//         csv.enabled = false
+//         html.enabled = false
+//     }
+// }
 
-task runServerTestWithCoverage(type:JacocoReport, dependsOn: 'runServerTest') {
-    enabled = true
-    group = 'fg_runs'
+// task runServerTestWithCoverage(type:JacocoReport, dependsOn: 'runServerTest') {
+//     enabled = true
+//     group = 'fg_runs'
 
-    sourceSets sourceSets.main
-    executionData = files("$buildDir/jacoco/runServerTest.exec")
+//     sourceSets sourceSets.main
+//     executionData = files("$buildDir/jacoco/runServerTest.exec")
 
-    reports {
-        xml.enabled = false
-        csv.enabled = false
-        html {
-            enabled = true
-            destination = file("$buildDir/reports/html")
-        }
-    }
-}
+//     reports {
+//         xml.enabled = false
+//         csv.enabled = false
+//         html {
+//             enabled = true
+//             destination = file("$buildDir/reports/html")
+//         }
+//     }
+// }
 
 ext {
     replacements = [
