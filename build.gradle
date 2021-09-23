@@ -89,7 +89,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Stop forge from killing the Gradle daemon on exit
-            // forceExit false
+            forceExit false
 
             args '--mod', project.modid, '--all', '--existing', file('src/main/resources/'), '--output', file('src/generated/resources/')
 
@@ -194,41 +194,42 @@ ext {
         UPDATEJSON: project.updatejson
     ]
 
-    sourceTokenFiles = ["${project.mainpackage}/Reference.java"]
+    sourceTokenFiles = ["${project.mainpackage}/Reference.java".toString()]
     resourceTokenFiles = ['pack.mcmeta', 'META-INF/mods.toml']
 }
 
-import org.apache.tools.ant.filters.ReplaceTokens
+// sourceSets {
+//     main {
+//         java {
+//             srcDirs = ["$buildDir/src"]
+//         }
+//     }
+// }
+
+// import org.apache.tools.ant.filters.ReplaceTokens
 
 task replaceSourceTokens(type: Sync) {
     inputs.property('replacements', project.replacements)
 
+    // println project.replacements
     from (sourceSets.main.java) {
-        include project.sourceTokenFiles
-        filter(ReplaceTokens, tokens: project.replacements)
-    }
-    into "$buildDir/src"
-
-    from (sourceSets.main.java) {
-        exclude project.sourceTokenFiles
+        filesMatching(project.sourceTokenFiles) {
+            expand(project.replacements)
+        }
     }
     into "$buildDir/src"
 }
 
 compileJava {
+    dependsOn replaceSourceTokens
     source = replaceSourceTokens.outputs
 }
 
 processResources {
     inputs.property('replacements', project.replacements)
 
-    from (sourceSets.main.resources.srcDirs) {
-        include project.resourceTokenFiles
+    filesMatching(project.resourceTokenFiles) {
         expand(project.replacements)
-    }
-
-    from (sourceSets.main.resources.srcDirs) {
-        exclude project.resourceTokenFiles
     }
 }
 

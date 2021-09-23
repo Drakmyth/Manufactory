@@ -11,7 +11,7 @@ import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -27,7 +27,7 @@ public final class ForgeEventSubscriber {
     public static void worldTick(TickEvent.WorldTickEvent event) {
         if (event.side == LogicalSide.CLIENT) return;
         if (event.phase == Phase.END) return;
-        PowerNetworkManager networkManager = PowerNetworkManager.get((ServerWorld)event.world);
+        PowerNetworkManager networkManager = PowerNetworkManager.get((ServerLevel)event.world);
         networkManager.tick(event.world);
     }
 

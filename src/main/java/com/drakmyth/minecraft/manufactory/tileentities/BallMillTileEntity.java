@@ -21,19 +21,19 @@ import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class BallMillTileEntity extends TileEntity implements ITickableTileEntity, IMachineProgressListener, IPowerRateListener {
+public class BallMillTileEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
@@ -45,8 +45,8 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     private float powerRemaining;
     private float maxPowerPerTick;
 
-    public BallMillTileEntity() {
-        super(ModTileEntityTypes.BALL_MILL.get());
+    public BallMillTileEntity(BlockPos pos, BlockState state) {
+        super(ModTileEntityTypes.BALL_MILL.get(), pos, state);
 
         firstTick = true;
         ballMillInventory = new ItemStackHandler(2);
@@ -78,7 +78,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
-        LOGGER.trace("Ball Mill at (%d, %d, %d) synced progress with powerRequired %f and powerRemaining %f", getPos().getX(), getPos().getY(), getPos().getZ(), powerRequired, powerRemaining);
+        LOGGER.trace("Ball Mill at (%d, %d, %d) synced progress with powerRequired %f and powerRemaining %f", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), powerRequired, powerRemaining);
     }
 
     // Client-Side Only
@@ -87,13 +87,13 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = received;
         maxPowerPerTick = expected;
-        LOGGER.trace("Ball Mill at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getPos().getX(), getPos().getY(), getPos().getZ(), lastPowerReceived, maxPowerPerTick);
+        LOGGER.trace("Ball Mill at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), lastPowerReceived, maxPowerPerTick);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        super.write(compound);
-        LOGGER.trace("Writing Ball Mill at (%d, %d, %d) to NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
+    public CompoundTag save(CompoundTag compound) {
+        super.save(compound);
+        LOGGER.trace("Writing Ball Mill at (%d, %d, %d) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         compound.put("inventory", ballMillInventory.serializeNBT());
         compound.put("upgradeInventory", ballMillUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
@@ -103,9 +103,9 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        super.read(state, nbt);
-        LOGGER.debug("Reading Ball Mill at (%d, %d, %d) from NBT...", getPos().getX(), getPos().getY(), getPos().getZ());
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        LOGGER.debug("Reading Ball Mill at (%d, %d, %d) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ballMillInventory.deserializeNBT(nbt.getCompound("inventory"));
         ballMillUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
         powerRequired = nbt.getFloat("powerRequired");
@@ -118,7 +118,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         Item millingBallItem = ballMillUpgradeInventory.getStackInSlot(0).getItem();
         if (!(millingBallItem instanceof IMillingBallUpgrade)) return -1;
         IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallItem;
-        return millingBall.getTier().getHarvestLevel();
+        return millingBall.getTier().getLevel();
     }
 
     private float getProcessChance() {
@@ -137,7 +137,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
 
     private boolean tryStartRecipe() {
         LOGGER.trace("Trying to start Ball Mill recipe...");
-        BallMillRecipe recipe = world.getRecipeManager().getRecipe(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), world).orElse(null);
+        BallMillRecipe recipe = level.getRecipeManager().getRecipeFor(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), level).orElse(null);
         if (recipe == null) {
             LOGGER.trace("No recipe matches input. Skipping...");
             return false;
@@ -161,12 +161,12 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
     }
 
     private void updateClientGui() {
-        MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getPos());
-        PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getPos());
-        Chunk chunk = world.getChunkAt(getPos());
-        LOGGER.trace("Sending MachineProgress packet to update gui at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
+        MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
+        PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
+        LevelChunk chunk = level.getChunkAt(getBlockPos());
+        LOGGER.trace("Sending MachineProgress packet to update gui at (%d, %d, %d)...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
-        LOGGER.trace("Sending PowerRate packet to update gui at (%d, %d, %d)...", getPos().getX(), getPos().getY(), getPos().getZ());
+        LOGGER.trace("Sending PowerRate packet to update gui at (%d, %d, %d)...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
         LOGGER.trace("Packet sent");
     }
@@ -182,15 +182,14 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         return powerProvider instanceof IPowerProvider ? (IPowerProvider)powerProvider : emptyPowerProvider;
     }
 
-    @Override
     public void tick() {
-        if (world.isRemote) return;
+        if (level.isClientSide) return;
 
         if (firstTick) {
             firstTick = false;
             if (!ballMillInventory.getStackInSlot(0).isEmpty()) {
-                currentRecipe = world.getRecipeManager().getRecipe(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), world).orElse(null);
-                LOGGER.debug("Ball Mill input at (%d, %d, %d) not empty on first tick, initialized current recipe", getPos().getX(), getPos().getY(), getPos().getZ());
+                currentRecipe = level.getRecipeManager().getRecipeFor(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), level).orElse(null);
+                LOGGER.debug("Ball Mill input at (%d, %d, %d) not empty on first tick, initialized current recipe", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             }
         }
 
@@ -207,7 +206,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
             powerRemaining = 0;
             maxPowerPerTick = 0;
             updateClientGui();
-            markDirty();
+            setChanged();
             return;
         }
 
@@ -217,11 +216,11 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         }
 
         IPowerProvider powerProvider = getPowerProvider();
-        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerWorld)world, pos);
+        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerLevel)level, worldPosition);
         powerRemaining -= lastPowerReceived;
         if (powerRemaining <= 0) {
             LOGGER.debug("Ball Mill operation complete, processing results...");
-            Random rand = world.getRandom();
+            Random rand = level.getRandom();
             ItemStack resultStack;
             LOGGER.debug("Rolling to determine if process was successful...");
             if (rand.nextFloat() > getProcessChance()) {
@@ -230,7 +229,7 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
             } else {
                 LOGGER.debug("Success!");
                 ballMillInventory.extractItem(0, 1, false);
-                resultStack = currentRecipe.getRecipeOutput().copy();
+                resultStack = currentRecipe.getResultItem().copy();
             }
 
             if (!resultStack.isEmpty() && getEfficiencyModifier() > 0) {
@@ -249,6 +248,6 @@ public class BallMillTileEntity extends TileEntity implements ITickableTileEntit
         }
 
         updateClientGui();
-        markDirty();
+        setChanged();
     }
 }

@@ -14,28 +14,28 @@ import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
-public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBlock {
+public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IPowerBlock {
     private static final Logger LOGGER = LogManager.getLogger();
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
     public static final BooleanProperty EAST = BlockStateProperties.EAST;
@@ -45,139 +45,139 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
     public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    protected static final VoxelShape AABB_CENTER = Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D);
-    protected static final VoxelShape AABB_NORTH = Block.makeCuboidShape(5.0D, 0.0D, 0.0D, 11.0D, 6.0D, 7.0D);
-    protected static final VoxelShape AABB_EAST = Block.makeCuboidShape(9.0D, 0.0D, 5.0D, 16.0D, 6.0D, 11.0D);
-    protected static final VoxelShape AABB_SOUTH = Block.makeCuboidShape(5.0D, 0.0D, 9.0D, 11.0D, 6.0D, 16.0D);
-    protected static final VoxelShape AABB_WEST = Block.makeCuboidShape(0.0D, 0.0D, 5.0D, 7.0D, 6.0D, 11.0D);
-    protected static final VoxelShape AABB_UP = Block.makeCuboidShape(5.0D, 4.0D, 5.0D, 11.0D, 16.0D, 11.0D);
-    protected static final VoxelShape AABB_DOWN = Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 2.0D, 11.0D);
+    protected static final VoxelShape AABB_CENTER = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D);
+    protected static final VoxelShape AABB_NORTH = Block.box(5.0D, 0.0D, 0.0D, 11.0D, 6.0D, 7.0D);
+    protected static final VoxelShape AABB_EAST = Block.box(9.0D, 0.0D, 5.0D, 16.0D, 6.0D, 11.0D);
+    protected static final VoxelShape AABB_SOUTH = Block.box(5.0D, 0.0D, 9.0D, 11.0D, 6.0D, 16.0D);
+    protected static final VoxelShape AABB_WEST = Block.box(0.0D, 0.0D, 5.0D, 7.0D, 6.0D, 11.0D);
+    protected static final VoxelShape AABB_UP = Block.box(5.0D, 4.0D, 5.0D, 11.0D, 16.0D, 11.0D);
+    protected static final VoxelShape AABB_DOWN = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 2.0D, 11.0D);
 
     public PowerCableBlock(Properties properties) {
         super(properties);
 
-        BlockState defaultState = this.stateContainer.getBaseState()
-            .with(NORTH, false)
-            .with(EAST, false)
-            .with(SOUTH, false)
-            .with(WEST, false)
-            .with(UP, false)
-            .with(DOWN, false)
-            .with(WATERLOGGED, false);
-        this.setDefaultState(defaultState);
+        BlockState defaultState = this.stateDefinition.any()
+            .setValue(NORTH, false)
+            .setValue(EAST, false)
+            .setValue(SOUTH, false)
+            .setValue(WEST, false)
+            .setValue(UP, false)
+            .setValue(DOWN, false)
+            .setValue(WATERLOGGED, false);
+        this.registerDefaultState(defaultState);
     }
 
     @Override
     public FluidState getFluidState(BlockState state) {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         List<VoxelShape> shapes = new ArrayList<>();
-        if (state.get(NORTH)) {
+        if (state.getValue(NORTH)) {
             shapes.add(AABB_NORTH);
         }
-        if (state.get(EAST)) {
+        if (state.getValue(EAST)) {
             shapes.add(AABB_EAST);
         }
-        if (state.get(SOUTH)) {
+        if (state.getValue(SOUTH)) {
             shapes.add(AABB_SOUTH);
         }
-        if (state.get(WEST)) {
+        if (state.getValue(WEST)) {
             shapes.add(AABB_WEST);
         }
-        if (state.get(UP)) {
+        if (state.getValue(UP)) {
             shapes.add(AABB_UP);
         }
-        if (state.get(DOWN)) {
+        if (state.getValue(DOWN)) {
             shapes.add(AABB_DOWN);
         }
-        return VoxelShapes.or(AABB_CENTER, shapes.toArray(new VoxelShape[0]));
+        return Shapes.or(AABB_CENTER, shapes.toArray(new VoxelShape[0]));
     }
 
-    private boolean canConnect(BlockState state, BlockPos pos, IWorld world, Direction dir) {
+    private boolean canConnect(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
         Block block = state.getBlock();
         if (!(block instanceof IPowerBlock)) return false;
         return ((IPowerBlock)block).canConnectToFace(state, pos, world, dir);
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, IWorld world, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
         return true;
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        World world = context.getWorld();
-        BlockPos northPos = context.getPos().north();
-        BlockPos eastPos = context.getPos().east();
-        BlockPos southPos = context.getPos().south();
-        BlockPos westPos = context.getPos().west();
-        BlockPos upPos = context.getPos().up();
-        BlockPos downPos = context.getPos().down();
-        FluidState fluidstate = context.getWorld().getFluidState(context.getPos());
-        return this.getDefaultState()
-            .with(NORTH, canConnect(world.getBlockState(northPos), northPos, world, Direction.SOUTH))
-            .with(EAST, canConnect(world.getBlockState(eastPos), eastPos, world, Direction.WEST))
-            .with(SOUTH, canConnect(world.getBlockState(southPos), southPos, world, Direction.NORTH))
-            .with(WEST, canConnect(world.getBlockState(westPos), westPos, world, Direction.EAST))
-            .with(UP, canConnect(world.getBlockState(upPos), upPos, world, Direction.DOWN))
-            .with(DOWN, canConnect(world.getBlockState(downPos), downPos, world, Direction.UP))
-            .with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Level world = context.getLevel();
+        BlockPos northPos = context.getClickedPos().north();
+        BlockPos eastPos = context.getClickedPos().east();
+        BlockPos southPos = context.getClickedPos().south();
+        BlockPos westPos = context.getClickedPos().west();
+        BlockPos upPos = context.getClickedPos().above();
+        BlockPos downPos = context.getClickedPos().below();
+        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+        return this.defaultBlockState()
+            .setValue(NORTH, canConnect(world.getBlockState(northPos), northPos, world, Direction.SOUTH))
+            .setValue(EAST, canConnect(world.getBlockState(eastPos), eastPos, world, Direction.WEST))
+            .setValue(SOUTH, canConnect(world.getBlockState(southPos), southPos, world, Direction.NORTH))
+            .setValue(WEST, canConnect(world.getBlockState(westPos), westPos, world, Direction.EAST))
+            .setValue(UP, canConnect(world.getBlockState(upPos), upPos, world, Direction.DOWN))
+            .setValue(DOWN, canConnect(world.getBlockState(downPos), downPos, world, Direction.UP))
+            .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-        return !state.get(WATERLOGGED);
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return !state.getValue(WATERLOGGED);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-        if (stateIn.get(WATERLOGGED)) {
-            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
+        if (stateIn.getValue(WATERLOGGED)) {
+            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
 
         Direction oppositeFacing = facing.getOpposite();
         boolean canConnect = canConnect(facingState, facingPos, world, oppositeFacing);
         switch(facing) {
             case NORTH:
-                return stateIn.with(NORTH, canConnect);
+                return stateIn.setValue(NORTH, canConnect);
             case EAST:
-                return stateIn.with(EAST, canConnect);
+                return stateIn.setValue(EAST, canConnect);
             case SOUTH:
-                return stateIn.with(SOUTH, canConnect);
+                return stateIn.setValue(SOUTH, canConnect);
             case WEST:
-                return stateIn.with(WEST, canConnect);
+                return stateIn.setValue(WEST, canConnect);
             case UP:
-                return stateIn.with(UP, canConnect);
+                return stateIn.setValue(UP, canConnect);
             case DOWN:
-                return stateIn.with(DOWN, canConnect);
+                return stateIn.setValue(DOWN, canConnect);
             default:
                 return stateIn;
         }
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         LOGGER.debug("Power Cable placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isRemote()) return;
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        if (world.isClientSide()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
         pnm.trackBlock(pos, Direction.values(), getPowerBlockType());
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         LOGGER.debug("Power Cable at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isRemote()) return;
-        if (state.isIn(newState.getBlock())) return;
+        if (world.isClientSide()) return;
+        if (state.is(newState.getBlock())) return;
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
         pnm.untrackBlock(pos);
     }
 
     @Override
-    protected void fillStateContainer(Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, WATERLOGGED);
     }
 
@@ -187,7 +187,7 @@ public class PowerCableBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
-    public float getAvailablePower(BlockState state, World world, BlockPos pos) {
+    public float getAvailablePower(BlockState state, Level world, BlockPos pos) {
         return 0;
     }
 }

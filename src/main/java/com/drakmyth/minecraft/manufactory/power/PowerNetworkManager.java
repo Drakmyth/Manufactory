@@ -18,17 +18,17 @@ import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.DimensionSavedDataManager;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.util.Constants;
 
-public class PowerNetworkManager extends WorldSavedData {
+public class PowerNetworkManager extends SavedData {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String DATA_NAME = Reference.MOD_ID + "_PowerNetworkData";
 
@@ -36,25 +36,23 @@ public class PowerNetworkManager extends WorldSavedData {
     private Map<String, PowerNetwork> networks;
 
     public PowerNetworkManager() {
-        super(DATA_NAME);
-
         blockCache = new HashMap<>();
         networks = new HashMap<>();
     }
 
-    public static PowerNetworkManager get(ServerWorld world) {
-        DimensionSavedDataManager storage = world.getSavedData();
-        return storage.getOrCreate(PowerNetworkManager::new, DATA_NAME);
+    public static PowerNetworkManager get(ServerLevel world) {
+        DimensionDataStorage storage = world.getDataStorage();
+        return storage.computeIfAbsent(PowerNetworkManager::load, PowerNetworkManager::new, DATA_NAME);
     }
 
-    public void tick(World world) {
+    public void tick(Level world) {
         LOGGER.trace("Ticking power networks...");
-        boolean markDirty = networks.values().stream().reduce(false, (isDirty, network) -> {
+        boolean setDirty = networks.values().stream().reduce(false, (isDirty, network) -> {
             network.tick(world);
             return isDirty || network.isDirty();
         }, (a, b) -> a || b);
 
-        if (markDirty) markDirty();
+        if (setDirty) setDirty();
         LOGGER.trace("All Power Networks have ticked successfully!");
     }
 
@@ -64,7 +62,7 @@ public class PowerNetworkManager extends WorldSavedData {
 
     public void deleteNetwork(String networkId) {
         networks.remove(networkId);
-        markDirty();
+        setDirty();
         LOGGER.debug("Power Network %s deleted", networkId);
     }
 
@@ -93,7 +91,7 @@ public class PowerNetworkManager extends WorldSavedData {
         }
 
         float consumed = network.consumePower(requested, pos);
-        if (network.isDirty()) markDirty();
+        if (network.isDirty()) setDirty();
         return consumed;
     }
 
@@ -126,7 +124,7 @@ public class PowerNetworkManager extends WorldSavedData {
             LOGGER.debug("Block (%d, %d, %d) added to adjacent connecting network %s", pos.getX(), pos.getY(), pos.getZ(), existingNetworks.get(0));
         }
 
-        markDirty();
+        setDirty();
     }
 
     public void untrackBlock(BlockPos pos) {
@@ -153,7 +151,7 @@ public class PowerNetworkManager extends WorldSavedData {
             allNodes.remove(pos);
             List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections())
                 .map(dir -> {
-                    BlockPos start = pos.offset(dir);
+                    BlockPos start = pos.relative(dir);
                     if (!allNodes.containsKey(start)) return null;
                     List<PowerNetworkNode> branchNodes = PowerNetworkWalker.walk(allNodes, start);
                     branchNodes.forEach(bn -> allNodes.remove(bn.getPos()));
@@ -174,7 +172,7 @@ public class PowerNetworkManager extends WorldSavedData {
             blockCache.remove(pos);
         }
 
-        markDirty();
+        setDirty();
     }
 
     private void addNodeToNetwork(PowerNetworkNode node, String networkId, Type type) {
@@ -184,41 +182,42 @@ public class PowerNetworkManager extends WorldSavedData {
 
     private List<BlockPos> getSurroundingNetworkedBlocks(PowerNetworkNode node) {
         return Stream.of(node.getDirections())
-            .map(dir -> node.getPos().offset(dir))
+            .map(dir -> node.getPos().relative(dir))
             .filter(block -> blockCache.containsKey(block))
             .collect(Collectors.toList());
     }
 
     private List<String> getSurroundingNetworkIds(PowerNetworkNode node) {
         return Stream.of(node.getDirections())
-            .map(dir -> blockCache.get(node.getPos().offset(dir)))
+            .map(dir -> blockCache.get(node.getPos().relative(dir)))
             .distinct()
             .filter(networkId -> networkId != null)
             .collect(Collectors.toList());
     }
 
-    @Override
-    public void read(CompoundNBT nbt) {
+    public static PowerNetworkManager load(CompoundTag nbt) {
+        PowerNetworkManager pnm = new PowerNetworkManager();
         LOGGER.debug("Loading Power Networks from NBT...");
-        blockCache = new HashMap<>();
-        networks = new HashMap<>();
-        ListNBT networkNBTs = nbt.getList("powerNetworks", Constants.NBT.TAG_COMPOUND);
+        pnm.blockCache = new HashMap<>();
+        pnm.networks = new HashMap<>();
+        ListTag networkNBTs = nbt.getList("powerNetworks", Constants.NBT.TAG_COMPOUND);
         networkNBTs.stream().forEach(compound -> {
-            PowerNetwork network = PowerNetwork.fromNBT((CompoundNBT)compound);
-            networks.put(network.getId(), network);
+            PowerNetwork network = PowerNetwork.fromNBT((CompoundTag)compound);
+            pnm.networks.put(network.getId(), network);
             network.getBlocks().stream().forEach(block -> {
-                blockCache.put(block, network.getId());
+                pnm.blockCache.put(block, network.getId());
             });
         });
         LOGGER.debug("All Power Networks loaded!");
+        return pnm;
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         LOGGER.trace("Writing Power Networks to NBT...");
-        ListNBT powerNetworksNBT = new ListNBT();
+        ListTag powerNetworksNBT = new ListTag();
         networks.values().stream().forEach(network -> {
-            CompoundNBT networkNBT = network.write(new CompoundNBT());
+            CompoundTag networkNBT = network.write(new CompoundTag());
             powerNetworksNBT.add(networkNBT);
         });
         compound.put("powerNetworks", powerNetworksNBT);

@@ -11,13 +11,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 public class PowerRatePacket {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -44,14 +44,14 @@ public class PowerRatePacket {
         return pos;
     }
 
-    public void encode(PacketBuffer data) {
+    public void encode(FriendlyByteBuf data) {
         data.writeFloat(received);
         data.writeFloat(expected);
         data.writeBlockPos(pos);
         LOGGER.trace("PowerRate packet encoded { received: %f, expected: %f, pos: (%d, %d, %d) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static PowerRatePacket decode(PacketBuffer data) {
+    public static PowerRatePacket decode(FriendlyByteBuf data) {
         float received = data.readFloat();
         float expected = data.readFloat();
         BlockPos pos = data.readBlockPos();
@@ -69,12 +69,12 @@ public class PowerRatePacket {
                 public void run() {
                     LOGGER.trace("Processing PowerRate packet...");
                     Minecraft minecraft = Minecraft.getInstance();
-                    World world = minecraft.world;
+                    Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
                         LOGGER.warn("Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    TileEntity te = world.getTileEntity(pos);
+                    BlockEntity te = world.getBlockEntity(pos);
                     if (!(te instanceof IPowerRateListener)) {
                         LOGGER.warn("Position (%d, %d, %d) does not contain an IPowerRateListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;

@@ -15,44 +15,44 @@ import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class GrinderUpgradeContainer extends Container {
+public class GrinderUpgradeContainer extends AbstractContainerMenu {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public final ItemStackHandler upgradeInventory;
-    private final IWorldPosCallable posCallable;
+    private final ContainerLevelAccess posCallable;
     private final GrinderTileEntity tileEntity;
 
-    public GrinderUpgradeContainer(int windowId, PlayerInventory playerInventory, PacketBuffer data) {
+    public GrinderUpgradeContainer(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
     }
 
-    public GrinderUpgradeContainer(int windowId, IItemHandler playerInventory, PlayerEntity player, BlockPos pos) {
+    public GrinderUpgradeContainer(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModContainerTypes.GRINDER_UPGRADE.get(), windowId);
         LOGGER.debug("Initializing GrinderContainer...");
-        World world = player.getEntityWorld();
-        posCallable = IWorldPosCallable.of(world, pos);
-        tileEntity = (GrinderTileEntity)world.getTileEntity(pos);
+        Level world = player.getCommandSenderWorld();
+        posCallable = ContainerLevelAccess.create(world, pos);
+        tileEntity = (GrinderTileEntity)world.getBlockEntity(pos);
         upgradeInventory = tileEntity.getUpgradeInventory();
 
         // Grinder Slots
         // Wheel Slot 1
         this.addSlot(new SlotItemHandler(upgradeInventory, 0, 62, 14) {
             @Override
-            public boolean isItemValid(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof IGrinderWheelUpgrade;
             }
         });
@@ -60,7 +60,7 @@ public class GrinderUpgradeContainer extends Container {
         // Wheel Slot 2
         this.addSlot(new SlotItemHandler(upgradeInventory, 1, 98, 14) {
             @Override
-            public boolean isItemValid(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof IGrinderWheelUpgrade;
             }
         });
@@ -68,7 +68,7 @@ public class GrinderUpgradeContainer extends Container {
         // Motor Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 2, 80, 36) {
             @Override
-            public boolean isItemValid(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof IMotorUpgrade;
             }
         });
@@ -76,15 +76,15 @@ public class GrinderUpgradeContainer extends Container {
         // Power Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 3, 80, 58) {
             @Override
-            public boolean isItemValid(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof IPowerUpgrade;
             }
 
             @Override
-            public void onSlotChanged() {
-                super.onSlotChanged();
+            public void setChanged() {
+                super.setChanged();
                 LOGGER.debug("Power slot contents changed. Notifying neighbors...");
-                tileEntity.getBlockState().updateNeighbours(world, pos, 3);
+                tileEntity.getBlockState().updateNeighbourShapes(world, pos, 3);
             }
         });
         LOGGER.debug("Power slot added with index 3");
@@ -105,28 +105,28 @@ public class GrinderUpgradeContainer extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
 
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < upgradeInventory.getSlots()) { // transfer from grinder to inventory
                 LOGGER.debug("Transferring stack from grinder upgrade slot %d to player inventory...", index);
-                if (!this.mergeItemStack(itemstack1, upgradeInventory.getSlots(), this.inventorySlots.size(), false)) {
+                if (!this.moveItemStackTo(itemstack1, upgradeInventory.getSlots(), this.slots.size(), false)) {
                     LOGGER.debug("Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { // transfer from inventory to grinder
+            } else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) { // transfer from inventory to grinder
                 LOGGER.debug("Transfer of stack from player inventory slot %d to grinder upgrade inventory failed because upgrade inputs are full", index);
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (itemstack1.getCount() == itemstack.getCount()) {
@@ -147,7 +147,7 @@ public class GrinderUpgradeContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return isWithinUsableDistance(posCallable, playerIn, ModBlocks.GRINDER.get());
+    public boolean stillValid(Player playerIn) {
+        return stillValid(posCallable, playerIn, ModBlocks.GRINDER.get());
     }
 }

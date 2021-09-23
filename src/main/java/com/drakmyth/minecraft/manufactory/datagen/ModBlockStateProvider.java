@@ -12,10 +12,10 @@ import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -295,7 +295,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void generateGrinderBlockState(ModelFile grinderModel) {
         VariantBlockStateBuilder builder = getVariantBuilder(ModBlocks.GRINDER.get());
         builder.forAllStates(state -> {
-            int yRotation = (int)state.get(GrinderBlock.HORIZONTAL_FACING).getOpposite().getHorizontalAngle();
+            int yRotation = (int)state.getValue(GrinderBlock.HORIZONTAL_FACING).getOpposite().toYRot();
             return ConfiguredModel.builder().modelFile(grinderModel).rotationY(yRotation).build();
         });
     }
@@ -322,7 +322,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void generateBallMillBlockState(ModelFile ballMillModel) {
         VariantBlockStateBuilder builder = getVariantBuilder(ModBlocks.BALL_MILL.get());
         builder.forAllStates(state -> {
-            int yRotation = (int)state.get(BallMillBlock.HORIZONTAL_FACING).getOpposite().getHorizontalAngle();
+            int yRotation = (int)state.getValue(BallMillBlock.HORIZONTAL_FACING).getOpposite().toYRot();
             return ConfiguredModel.builder().modelFile(ballMillModel).rotationY(yRotation).build();
         });
     }

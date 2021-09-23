@@ -12,26 +12,26 @@ import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
-public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBlock {
+public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IPowerBlock {
     private static final Logger LOGGER = LogManager.getLogger();
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -39,63 +39,63 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
     public SolarPanelBlock(Properties properties) {
         super(properties);
 
-        BlockState defaultState = this.stateContainer.getBaseState()
-            .with(HORIZONTAL_FACING, Direction.NORTH)
-            .with(WATERLOGGED, false);
-        this.setDefaultState(defaultState);
+        BlockState defaultState = this.stateDefinition.any()
+            .setValue(HORIZONTAL_FACING, Direction.NORTH)
+            .setValue(WATERLOGGED, false);
+        this.registerDefaultState(defaultState);
     }
 
     @Override
     public FluidState getFluidState(BlockState state) {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, IWorld world, Direction dir) {
-        return dir == state.get(HORIZONTAL_FACING).getOpposite();
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
+        return dir == state.getValue(HORIZONTAL_FACING).getOpposite();
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        Direction facing = context.getPlacementHorizontalFacing().getOpposite();
-        FluidState fluidstate = context.getWorld().getFluidState(context.getPos());
-        return this.getDefaultState().with(HORIZONTAL_FACING, facing)
-                                     .with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction facing = context.getHorizontalDirection().getOpposite();
+        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+        return this.defaultBlockState().setValue(HORIZONTAL_FACING, facing)
+                                     .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-        return !state.get(WATERLOGGED);
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return !state.getValue(WATERLOGGED);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (stateIn.get(WATERLOGGED)) {
-            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+        if (stateIn.getValue(WATERLOGGED)) {
+            worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
         }
         return stateIn;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         LOGGER.debug("Solar Panel placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isRemote()) return;
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
-        pnm.trackBlock(pos, new Direction[] {state.get(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
+        if (world.isClientSide()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+        pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         LOGGER.debug("Solar Panel at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isRemote()) return;
-        if (state.isIn(newState.getBlock())) return;
+        if (world.isClientSide()) return;
+        if (state.is(newState.getBlock())) return;
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerWorld)world);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
         pnm.untrackBlock(pos);
     }
 
     @Override
-    protected void fillStateContainer(Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         builder.add(HORIZONTAL_FACING, WATERLOGGED);
     }
 
@@ -105,15 +105,15 @@ public class SolarPanelBlock extends Block implements IWaterLoggable, IPowerBloc
     }
 
     @Override
-    public float getAvailablePower(BlockState state, World world, BlockPos pos) {
-        if (!world.getDimensionType().hasSkyLight()) return 0;
+    public float getAvailablePower(BlockState state, Level world, BlockPos pos) {
+        if (!world.dimensionType().hasSkyLight()) return 0;
 
-        float celestialAngle = world.getCelestialAngleRadians(1.0F);
+        float celestialAngle = world.getSunAngle(1.0F);
         if (celestialAngle >= Math.PI / 2 && celestialAngle <= 3 * Math.PI / 2) return 0;
         float timeFactor = (float)Math.cos(celestialAngle);
 
-        // TODO: change pos.up() to pos once solar panel is no longer a full block size
-        float lightAndWeatherFactor = world.getLight(pos.up()) / 15f;
+        // TODO: change pos.above() to pos once solar panel is no longer a full block size
+        float lightAndWeatherFactor = world.getMaxLocalRawBrightness(pos.above()) / 15f;
         float peakPowerGen = ConfigData.SERVER.SolarPanelPeakPowerGeneration.get().floatValue();
         float availablePower = peakPowerGen * timeFactor * lightAndWeatherFactor;
         LOGGER.trace("Solar Panel at (%d, %d, %d) made %f power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);

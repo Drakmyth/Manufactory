@@ -11,13 +11,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 public class MachineProgressPacket {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -44,14 +44,14 @@ public class MachineProgressPacket {
         return pos;
     }
 
-    public void encode(PacketBuffer data) {
+    public void encode(FriendlyByteBuf data) {
         data.writeFloat(progress);
         data.writeFloat(total);
         data.writeBlockPos(pos);
         LOGGER.trace("MachineProgress packet encoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static MachineProgressPacket decode(PacketBuffer data) {
+    public static MachineProgressPacket decode(FriendlyByteBuf data) {
         float progress = data.readFloat();
         float total = data.readFloat();
         BlockPos pos = data.readBlockPos();
@@ -69,12 +69,12 @@ public class MachineProgressPacket {
                 public void run() {
                     LOGGER.trace("Processing MachineProgress packet...");
                     Minecraft minecraft = Minecraft.getInstance();
-                    World world = minecraft.world;
+                    Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
                         LOGGER.warn("Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    TileEntity te = world.getTileEntity(pos);
+                    BlockEntity te = world.getBlockEntity(pos);
                     if (!(te instanceof IMachineProgressListener)) {
                         LOGGER.warn("Position (%d, %d, %d) does not contain an IMachineProgressListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;

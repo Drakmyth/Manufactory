@@ -11,15 +11,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 public class ManufactoryCommand {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LOGGER.debug("Registering ManufactoryCommand...");
         dispatcher.register(
-            LiteralArgumentBuilder.<CommandSource>literal("manufactory")
+            LiteralArgumentBuilder.<CommandSourceStack>literal("manufactory")
             .then(PNetCommand.register())
         );
         LOGGER.debug("ManufactoryCommand registered");

@@ -9,16 +9,16 @@ import java.util.function.Supplier;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Properties;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -50,7 +50,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_COAL_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_COAL_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_COAL_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_COAL_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_COAL_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -63,7 +63,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_DIAMOND_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_DIAMOND_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_DIAMOND_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_DIAMOND_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_DIAMOND_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -76,7 +76,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_EMERALD_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_EMERALD_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_EMERALD_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_EMERALD_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_EMERALD_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -89,7 +89,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_GOLD_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_GOLD_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_GOLD_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_GOLD_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_GOLD_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -102,7 +102,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_IRON_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_IRON_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_IRON_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_IRON_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_IRON_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -115,7 +115,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_LAPIS_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_LAPIS_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_LAPIS_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_LAPIS_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_LAPIS_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -128,7 +128,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_NETHER_QUARTZ_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_NETHER_QUARTZ_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -141,7 +141,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_REDSTONE_ORE.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_REDSTONE_ORE_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_REDSTONE_ORE.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_REDSTONE_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_REDSTONE_ORE_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);
@@ -154,7 +154,7 @@ public final class ModFluids {
 
         Supplier<Fluid> stillSupplier = () -> SLURRIED_ANCIENT_DEBRIS.get();
         Supplier<Fluid> flowSupplier = () -> SLURRIED_ANCIENT_DEBRIS_FLOWING.get();
-        Supplier<FlowingFluidBlock> blockSupplier = () -> ModBlocks.SLURRIED_ANCIENT_DEBRIS.get();
+        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_ANCIENT_DEBRIS.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_ANCIENT_DEBRIS_BUCKET.get();
 
         Builder attributes = FluidAttributes.builder(stillResource, flowResource);

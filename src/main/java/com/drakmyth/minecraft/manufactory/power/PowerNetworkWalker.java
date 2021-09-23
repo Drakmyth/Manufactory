@@ -15,8 +15,8 @@ import java.util.Queue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 public class PowerNetworkWalker {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -30,7 +30,7 @@ public class PowerNetworkWalker {
         while (!nodesToVisit.isEmpty()) {
             PowerNetworkNode currentNode = nodesToVisit.remove();
             for (Direction dir : currentNode.getDirections()) {
-                BlockPos posToVisit = currentNode.getPos().offset(dir);
+                BlockPos posToVisit = currentNode.getPos().relative(dir);
                 if (visitedNodes.containsKey(posToVisit) || !allNodes.containsKey(posToVisit)) continue;
                 nodesToVisit.add(new PowerNetworkNode(posToVisit, allNodes.get(posToVisit)));
             }

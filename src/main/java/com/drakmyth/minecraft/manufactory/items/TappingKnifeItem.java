@@ -12,15 +12,15 @@ import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class TappingKnifeItem extends Item {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -30,15 +30,15 @@ public class TappingKnifeItem extends Item {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         LOGGER.debug("Tapping knife used");
-        World world = context.getWorld();
-        if (world.isRemote) return ActionResultType.SUCCESS;
-        BlockPos tePos = context.getPos().offset(context.getFace());
-        TileEntity te = world.getTileEntity(tePos);
+        Level world = context.getLevel();
+        if (world.isClientSide) return InteractionResult.SUCCESS;
+        BlockPos tePos = context.getClickedPos().relative(context.getClickedFace());
+        BlockEntity te = world.getBlockEntity(tePos);
         if (!LatexCollectorTileEntity.class.isInstance(te)) {
             LOGGER.debug("Latex Collector tile entity not found");
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
         LOGGER.debug("Tapping...");
         LatexCollectorTileEntity lcte = (LatexCollectorTileEntity)te;
@@ -46,24 +46,24 @@ public class TappingKnifeItem extends Item {
         if (tapped) {
             tryGiveAmber(context.getPlayer(), context.getHand());
         }
-        return ActionResultType.CONSUME;
+        return InteractionResult.CONSUME;
     }
 
-    private void tryGiveAmber(PlayerEntity player, Hand hand) {
+    private void tryGiveAmber(Player player, InteractionHand hand) {
         double configAmberSpawnChance = ConfigData.SERVER.AmberChance.get();
         LOGGER.debug("Rolling for amber against chance %f...", configAmberSpawnChance);
         if (configAmberSpawnChance <= 0) return;
-        if (random.nextDouble() >= configAmberSpawnChance ) return;
+        if (player.getRandom().nextDouble() >= configAmberSpawnChance ) return;
         LOGGER.debug("Roll success!");
 
         int configAmberSpawnCount = ConfigData.SERVER.AmberTapSpawnCount.get();
-        ItemStack holdingItem = player.getHeldItem(hand);
+        ItemStack holdingItem = player.getItemInHand(hand);
         ItemStack amberItemStack = new ItemStack(ModItems.AMBER.get(), configAmberSpawnCount);
         if (holdingItem.isEmpty()) {
-            player.setHeldItem(hand, amberItemStack);
+            player.setItemInHand(hand, amberItemStack);
             LOGGER.debug("%d amber put in player's hand", configAmberSpawnCount);
-        } else if (!player.addItemStackToInventory(amberItemStack)) {
-            player.dropItem(amberItemStack, false);
+        } else if (!player.addItem(amberItemStack)) {
+            player.drop(amberItemStack, false);
             LOGGER.debug("Player inventory full. %d amber spawned into world", configAmberSpawnCount);
         }
     }

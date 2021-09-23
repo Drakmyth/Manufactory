@@ -5,16 +5,16 @@
 
 package com.drakmyth.minecraft.manufactory.power;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 public interface IPowerBlock {
-    boolean canConnectToFace(BlockState state, BlockPos pos, IWorld world, Direction dir);
+    boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir);
     Type getPowerBlockType();
-    float getAvailablePower(BlockState state, World world, BlockPos pos);
+    float getAvailablePower(BlockState state, Level world, BlockPos pos);
 
     public static enum Type {
         NONE,

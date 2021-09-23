@@ -22,13 +22,13 @@ import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 public class PowerNetwork {
@@ -141,7 +141,7 @@ public class PowerNetwork {
         return new ArrayList<>(sinks);
     }
 
-    public void tick(World world) {
+    public void tick(Level world) {
         LOGGER.trace("Ticking network %s...", networkId);
         if (sinks.isEmpty()) {
             LOGGER.trace("No sinks on network %s, skipping...", networkId);
@@ -180,27 +180,27 @@ public class PowerNetwork {
         return available;
     }
 
-    public static PowerNetwork fromNBT(CompoundNBT nbt) {
+    public static PowerNetwork fromNBT(CompoundTag nbt) {
         String networkId = nbt.getString("networkId");
         LOGGER.debug("Creating Power Network %s from NBT...", networkId);
-        ListNBT nodeListNBT = nbt.getList("nodes", Constants.NBT.TAG_COMPOUND);
-        List<PowerNetworkNode> nodes = nodeListNBT.stream().map(compound -> {
-            CompoundNBT nodeNBT = (CompoundNBT)compound;
+        ListTag nodeListTag = nbt.getList("nodes", Constants.NBT.TAG_COMPOUND);
+        List<PowerNetworkNode> nodes = nodeListTag.stream().map(compound -> {
+            CompoundTag nodeNBT = (CompoundTag)compound;
             int x = nodeNBT.getInt("x");
             int y = nodeNBT.getInt("y");
             int z = nodeNBT.getInt("z");
             BlockPos pos = new BlockPos(x, y, z);
             Direction[] directions = Arrays.stream(nodeNBT.getIntArray("directions"))
                 .boxed()
-                .map(index -> Direction.byIndex(index))
+                .map(index -> Direction.from3DDataValue(index))
                 .toArray(Direction[]::new);
             LOGGER.debug("Loaded node at (%d, %d, %d) with directions %s", x, y, z, Arrays.toString(directions));
             return new PowerNetworkNode(pos, directions);
         }).collect(Collectors.toList());
 
-        ListNBT sourceListNBT = nbt.getList("sources", Constants.NBT.TAG_COMPOUND);
-        List<BlockPos> sources = sourceListNBT.stream().map(compound -> {
-            CompoundNBT sourcePosNBT = (CompoundNBT)compound;
+        ListTag sourceListTag = nbt.getList("sources", Constants.NBT.TAG_COMPOUND);
+        List<BlockPos> sources = sourceListTag.stream().map(compound -> {
+            CompoundTag sourcePosNBT = (CompoundTag)compound;
             int x = sourcePosNBT.getInt("x");
             int y = sourcePosNBT.getInt("y");
             int z = sourcePosNBT.getInt("z");
@@ -208,9 +208,9 @@ public class PowerNetwork {
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
 
-        ListNBT sinkListNBT = nbt.getList("sinks", Constants.NBT.TAG_COMPOUND);
-        List<BlockPos> sinks = sinkListNBT.stream().map(compound -> {
-            CompoundNBT sinkPosNBT = (CompoundNBT)compound;
+        ListTag sinkListTag = nbt.getList("sinks", Constants.NBT.TAG_COMPOUND);
+        List<BlockPos> sinks = sinkListTag.stream().map(compound -> {
+            CompoundTag sinkPosNBT = (CompoundTag)compound;
             int x = sinkPosNBT.getInt("x");
             int y = sinkPosNBT.getInt("y");
             int z = sinkPosNBT.getInt("z");
@@ -222,46 +222,46 @@ public class PowerNetwork {
         return new PowerNetwork(networkId, nodes, sources, sinks);
     }
 
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         isDirty = false;
         LOGGER.trace("Saving Power Network %s to NBT...", networkId);
         compound.putString("networkId", networkId);
-        ListNBT nodeListNBT = new ListNBT();
+        ListTag nodeListTag = new ListTag();
         nodes.entrySet().stream().forEach(node -> {
             BlockPos block = node.getKey();
-            CompoundNBT nodeNBT = new CompoundNBT();
+            CompoundTag nodeNBT = new CompoundTag();
             nodeNBT.putInt("x", block.getX());
             nodeNBT.putInt("y", block.getY());
             nodeNBT.putInt("z", block.getZ());
             List<Integer> directions = Stream.of(node.getValue())
-                .map(dir -> dir.getIndex())
+                .map(dir -> dir.get3DDataValue())
                 .collect(Collectors.toList());
             nodeNBT.putIntArray("directions", directions);
-            nodeListNBT.add(nodeNBT);
+            nodeListTag.add(nodeNBT);
         });
-        compound.put("nodes", nodeListNBT);
+        compound.put("nodes", nodeListTag);
         LOGGER.trace("Power Network %s finished serializing nodes", networkId);
 
-        ListNBT sourceListNBT = new ListNBT();
+        ListTag sourceListTag = new ListTag();
         sources.stream().forEach(source -> {
-            CompoundNBT sourcePosNBT = new CompoundNBT();
+            CompoundTag sourcePosNBT = new CompoundTag();
             sourcePosNBT.putInt("x", source.getX());
             sourcePosNBT.putInt("y", source.getY());
             sourcePosNBT.putInt("z", source.getZ());
-            sourceListNBT.add(sourcePosNBT);
+            sourceListTag.add(sourcePosNBT);
         });
-        compound.put("sources", sourceListNBT);
+        compound.put("sources", sourceListTag);
         LOGGER.trace("Power Network %s finished serializing sources", networkId);
 
-        ListNBT sinkListNBT = new ListNBT();
+        ListTag sinkListTag = new ListTag();
         sinks.stream().forEach(sink -> {
-            CompoundNBT sinkPosNBT = new CompoundNBT();
+            CompoundTag sinkPosNBT = new CompoundTag();
             sinkPosNBT.putInt("x", sink.getX());
             sinkPosNBT.putInt("y", sink.getY());
             sinkPosNBT.putInt("z", sink.getZ());
-            sinkListNBT.add(sinkPosNBT);
+            sinkListTag.add(sinkPosNBT);
         });
-        compound.put("sinks", sinkListNBT);
+        compound.put("sinks", sinkListTag);
         LOGGER.trace("Power Network %s finished serializing sinks");
         return compound;
     }

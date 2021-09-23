@@ -14,10 +14,10 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.MotorUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.PowerSocketItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemTier;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -29,16 +29,16 @@ public final class ModItems {
     public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(singleItemProperties(), 2.0f));
     public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(singleItemProperties(), 4.0f));
     public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(singleItemProperties(), 8.0f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER0 = ITEMS.register("grinder_wheel_tier0", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.WOOD, 0f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER1 = ITEMS.register("grinder_wheel_tier1", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.STONE, 0.25f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER2 = ITEMS.register("grinder_wheel_tier2", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.IRON, 0.5f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER3 = ITEMS.register("grinder_wheel_tier3", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.DIAMOND, 0.75f));
-    public static final RegistryObject<Item> GRINDER_WHEEL_TIER4 = ITEMS.register("grinder_wheel_tier4", () -> new GrinderWheelUpgradeItem(singleItemProperties(), ItemTier.NETHERITE, 1f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER0 = ITEMS.register("grinder_wheel_tier0", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.WOOD, 0f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER1 = ITEMS.register("grinder_wheel_tier1", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.STONE, 0.25f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER2 = ITEMS.register("grinder_wheel_tier2", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.IRON, 0.5f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER3 = ITEMS.register("grinder_wheel_tier3", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.DIAMOND, 0.75f));
+    public static final RegistryObject<Item> GRINDER_WHEEL_TIER4 = ITEMS.register("grinder_wheel_tier4", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.NETHERITE, 1f));
     public static final RegistryObject<Item> MILLING_BALL_TIER0 = ITEMS.register("milling_ball_tier0", () -> new MillingBallTier0UpgradeItem(smallStackItemProperties()));
-    public static final RegistryObject<Item> MILLING_BALL_TIER1 = ITEMS.register("milling_ball_tier1", () -> new MillingBallUpgradeItem(smallStackItemProperties(), ItemTier.STONE, 0.25f));
-    public static final RegistryObject<Item> MILLING_BALL_TIER2 = ITEMS.register("milling_ball_tier2", () -> new MillingBallUpgradeItem(smallStackItemProperties(), ItemTier.IRON, 0.5f));
-    public static final RegistryObject<Item> MILLING_BALL_TIER3 = ITEMS.register("milling_ball_tier3", () -> new MillingBallUpgradeItem(smallStackItemProperties(), ItemTier.DIAMOND, 0.75f));
-    public static final RegistryObject<Item> MILLING_BALL_TIER4 = ITEMS.register("milling_ball_tier4", () -> new MillingBallUpgradeItem(smallStackItemProperties(), ItemTier.NETHERITE, 1f));
+    public static final RegistryObject<Item> MILLING_BALL_TIER1 = ITEMS.register("milling_ball_tier1", () -> new MillingBallUpgradeItem(smallStackItemProperties(), Tiers.STONE, 0.25f));
+    public static final RegistryObject<Item> MILLING_BALL_TIER2 = ITEMS.register("milling_ball_tier2", () -> new MillingBallUpgradeItem(smallStackItemProperties(), Tiers.IRON, 0.5f));
+    public static final RegistryObject<Item> MILLING_BALL_TIER3 = ITEMS.register("milling_ball_tier3", () -> new MillingBallUpgradeItem(smallStackItemProperties(), Tiers.DIAMOND, 0.75f));
+    public static final RegistryObject<Item> MILLING_BALL_TIER4 = ITEMS.register("milling_ball_tier4", () -> new MillingBallUpgradeItem(smallStackItemProperties(), Tiers.NETHERITE, 1f));
     public static final RegistryObject<Item> POWER_SOCKET = ITEMS.register("power_socket", () -> new PowerSocketItem(singleItemProperties()));
     public static final RegistryObject<Item> BATTERY = ITEMS.register("battery", () -> new BatteryItem(singleItemProperties()));
     public static final RegistryObject<Item> REDSTONE_WIRE = ITEMS.register("redstone_wire", () -> new Item(defaultItemProperties()));
@@ -76,14 +76,14 @@ public final class ModItems {
     public static final RegistryObject<Item> SLURRIED_ANCIENT_DEBRIS_BUCKET = ITEMS.register("slurried_ancient_debris_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), singleItemProperties()));
 
     private static Item.Properties singleItemProperties() {
-        return defaultItemProperties().maxStackSize(1);
+        return defaultItemProperties().stacksTo(1);
     }
 
     private static Item.Properties smallStackItemProperties() {
-        return defaultItemProperties().maxStackSize(16);
+        return defaultItemProperties().stacksTo(16);
     }
 
     private static Item.Properties defaultItemProperties() {
-        return new Item.Properties().maxStackSize(64).group(ModItemGroups.MANUFACTORY_ITEM_GROUP);
+        return new Item.Properties().stacksTo(64).tab(ModItemGroups.MANUFACTORY_ITEM_GROUP);
     }
 }
