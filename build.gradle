@@ -20,7 +20,6 @@ apply plugin: 'net.minecraftforge.gradle'
 // apply plugin: 'jacoco'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(project.javaversion)
-// sourceCompatibility = targetCompatibility = project.javaversion
 
 group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).replace('/', '.')
 archivesBaseName = project.modid
@@ -51,7 +50,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Stop forge from killing the Gradle daemon on exit
-            // forceExit false
+            forceExit false
 
             mods {
                 manufactory {
@@ -70,7 +69,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Stop forge from killing the Gradle daemon on exit
-            // forceExit false
+            forceExit false
 
             mods {
                 manufactory {
@@ -198,20 +197,9 @@ ext {
     resourceTokenFiles = ['pack.mcmeta', 'META-INF/mods.toml']
 }
 
-// sourceSets {
-//     main {
-//         java {
-//             srcDirs = ["$buildDir/src"]
-//         }
-//     }
-// }
-
-// import org.apache.tools.ant.filters.ReplaceTokens
-
 task replaceSourceTokens(type: Sync) {
     inputs.property('replacements', project.replacements)
 
-    // println project.replacements
     from (sourceSets.main.java) {
         filesMatching(project.sourceTokenFiles) {
             expand(project.replacements)
