@@ -33,8 +33,7 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
         super(ModTileEntityTypes.LATEX_COLLECTOR.get(), pos, state);
     }
 
-    public boolean onTap() {
-        BlockState state = getBlockState();
+    public boolean onTap(Level level, BlockPos pos, BlockState state) {
         if (isWaterlogged(state)) {
             LOGGER.debug("Tapped, but waterlogged");
             return false;
@@ -53,18 +52,17 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
         totalTicks = 20 * configFillTimeSeconds;
         ticksRemaining = totalTicks;
 
-        Level world = getLevel();
-        if (world.isClientSide()) return true;
-        world.setBlockAndUpdate(getBlockPos(), state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING));
-        updateClient();
+        if (level.isClientSide()) return true;
+        level.setBlockAndUpdate(getBlockPos(), state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING));
+        updateClient(level, pos);
         setChanged();
         return true;
     }
 
-    private void updateClient() {
-        LOGGER.trace("Sending MachineProgress packet to update animation at (%d, %d, %d)...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-        MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, totalTicks, getBlockPos());
-        LevelChunk chunk = level.getChunkAt(getBlockPos());
+    private void updateClient(Level level, BlockPos pos) {
+        LOGGER.trace("Sending MachineProgress packet to update animation at (%d, %d, %d)...", pos.getX(), pos.getY(), pos.getZ());
+        MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, totalTicks, pos);
+        LevelChunk chunk = level.getChunkAt(pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
         LOGGER.trace("Packet sent");
     }
@@ -105,26 +103,20 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
         setChanged();
     }
 
-    public void tick() {
-        BlockState state = getBlockState();
+    public void tick(Level level, BlockPos pos, BlockState state) {
         if (isWaterlogged(state) && ticksRemaining > 0) {
             LOGGER.debug("Latex Collector flooded! Stop filling");
+            level.setBlockAndUpdate(pos, state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.EMPTY));
             reset();
         }
 
         if (ticksRemaining <= 0) return;
-        if (!this.hasLevel()) {
-            LOGGER.warn("Latex Collector at (%d, %d, %d) has no world!", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-            return;
-        }
-
-        Level world = this.getLevel();
-        if (world.isClientSide) return;
+        if (level.isClientSide) return;
         ticksRemaining--;
-        updateClient();
+        updateClient(level, pos);
         if (ticksRemaining > 0) return;
         LOGGER.debug("Latex Collector fill complete! Transitioning to FULL state...");
-        world.setBlockAndUpdate(getBlockPos(), state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL));
+        level.setBlockAndUpdate(pos, state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL));
         reset();
     }
 

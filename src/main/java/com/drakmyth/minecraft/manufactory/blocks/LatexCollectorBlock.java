@@ -92,10 +92,10 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> blockEntityType) {
-        return (l, p, s, t) -> {
-            if (t instanceof LatexCollectorTileEntity tile) {
-                tile.tick();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState s, BlockEntityType<T> blockEntityType) {
+        return (level, pos, state, tile) -> {
+            if (tile instanceof LatexCollectorTileEntity t) {
+                t.tick(level, pos, state);
             }
         };
     }

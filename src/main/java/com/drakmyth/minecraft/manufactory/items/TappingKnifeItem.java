@@ -42,7 +42,7 @@ public class TappingKnifeItem extends Item {
         }
         LOGGER.debug("Tapping...");
         LatexCollectorTileEntity lcte = (LatexCollectorTileEntity)te;
-        boolean tapped = lcte.onTap();
+        boolean tapped = lcte.onTap(world, tePos, world.getBlockState(tePos));
         if (tapped) {
             tryGiveAmber(context.getPlayer(), context.getHand());
         }
