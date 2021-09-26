@@ -44,10 +44,13 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'CORE,FORGEMOD,LOADING,SCAN,REGISTRIES,REGISTRYDUMP'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+
+            // Enable colors in terminal log
+            property 'log4j.skipJansi', 'false'
 
             // Stop forge from killing the Gradle daemon on exit
             forceExit false
@@ -63,10 +66,13 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'CORE,FORGEMOD,LOADING,SCAN,REGISTRIES,REGISTRYDUMP'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+
+            // Enable colors in terminal log
+            property 'log4j.skipJansi', 'false'
 
             // Stop forge from killing the Gradle daemon on exit
             forceExit false
@@ -82,10 +88,13 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'CORE,FORGEMOD,LOADING,SCAN,REGISTRIES,REGISTRYDUMP'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            
+            // Enable colors in terminal log
+            property 'log4j.skipJansi', 'false'
 
             // Stop forge from killing the Gradle daemon on exit
             forceExit false
