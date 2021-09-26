@@ -64,7 +64,7 @@ public class PowerNetworkManager extends SavedData {
     public void deleteNetwork(String networkId) {
         networks.remove(networkId);
         setDirty();
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Power Network %s deleted", networkId);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Power Network {} deleted", networkId);
     }
 
     public int getBlockCount(String networkId) {
@@ -82,13 +82,13 @@ public class PowerNetworkManager extends SavedData {
     public float consumePower(float requested, BlockPos pos) {
         String networkId = blockCache.get(pos);
         if (networkId == null) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Machine at %s requested power, but is not part of a power network.", pos);
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Machine at {} requested power, but is not part of a power network.", pos);
             return 0;
         }
 
         PowerNetwork network = networks.get(networkId);
         if (network == null) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Power requested from network %s, but network doesn't exist.", networkId);
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Power requested from network {}, but network doesn't exist.", networkId);
         }
 
         float consumed = network.consumePower(requested, pos);
@@ -97,7 +97,7 @@ public class PowerNetworkManager extends SavedData {
     }
 
     public void trackBlock(BlockPos pos, Direction[] dirs, Type type) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to track block (%d, %d, %d) as %s", pos.getX(), pos.getY(), pos.getZ(), type);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to track block ({}, {}, {}) as {}", pos.getX(), pos.getY(), pos.getZ(), type);
         PowerNetworkNode node = new PowerNetworkNode(pos, dirs);
         List<String> existingNetworks = getSurroundingNetworkIds(node);
 
@@ -106,10 +106,10 @@ public class PowerNetworkManager extends SavedData {
             PowerNetwork network = new PowerNetwork();
             networks.put(network.getId(), network);
             addNodeToNetwork(node, network.getId(), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block (%d, %d, %d) added to newly created network %s", pos.getX(), pos.getY(), pos.getZ(), network.getId());
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block ({}, {}, {}) added to newly created network {}", pos.getX(), pos.getY(), pos.getZ(), network.getId());
         } else if (existingNetworks.size() == 1) {
             addNodeToNetwork(node, existingNetworks.get(0), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block (%d, %d, %d) added to adjacent connecting network %s", pos.getX(), pos.getY(), pos.getZ(), existingNetworks.get(0));
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block ({}, {}, {}) added to adjacent connecting network {}", pos.getX(), pos.getY(), pos.getZ(), existingNetworks.get(0));
         } else {
             LOGGER.debug(LogMarkers.POWERNETWORK, "Multiple adjacent connecting networks identified. Merging...");
             PowerNetwork firstNetwork = networks.get(existingNetworks.remove(0));
@@ -122,17 +122,17 @@ public class PowerNetworkManager extends SavedData {
             }
 
             addNodeToNetwork(node, firstNetwork.getId(), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block (%d, %d, %d) added to adjacent connecting network %s", pos.getX(), pos.getY(), pos.getZ(), existingNetworks.get(0));
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block ({}, {}, {}) added to adjacent connecting network {}", pos.getX(), pos.getY(), pos.getZ(), existingNetworks.get(0));
         }
 
         setDirty();
     }
 
     public void untrackBlock(BlockPos pos) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to untrack block (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to untrack block ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
         PowerNetwork currentNetwork = networks.get(blockCache.get(pos));
         if(currentNetwork == null) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Tried to untrack block (%d, %d, %d), but block wasn't being tracked", pos.getX(), pos.getY(), pos.getZ());
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Tried to untrack block ({}, {}, {}), but block wasn't being tracked", pos.getX(), pos.getY(), pos.getZ());
             return;
         }
 
@@ -140,14 +140,14 @@ public class PowerNetworkManager extends SavedData {
         List<BlockPos> networkedNeighbors = getSurroundingNetworkedBlocks(node);
 
         if (networkedNeighbors.isEmpty()) {
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking last node in network %s...", currentNetwork.getId());
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking last node in network {}...", currentNetwork.getId());
             deleteNetwork(currentNetwork.getId());
             blockCache.remove(pos);
         } else if (networkedNeighbors.size() == 1) {
             currentNetwork.removeBlock(pos);
             blockCache.remove(pos);
         } else {
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking (%d, %d, %d) requires a network split. Splitting...", pos.getX(), pos.getY(), pos.getZ());
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking ({}, {}, {}) requires a network split. Splitting...", pos.getX(), pos.getY(), pos.getZ());
             Map<BlockPos, Direction[]> allNodes = currentNetwork.getNodes();
             allNodes.remove(pos);
             List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections())
@@ -167,7 +167,7 @@ public class PowerNetworkManager extends SavedData {
                 String newNetworkId = newNetwork.getId();
                 networks.put(newNetworkId, newNetwork);
                 branch.forEach(n -> blockCache.put(n.getPos(), newNetworkId));
-                LOGGER.debug(LogMarkers.POWERNETWORK, "New network %s split from existing network %s", newNetworkId, currentNetwork.getId());
+                LOGGER.debug(LogMarkers.POWERNETWORK, "New network {} split from existing network {}", newNetworkId, currentNetwork.getId());
             }
             currentNetwork.removeBlock(pos);
             blockCache.remove(pos);

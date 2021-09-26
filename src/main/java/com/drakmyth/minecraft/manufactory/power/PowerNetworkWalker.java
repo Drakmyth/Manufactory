@@ -24,7 +24,7 @@ public class PowerNetworkWalker {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static List<PowerNetworkNode> walk(Map<BlockPos, Direction[]> allNodes, BlockPos start) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Beginning Power Network branch walk from (%d, %d, %d)...", start.getX(), start.getY(), start.getZ());
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Beginning Power Network branch walk from ({}, {}, {})...", start.getX(), start.getY(), start.getZ());
         Queue<PowerNetworkNode> nodesToVisit = new ArrayDeque<>();
         Map<BlockPos, PowerNetworkNode> visitedNodes = new HashMap<>();
         nodesToVisit.add(new PowerNetworkNode(start, allNodes.get(start)));

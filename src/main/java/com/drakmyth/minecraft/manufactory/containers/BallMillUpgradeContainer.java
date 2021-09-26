@@ -105,13 +105,13 @@ public class BallMillUpgradeContainer extends AbstractContainerMenu {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < upgradeInventory.getSlots()) { // transfer from ball mill to inventory
-                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from ball mill upgrade slot %d to player inventory...", index);
+                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from ball mill upgrade slot {} to player inventory...", index);
                 if (!this.moveItemStackTo(itemstack1, upgradeInventory.getSlots(), this.slots.size(), false)) {
                     LOGGER.debug(LogMarkers.CONTAINER, "Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
             } else if (!this.moveItemStackTo(itemstack1, 0, upgradeInventory.getSlots(), false)) { // transfer from inventory to ball mill
-                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot %d to ball mill upgrade inventory failed because upgrade inputs are full", index);
+                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot {} to ball mill upgrade inventory failed because upgrade inputs are full", index);
                 return ItemStack.EMPTY;
             }
 

@@ -50,14 +50,14 @@ public class MachineProgressPacket {
         data.writeFloat(progress);
         data.writeFloat(total);
         data.writeBlockPos(pos);
-        LOGGER.trace(LogMarkers.NETWORK, "MachineProgress packet encoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "MachineProgress packet encoded { progress: {}, total: {}, pos: ({}, {}, {}) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static MachineProgressPacket decode(FriendlyByteBuf data) {
         float progress = data.readFloat();
         float total = data.readFloat();
         BlockPos pos = data.readBlockPos();
-        LOGGER.trace(LogMarkers.NETWORK, "MachineProgress packet decoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "MachineProgress packet decoded { progress: {}, total: {}, pos: ({}, {}, {}) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
         return new MachineProgressPacket(progress, total, pos);
     }
 
@@ -73,17 +73,17 @@ public class MachineProgressPacket {
                     Minecraft minecraft = Minecraft.getInstance();
                     Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     BlockEntity te = world.getBlockEntity(pos);
                     if (!(te instanceof IMachineProgressListener)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) does not contain an IMachineProgressListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) does not contain an IMachineProgressListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     IMachineProgressListener mpl = (IMachineProgressListener) te;
                     mpl.onProgressUpdate(progress, total);
-                    LOGGER.trace(LogMarkers.NETWORK, "Machine progress synced - progress %f, total %f", progress, total);
+                    LOGGER.trace(LogMarkers.NETWORK, "Machine progress synced - progress {}, total {}", progress, total);
                 }
             });
         });

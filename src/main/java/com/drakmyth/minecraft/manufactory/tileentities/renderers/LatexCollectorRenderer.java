@@ -38,7 +38,7 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
 
     @Override
     public void render(LatexCollectorTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at (%d, %d, %d)...", tileEntity.getBlockPos().getX(), tileEntity.getBlockPos().getY(), tileEntity.getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at ({}, {}, {})...", tileEntity.getBlockPos().getX(), tileEntity.getBlockPos().getY(), tileEntity.getBlockPos().getZ());
         BlockState state = tileEntity.getBlockState();
         if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {
             LOGGER.trace(LogMarkers.RENDERING, "Latex collector is empty. Nothing to render.");

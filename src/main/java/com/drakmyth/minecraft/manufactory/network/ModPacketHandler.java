@@ -29,21 +29,21 @@ public class ModPacketHandler {
 
     public static void registerMessages() {
         int messageId = 0;
-        LOGGER.info(LogMarkers.REGISTRATION, "Registering MachineProgressPacket with id %d...", messageId);
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering MachineProgressPacket with id {}...", messageId);
         INSTANCE.messageBuilder(MachineProgressPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(MachineProgressPacket::encode)
                 .decoder(MachineProgressPacket::decode)
                 .consumer(MachineProgressPacket::handle)
                 .add();
 
-        LOGGER.info(LogMarkers.REGISTRATION, "Registering PowerRatePacket with id %d...", messageId);
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering PowerRatePacket with id {}...", messageId);
         INSTANCE.messageBuilder(PowerRatePacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PowerRatePacket::encode)
                 .decoder(PowerRatePacket::decode)
                 .consumer(PowerRatePacket::handle)
                 .add();
 
-        LOGGER.info(LogMarkers.REGISTRATION, "Registering OpenContainerWithUpgradesPacket with id %d...", messageId);
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering OpenContainerWithUpgradesPacket with id {}...", messageId);
         INSTANCE.messageBuilder(OpenContainerWithUpgradesPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(OpenContainerWithUpgradesPacket::encode)
                 .decoder(OpenContainerWithUpgradesPacket::decode)

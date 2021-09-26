@@ -48,14 +48,14 @@ public class BallMillGui extends AbstractContainerScreen<BallMillContainer> {
 
         float powerRate = this.menu.getPowerRate();
         if (powerRate > 0) {
-            LOGGER.trace(LogMarkers.RENDERING, "Power rate %f greater than 0. Rendering power indicator...", powerRate);
+            LOGGER.trace(LogMarkers.RENDERING, "Power rate {} greater than 0. Rendering power indicator...", powerRate);
             int yOffset = (int)((1 - powerRate) * 15);
             this.blit(matrixStack, i + 57, j + 54 + yOffset, 176, yOffset, 15, 15 - yOffset);
         }
 
         float progress = this.menu.getProgress();
         if (progress > 0) {
-            LOGGER.trace(LogMarkers.RENDERING, "Progress %f greater than 0. Rendering progress indicator...", progress);
+            LOGGER.trace(LogMarkers.RENDERING, "Progress {} greater than 0. Rendering progress indicator...", progress);
             this.blit(matrixStack, i + 79, j + 34, 176, 15, (int)(progress * 24), 16);
         }
     }

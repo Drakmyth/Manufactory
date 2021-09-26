@@ -97,7 +97,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Grinder at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Grinder at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
         if (world.isClientSide) return InteractionResult.SUCCESS;
         interactWith(state, world, pos, player, player.getItemInHand(hand), hit.getDirection());
         return InteractionResult.CONSUME;
@@ -105,7 +105,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Grinder placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Grinder placed at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
         if (world.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
         pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
@@ -138,7 +138,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Grinder at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.MACHINE, "Grinder at ({}, {}, {}) replaced.", pos.getX(), pos.getY(), pos.getZ());
         if (world.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 

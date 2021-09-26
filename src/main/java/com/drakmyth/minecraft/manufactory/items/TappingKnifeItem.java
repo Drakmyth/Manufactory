@@ -52,7 +52,7 @@ public class TappingKnifeItem extends Item {
 
     private void tryGiveAmber(Player player, InteractionHand hand) {
         double configAmberSpawnChance = ConfigData.SERVER.AmberChance.get();
-        LOGGER.debug(LogMarkers.INTERACTION, "Rolling for amber against chance %f...", configAmberSpawnChance);
+        LOGGER.debug(LogMarkers.INTERACTION, "Rolling for amber against chance {}...", configAmberSpawnChance);
         if (configAmberSpawnChance <= 0) return;
         if (player.getRandom().nextDouble() >= configAmberSpawnChance ) return;
         LOGGER.debug(LogMarkers.INTERACTION, "Roll success!");
@@ -62,10 +62,10 @@ public class TappingKnifeItem extends Item {
         ItemStack amberItemStack = new ItemStack(ModItems.AMBER.get(), configAmberSpawnCount);
         if (holdingItem.isEmpty()) {
             player.setItemInHand(hand, amberItemStack);
-            LOGGER.debug(LogMarkers.INTERACTION, "%d amber put in player's hand", configAmberSpawnCount);
+            LOGGER.debug(LogMarkers.INTERACTION, "{} amber put in player's hand", configAmberSpawnCount);
         } else if (!player.addItem(amberItemStack)) {
             player.drop(amberItemStack, false);
-            LOGGER.debug(LogMarkers.INTERACTION, "Player inventory full. %d amber spawned into world", configAmberSpawnCount);
+            LOGGER.debug(LogMarkers.INTERACTION, "Player inventory full. {} amber spawned into world", configAmberSpawnCount);
         }
     }
 }

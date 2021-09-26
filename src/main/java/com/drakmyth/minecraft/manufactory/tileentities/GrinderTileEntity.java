@@ -55,7 +55,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         firstTick = true;
         grinderInventory = new ItemStackHandler(2);
         grinderUpgradeInventory = new ItemStackHandler(4);
-        LOGGER.debug(LogMarkers.MACHINE, "Grinder tile entity initialized with %d inventory slots and %d upgrade inventory slots", grinderInventory.getSlots(), grinderUpgradeInventory.getSlots());
+        LOGGER.debug(LogMarkers.MACHINE, "Grinder tile entity initialized with {} inventory slots and {} upgrade inventory slots", grinderInventory.getSlots(), grinderUpgradeInventory.getSlots());
     }
 
     public ItemStackHandler getInventory() {
@@ -90,7 +90,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at (%d, %d, %d) synced progress with powerRequired %f and powerRemaining %f", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), powerRequired, powerRemaining);
+        LOGGER.trace(LogMarkers.MACHINE, "Grinder at ({}, {}, {}) synced progress with powerRequired {} and powerRemaining {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), powerRequired, powerRemaining);
     }
 
     // Client-Side Only
@@ -99,7 +99,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = received;
         maxPowerPerTick = expected;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), lastPowerReceived, maxPowerPerTick);
+        LOGGER.trace(LogMarkers.MACHINE, "Grinder at ({}, {}, {}) synced power rate with lastPowerReceived {} and maxPowerPerTick {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), lastPowerReceived, maxPowerPerTick);
     }
 
     // Client-Side Only
@@ -113,7 +113,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
     @Override
     public CompoundTag save(CompoundTag compound) {
         super.save(compound);
-        LOGGER.trace(LogMarkers.MACHINE, "Writing Grinder at (%d, %d, %d) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.MACHINE, "Writing Grinder at ({}, {}, {}) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         compound.put("inventory", grinderInventory.serializeNBT());
         compound.put("upgradeInventory", grinderUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
@@ -125,7 +125,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        LOGGER.debug(LogMarkers.MACHINE, "Reading Grinder at (%d, %d, %d) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.debug(LogMarkers.MACHINE, "Reading Grinder at ({}, {}, {}) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         grinderInventory.deserializeNBT(nbt.getCompound("inventory"));
         grinderUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
         powerRequired = nbt.getFloat("powerRequired");
@@ -167,7 +167,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
             return false;
         }
         if (getTier() < recipe.getTierRequired()) {
-            LOGGER.trace(LogMarkers.MACHINE, "Tier %d not sufficient for matching recipe. Needed %d. Skipping...", getTier(), recipe.getTierRequired());
+            LOGGER.trace(LogMarkers.MACHINE, "Tier {} not sufficient for matching recipe. Needed {}. Skipping...", getTier(), recipe.getTierRequired());
             return false;
         }
         ItemStack maxResult = recipe.getMaxOutput();
@@ -180,7 +180,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         powerRemaining = recipe.getPowerRequired();
         maxPowerPerTick = recipe.getPowerRequired() / (float)recipe.getProcessTime();
         currentRecipe = recipe;
-        LOGGER.debug(LogMarkers.MACHINE, "Recipe started: %s", maxResult.getDisplayName());
+        LOGGER.debug(LogMarkers.MACHINE, "Recipe started: {}", maxResult.getDisplayName());
         return true;
     }
 
@@ -188,9 +188,9 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
         PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
         LevelChunk chunk = level.getChunkAt(getBlockPos());
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update gui at (%d, %d, %d)...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update gui at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
-        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update gui at (%d, %d, %d)...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update gui at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
         LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
     }
@@ -213,7 +213,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
             firstTick = false;
             if (!grinderInventory.getStackInSlot(0).isEmpty()) {
                 currentRecipe = level.getRecipeManager().getRecipeFor(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), level).orElse(null);
-                LOGGER.debug(LogMarkers.MACHINE, "Grinder input at (%d, %d, %d) not empty on first tick, initialized current recipe", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+                LOGGER.debug(LogMarkers.MACHINE, "Grinder input at ({}, {}, {}) not empty on first tick, initialized current recipe", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             }
         }
 
@@ -235,7 +235,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         }
 
         if (getTier() < currentRecipe.getTierRequired()) {
-            LOGGER.debug(LogMarkers.MACHINE, "Tier %d not sufficient for current recipe. Needed %d.", getTier(), currentRecipe.getTierRequired());
+            LOGGER.debug(LogMarkers.MACHINE, "Tier {} not sufficient for current recipe. Needed {}.", getTier(), currentRecipe.getTierRequired());
             return;
         }
 

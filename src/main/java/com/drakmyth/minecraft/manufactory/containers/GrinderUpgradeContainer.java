@@ -114,13 +114,13 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < upgradeInventory.getSlots()) { // transfer from grinder to inventory
-                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from grinder upgrade slot %d to player inventory...", index);
+                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from grinder upgrade slot {} to player inventory...", index);
                 if (!this.moveItemStackTo(itemstack1, upgradeInventory.getSlots(), this.slots.size(), false)) {
                     LOGGER.debug(LogMarkers.CONTAINER, "Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
             } else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) { // transfer from inventory to grinder
-                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot %d to grinder upgrade inventory failed because upgrade inputs are full", index);
+                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot {} to grinder upgrade inventory failed because upgrade inputs are full", index);
                 return ItemStack.EMPTY;
             }
 

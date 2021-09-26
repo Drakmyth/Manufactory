@@ -62,7 +62,7 @@ public class OpenContainerWithUpgradesPacket {
         }
         BlockPos pos = data.readBlockPos();
         // TODO: Update log to print item information
-        LOGGER.trace(LogMarkers.NETWORK, "OpenContainerWithUpgrades packet decoded { upgrades: <todo>, pos: (%d, %d, %d) }", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "OpenContainerWithUpgrades packet decoded { upgrades: <todo>, pos: ({}, {}, {}) }", pos.getX(), pos.getY(), pos.getZ());
         return new OpenContainerWithUpgradesPacket(upgrades.toArray(new ItemStack[]{}), pos);
     }
 
@@ -78,12 +78,12 @@ public class OpenContainerWithUpgradesPacket {
                     Minecraft minecraft = Minecraft.getInstance();
                     Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     BlockEntity te = world.getBlockEntity(pos);
                     if (!(te instanceof IOpenContainerWithUpgradesListener)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) does not contain an IOpenContainerWithUpgradesListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) does not contain an IOpenContainerWithUpgradesListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     IOpenContainerWithUpgradesListener prl = (IOpenContainerWithUpgradesListener) te;

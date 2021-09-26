@@ -69,7 +69,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
         if (world.isClientSide) return InteractionResult.SUCCESS;
         if (state.getValue(FILL_STATUS) == FillStatus.FULL) {
             int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
