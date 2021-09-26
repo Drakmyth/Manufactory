@@ -18,6 +18,7 @@
                 <OnStartupTriggeringPolicy/>
             </Policies>
         </RollingRandomAccessFile>
+        <!-- TODO: Filter this file to only messages from my mod -->
         <RollingRandomAccessFile name="ManufactoryFile" fileName="logs/manufactory.log" filePattern="logs/manufactory-%i.log.gz">
             <PatternLayout pattern="%[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
             <Policies>
