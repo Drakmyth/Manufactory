@@ -41,5 +41,12 @@ public class ModPacketHandler {
                 .decoder(PowerRatePacket::decode)
                 .consumer(PowerRatePacket::handle)
                 .add();
+
+        LOGGER.info("Registering OpenContainerWithUpgradesPacket with id %d...", messageId);
+        INSTANCE.messageBuilder(OpenContainerWithUpgradesPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(OpenContainerWithUpgradesPacket::encode)
+                .decoder(OpenContainerWithUpgradesPacket::decode)
+                .consumer(OpenContainerWithUpgradesPacket::handle)
+                .add();
     }
 }
