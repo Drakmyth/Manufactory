@@ -117,7 +117,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
         float lightAndWeatherFactor = world.getMaxLocalRawBrightness(pos.above()) / 15f;
         float peakPowerGen = ConfigData.SERVER.SolarPanelPeakPowerGeneration.get().floatValue();
         float availablePower = peakPowerGen * timeFactor * lightAndWeatherFactor;
-        LOGGER.trace(LogMarkers.OPERATION, "Solar Panel at (%d, %d, %d) made %f power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Solar Panel at (%d, %d, %d) made %f power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);
         return availablePower;
     }
 }
