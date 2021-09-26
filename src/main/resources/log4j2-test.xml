@@ -2,7 +2,12 @@
 <Configuration status="warn" packages="com.drakmyth.minecraft.manufactory">
     <filters>
         <!-- Manufactory Markers -->
+        <MarkerFilter marker="CONTAINER" onMatch="${sys:forge.logging.marker.container:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="INTERACTION" onMatch="${sys:forge.logging.marker.interaction:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="MACHINE" onMatch="${sys:forge.logging.marker.machine:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="POWERNETWORK" onMatch="${sys:forge.logging.marker.powernetwork:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="REGISTRATION" onMatch="${sys:forge.logging.marker.registration:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="RENDERING" onMatch="${sys:forge.logging.marker.rendering:-DENY}" onMismatch="NEUTRAL"/>
         <!-- Minecraft Markers -->
         <MarkerFilter marker="NETWORK" onMatch="${sys:forge.logging.marker.network:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="SOUNDS" onMatch="${sys:forge.logging.marker.sounds:-DENY}" onMismatch="NEUTRAL"/>
