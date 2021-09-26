@@ -7,6 +7,8 @@ package com.drakmyth.minecraft.manufactory.network;
 
 import java.util.function.Supplier;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,14 +50,14 @@ public class PowerRatePacket {
         data.writeFloat(received);
         data.writeFloat(expected);
         data.writeBlockPos(pos);
-        LOGGER.trace("PowerRate packet encoded { received: %f, expected: %f, pos: (%d, %d, %d) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet encoded { received: %f, expected: %f, pos: (%d, %d, %d) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static PowerRatePacket decode(FriendlyByteBuf data) {
         float received = data.readFloat();
         float expected = data.readFloat();
         BlockPos pos = data.readBlockPos();
-        LOGGER.trace("PowerRate packet decoded { received: %f, expected: %f, pos: (%d, %d, %d) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet decoded { received: %f, expected: %f, pos: (%d, %d, %d) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
         return new PowerRatePacket(received, expected, pos);
     }
 
@@ -67,25 +69,25 @@ public class PowerRatePacket {
 
                 @Override
                 public void run() {
-                    LOGGER.trace("Processing PowerRate packet...");
+                    LOGGER.trace(LogMarkers.NETWORK, "Processing PowerRate packet...");
                     Minecraft minecraft = Minecraft.getInstance();
                     Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn("Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     BlockEntity te = world.getBlockEntity(pos);
                     if (!(te instanceof IPowerRateListener)) {
-                        LOGGER.warn("Position (%d, %d, %d) does not contain an IPowerRateListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) does not contain an IPowerRateListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     IPowerRateListener prl = (IPowerRateListener) te;
                     prl.onPowerRateUpdate(received, expected);
-                    LOGGER.trace("Power rate synced - received %f, expected %f", received, expected);
+                    LOGGER.trace(LogMarkers.NETWORK, "Power rate synced - received %f, expected %f", received, expected);
                 }
             });
         });
         ctx.setPacketHandled(true);
-        LOGGER.trace("PowerRate packet received and queued");
+        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet received and queued");
     }
 }

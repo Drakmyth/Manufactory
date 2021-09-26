@@ -5,6 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.config;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +22,7 @@ public class ServerConfig {
     public final ForgeConfigSpec.DoubleValue SolarPanelPeakPowerGeneration;
 
     ServerConfig(ForgeConfigSpec.Builder builder) {
-        LOGGER.debug("Initializing SERVER config...");
+        LOGGER.debug(LogMarkers.CONFIG, "Initializing SERVER config...");
 
         builder.push("general");
         AmberChance = builder.comment("Chance to get Amber after a successful latex tap")

@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
@@ -42,7 +43,7 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
 
     public GrinderUpgradeContainer(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModContainerTypes.GRINDER_UPGRADE.get(), windowId);
-        LOGGER.debug("Initializing GrinderContainer...");
+        LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderUpgradeContainer...");
         Level world = player.getCommandSenderWorld();
         posCallable = ContainerLevelAccess.create(world, pos);
         tileEntity = (GrinderTileEntity)world.getBlockEntity(pos);
@@ -56,7 +57,7 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
                 return stack.getItem() instanceof IGrinderWheelUpgrade;
             }
         });
-        LOGGER.debug("Grinder wheel slot 1 added with index 0");
+        LOGGER.debug(LogMarkers.CONTAINER, "Grinder wheel slot 1 added with index 0");
         // Wheel Slot 2
         this.addSlot(new SlotItemHandler(upgradeInventory, 1, 98, 14) {
             @Override
@@ -64,7 +65,7 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
                 return stack.getItem() instanceof IGrinderWheelUpgrade;
             }
         });
-        LOGGER.debug("Grinder wheel slot 2 added with index 1");
+        LOGGER.debug(LogMarkers.CONTAINER, "Grinder wheel slot 2 added with index 1");
         // Motor Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 2, 80, 36) {
             @Override
@@ -72,7 +73,7 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
                 return stack.getItem() instanceof IMotorUpgrade;
             }
         });
-        LOGGER.debug("Motor slot added with index 2");
+        LOGGER.debug(LogMarkers.CONTAINER, "Motor slot added with index 2");
         // Power Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 3, 80, 58) {
             @Override
@@ -83,11 +84,11 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
             @Override
             public void setChanged() {
                 super.setChanged();
-                LOGGER.debug("Power slot contents changed. Notifying neighbors...");
+                LOGGER.debug(LogMarkers.CONTAINER, "Power slot contents changed. Notifying neighbors...");
                 tileEntity.getBlockState().updateNeighbourShapes(world, pos, 3);
             }
         });
-        LOGGER.debug("Power slot added with index 3");
+        LOGGER.debug(LogMarkers.CONTAINER, "Power slot added with index 3");
 
         // Player Inventory
         for (int j = 0; j < 3; j++) {
@@ -95,13 +96,13 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
                 this.addSlot(new SlotItemHandler(playerInventory, i + (j * 9) + 9, (i + 1) * 8 + (i * 10), j * 18 + 84));
             }
         }
-        LOGGER.debug("Player inventory slots added with indices 9-35");
+        LOGGER.debug(LogMarkers.CONTAINER, "Player inventory slots added with indices 9-35");
 
         // Player Hotbar
         for (int i = 0; i < 9; i++) {
             this.addSlot(new SlotItemHandler(playerInventory, i, (i + 1) * 8 + (i * 10), 142));
         }
-        LOGGER.debug("Player hotbar slots added with indices 0-8");
+        LOGGER.debug(LogMarkers.CONTAINER, "Player hotbar slots added with indices 0-8");
     }
 
     @Override
@@ -113,13 +114,13 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < upgradeInventory.getSlots()) { // transfer from grinder to inventory
-                LOGGER.debug("Transferring stack from grinder upgrade slot %d to player inventory...", index);
+                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from grinder upgrade slot %d to player inventory...", index);
                 if (!this.moveItemStackTo(itemstack1, upgradeInventory.getSlots(), this.slots.size(), false)) {
-                    LOGGER.debug("Transfer failed because player inventory is full");
+                    LOGGER.debug(LogMarkers.CONTAINER, "Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
             } else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) { // transfer from inventory to grinder
-                LOGGER.debug("Transfer of stack from player inventory slot %d to grinder upgrade inventory failed because upgrade inputs are full", index);
+                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot %d to grinder upgrade inventory failed because upgrade inputs are full", index);
                 return ItemStack.EMPTY;
             }
 

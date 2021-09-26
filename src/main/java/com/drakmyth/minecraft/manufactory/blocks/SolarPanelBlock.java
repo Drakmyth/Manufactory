@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.blocks;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
@@ -78,7 +79,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug("Solar Panel placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Solar Panel placed at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
         pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
@@ -86,7 +87,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug("Solar Panel at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.MACHINE, "Solar Panel at (%d, %d, %d) replaced.", pos.getX(), pos.getY(), pos.getZ());
         if (world.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 
@@ -116,7 +117,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
         float lightAndWeatherFactor = world.getMaxLocalRawBrightness(pos.above()) / 15f;
         float peakPowerGen = ConfigData.SERVER.SolarPanelPeakPowerGeneration.get().floatValue();
         float availablePower = peakPowerGen * timeFactor * lightAndWeatherFactor;
-        LOGGER.trace("Solar Panel at (%d, %d, %d) made %f power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);
+        LOGGER.trace(LogMarkers.OPERATION, "Solar Panel at (%d, %d, %d) made %f power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);
         return availablePower;
     }
 }

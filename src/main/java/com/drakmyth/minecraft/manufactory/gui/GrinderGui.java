@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.gui;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.containers.GrinderContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -29,11 +30,11 @@ public class GrinderGui extends AbstractContainerScreen<GrinderContainer> {
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        LOGGER.trace("Rendering Grinder gui...");
+        LOGGER.trace(LogMarkers.RENDERING, "Rendering Grinder gui...");
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
-        LOGGER.trace("Grinder gui render complete");
+        LOGGER.trace(LogMarkers.RENDERING, "Grinder gui render complete");
      }
 
     @Override
@@ -47,14 +48,14 @@ public class GrinderGui extends AbstractContainerScreen<GrinderContainer> {
 
         float powerRate = this.menu.getPowerRate();
         if (powerRate > 0) {
-            LOGGER.trace("Power rate %f greater than 0. Rendering power indicator...", powerRate);
+            LOGGER.trace(LogMarkers.RENDERING, "Power rate %f greater than 0. Rendering power indicator...", powerRate);
             int yOffset = (int)((1 - powerRate) * 15);
             this.blit(matrixStack, i + 57, j + 54 + yOffset, 176, yOffset, 15, 15 - yOffset);
         }
 
         float progress = this.menu.getProgress();
         if (progress > 0) {
-            LOGGER.trace("Progress %f greater than 0. Rendering progress indicator...", progress);
+            LOGGER.trace(LogMarkers.RENDERING, "Progress %f greater than 0. Rendering progress indicator...", progress);
             this.blit(matrixStack, i + 79, j + 34, 176, 15, (int)(progress * 24), 16);
         }
     }

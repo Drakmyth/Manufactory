@@ -5,6 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +29,7 @@ public class GrinderContainerProvider implements MenuProvider {
 
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory Inventory, Player player) {
-        LOGGER.debug("Creating Grinder gui...");
+        LOGGER.debug(LogMarkers.CONTAINER, "Creating Grinder gui...");
         return new GrinderContainer(windowId, new InvWrapper(Inventory), player, pos);
     }
 

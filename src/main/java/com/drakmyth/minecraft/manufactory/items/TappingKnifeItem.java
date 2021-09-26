@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.items;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
@@ -31,16 +32,16 @@ public class TappingKnifeItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        LOGGER.debug("Tapping knife used");
+        LOGGER.debug(LogMarkers.INTERACTION, "Tapping knife used");
         Level world = context.getLevel();
         if (world.isClientSide) return InteractionResult.SUCCESS;
         BlockPos tePos = context.getClickedPos().relative(context.getClickedFace());
         BlockEntity te = world.getBlockEntity(tePos);
         if (!LatexCollectorTileEntity.class.isInstance(te)) {
-            LOGGER.debug("Latex Collector tile entity not found");
+            LOGGER.debug(LogMarkers.MACHINE, "Latex Collector tile entity not found");
             return InteractionResult.PASS;
         }
-        LOGGER.debug("Tapping...");
+        LOGGER.debug(LogMarkers.INTERACTION, "Tapping...");
         LatexCollectorTileEntity lcte = (LatexCollectorTileEntity)te;
         boolean tapped = lcte.onTap(world, tePos, world.getBlockState(tePos));
         if (tapped) {
@@ -51,20 +52,20 @@ public class TappingKnifeItem extends Item {
 
     private void tryGiveAmber(Player player, InteractionHand hand) {
         double configAmberSpawnChance = ConfigData.SERVER.AmberChance.get();
-        LOGGER.debug("Rolling for amber against chance %f...", configAmberSpawnChance);
+        LOGGER.debug(LogMarkers.INTERACTION, "Rolling for amber against chance %f...", configAmberSpawnChance);
         if (configAmberSpawnChance <= 0) return;
         if (player.getRandom().nextDouble() >= configAmberSpawnChance ) return;
-        LOGGER.debug("Roll success!");
+        LOGGER.debug(LogMarkers.INTERACTION, "Roll success!");
 
         int configAmberSpawnCount = ConfigData.SERVER.AmberTapSpawnCount.get();
         ItemStack holdingItem = player.getItemInHand(hand);
         ItemStack amberItemStack = new ItemStack(ModItems.AMBER.get(), configAmberSpawnCount);
         if (holdingItem.isEmpty()) {
             player.setItemInHand(hand, amberItemStack);
-            LOGGER.debug("%d amber put in player's hand", configAmberSpawnCount);
+            LOGGER.debug(LogMarkers.INTERACTION, "%d amber put in player's hand", configAmberSpawnCount);
         } else if (!player.addItem(amberItemStack)) {
             player.drop(amberItemStack, false);
-            LOGGER.debug("Player inventory full. %d amber spawned into world", configAmberSpawnCount);
+            LOGGER.debug(LogMarkers.INTERACTION, "Player inventory full. %d amber spawned into world", configAmberSpawnCount);
         }
     }
 }

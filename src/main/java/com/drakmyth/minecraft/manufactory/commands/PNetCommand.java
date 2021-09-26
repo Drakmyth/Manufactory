@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.commands;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -23,7 +24,7 @@ public class PNetCommand {
 
     static ArgumentBuilder<CommandSourceStack, ?> register()
     {
-        LOGGER.debug("Registering PNetCommand...");
+        LOGGER.debug(LogMarkers.REGISTRATION, "Registering PNetCommand...");
         ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("pnet")
             .requires(cs->cs.hasPermission(0)) //permission
             .then(Commands.argument("dim", DimensionArgument.dimension())
@@ -41,7 +42,7 @@ public class PNetCommand {
                 )
             )
         ;
-        LOGGER.debug("PNetCommand registered");
+        LOGGER.debug(LogMarkers.REGISTRATION, "PNetCommand registered");
         return builder;
     }
 

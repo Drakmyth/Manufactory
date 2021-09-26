@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.tileentities;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
@@ -35,18 +36,18 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
 
     public boolean onTap(Level level, BlockPos pos, BlockState state) {
         if (isWaterlogged(state)) {
-            LOGGER.debug("Tapped, but waterlogged");
+            LOGGER.debug(LogMarkers.INTERACTION, "Tapped, but waterlogged");
             return false;
         }
         if (!isEmpty(state)) {
-            LOGGER.debug("Tapped, but not empty");
+            LOGGER.debug(LogMarkers.INTERACTION, "Tapped, but not empty");
             return false;
         }
         if (ticksRemaining > 0) {
-            LOGGER.debug("Tapped, but already filling");
+            LOGGER.debug(LogMarkers.INTERACTION, "Tapped, but already filling");
             return false;
         }
-        LOGGER.debug("Tapped, starting countdown...");
+        LOGGER.debug(LogMarkers.INTERACTION, "Tapped, starting countdown...");
 
         int configFillTimeSeconds = ConfigData.SERVER.LatexFillSeconds.get();
         totalTicks = 20 * configFillTimeSeconds;
@@ -60,11 +61,11 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
     }
 
     private void updateClient(Level level, BlockPos pos) {
-        LOGGER.trace("Sending MachineProgress packet to update animation at (%d, %d, %d)...", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update animation at (%d, %d, %d)...", pos.getX(), pos.getY(), pos.getZ());
         MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, totalTicks, pos);
         LevelChunk chunk = level.getChunkAt(pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
-        LOGGER.trace("Packet sent");
+        LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
     }
 
     private boolean isWaterlogged(BlockState state) {
@@ -82,7 +83,7 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
     @Override
     public CompoundTag save(CompoundTag compound) {
         super.save(compound);
-        LOGGER.trace("Writing Latex Collector at (%d, %d, %d) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.MACHINE, "Writing Latex Collector at (%d, %d, %d) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         compound.putInt("totalTicks", totalTicks);
         compound.putInt("ticksRemaining", ticksRemaining);
         return compound;
@@ -91,10 +92,10 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        LOGGER.debug("Reading Latex Collector at (%d, %d, %d) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.debug(LogMarkers.MACHINE, "Reading Latex Collector at (%d, %d, %d) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         totalTicks = nbt.getInt("totalTicks");
         ticksRemaining = nbt.getInt("ticksRemaining");
-        LOGGER.debug("Latex Collector Loaded!");
+        LOGGER.debug(LogMarkers.MACHINE, "Latex Collector Loaded!");
     }
 
     private void reset() {
@@ -105,7 +106,7 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
 
     public void tick(Level level, BlockPos pos, BlockState state) {
         if (isWaterlogged(state) && ticksRemaining > 0) {
-            LOGGER.debug("Latex Collector flooded! Stop filling");
+            LOGGER.debug(LogMarkers.MACHINE, "Latex Collector flooded! Stop filling");
             level.setBlockAndUpdate(pos, state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.EMPTY));
             reset();
         }
@@ -115,7 +116,7 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
         ticksRemaining--;
         updateClient(level, pos);
         if (ticksRemaining > 0) return;
-        LOGGER.debug("Latex Collector fill complete! Transitioning to FULL state...");
+        LOGGER.debug(LogMarkers.MACHINE, "Latex Collector fill complete! Transitioning to FULL state...");
         level.setBlockAndUpdate(pos, state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL));
         reset();
     }
@@ -124,6 +125,6 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
     public void onProgressUpdate(float progress, float total) {
         totalTicks = (int)total;
         ticksRemaining = (int)progress;
-        LOGGER.debug("Latex Collector at (%d, %d, %d) synced progress with ticksRemaining %d and totalTicks %d", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), ticksRemaining, totalTicks);
+        LOGGER.debug(LogMarkers.MACHINE, "Latex Collector at (%d, %d, %d) synced progress with ticksRemaining %d and totalTicks %d", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), ticksRemaining, totalTicks);
     }
 }

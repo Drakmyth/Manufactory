@@ -5,6 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.config;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +18,7 @@ public class ClientConfig {
     // public final ForgeConfigSpec.IntValue Field;
 
     ClientConfig(ForgeConfigSpec.Builder builder) {
-        LOGGER.debug("Initializing CLIENT config...");
+        LOGGER.debug(LogMarkers.CONFIG, "Initializing CLIENT config...");
 
         // builder.push("general");
         // Field = builder.comment("This is a comment for the field")

@@ -5,6 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +29,7 @@ public class BallMillUpgradeContainerProvider implements MenuProvider {
 
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-        LOGGER.debug("Creating Ball Mill upgrade gui...");
+        LOGGER.debug(LogMarkers.CONTAINER, "Creating Ball Mill upgrade gui...");
         return new BallMillUpgradeContainer(windowId, new InvWrapper(playerInventory), player, pos);
     }
 

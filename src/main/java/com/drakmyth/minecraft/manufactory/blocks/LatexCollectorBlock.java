@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.blocks;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
@@ -68,12 +69,12 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug("Interacted with Latex Collector at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
         if (world.isClientSide) return InteractionResult.SUCCESS;
         if (state.getValue(FILL_STATUS) == FillStatus.FULL) {
             int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
             ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get(), configLatexSpawnCount);
-            LOGGER.debug("Spawning coagulated latex and setting collector to EMPTY...");
+            LOGGER.debug(LogMarkers.MACHINE, "Spawning coagulated latex and setting collector to EMPTY...");
             popResource(world, pos, latexItemStack);
             world.setBlockAndUpdate(pos, state.setValue(FILL_STATUS, FillStatus.EMPTY));
         }
@@ -87,7 +88,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        LOGGER.trace("Creating Latex Collector tile entity...");
+        LOGGER.trace(LogMarkers.MACHINE, "Creating Latex Collector tile entity...");
         return ModTileEntityTypes.LATEX_COLLECTOR.get().create(pos, state);
     }
 
@@ -120,7 +121,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         final Direction face = context.getClickedFace();
         if (!isFaceHorizontal(face) || !isBlockLog(context.getLevel(), context.getClickedPos().relative(face.getOpposite()))) {
-            LOGGER.debug("Latex Collector must be placed on the side of a log");
+            LOGGER.debug(LogMarkers.INTERACTION, "Latex Collector must be placed on the side of a log");
             return null;
         }
 
@@ -149,7 +150,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         if (!pos.relative(facing).equals(neighborPos)) return;
 
         if (!isBlockLog(world, neighborPos)) {
-            LOGGER.debug("Log destroyed. Destroying attached latex collector...");
+            LOGGER.debug(LogMarkers.MACHINE, "Log destroyed. Destroying attached latex collector...");
             world.destroyBlock(pos, true);
         }
     }

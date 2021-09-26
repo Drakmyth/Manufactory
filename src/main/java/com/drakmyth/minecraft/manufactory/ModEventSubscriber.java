@@ -47,7 +47,7 @@ public final class ModEventSubscriber {
 
     @SubscribeEvent
     public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-        LOGGER.info("Registering blockitems...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering blockitems...");
         final IForgeRegistry<Item> registry = event.getRegistry();
 
         ModBlocks.BLOCKS.getEntries().stream()
@@ -59,12 +59,12 @@ public final class ModEventSubscriber {
                 blockItem.setRegistryName(block.getRegistryName());
                 registry.register(blockItem);
             });
-        LOGGER.info("BlockItem registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "BlockItem registration complete");
     }
 
     @SubscribeEvent
     public static void gatherData(final GatherDataEvent event) {
-        LOGGER.info("Registering data generators...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering data generators...");
         DataGenerator generator = event.getGenerator();
         generator.addProvider(new ModRecipeProvider(generator));
         generator.addProvider(new ModLootTableProvider(generator));
@@ -72,33 +72,33 @@ public final class ModEventSubscriber {
         generator.addProvider(new ModLanguageProvider(generator, "en_us"));
         generator.addProvider(new ModAnimatedTextureProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModTagsProvider.Fluids(generator, event.getExistingFileHelper()));
-        LOGGER.info("Data generator registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Data generator registration complete");
     }
 
     @SubscribeEvent
     public static void fmlCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            LOGGER.info("Registering argument types...");
+            LOGGER.info(LogMarkers.REGISTRATION, "Registering argument types...");
             ArgumentTypes.register("power_network", PowerNetworkArgument.class, new EmptyArgumentSerializer<>(PowerNetworkArgument::getPowerNetwork));
-            LOGGER.info("Argument type registration complete");
+            LOGGER.info(LogMarkers.REGISTRATION, "Argument type registration complete");
         });
-        LOGGER.info("ArgumentType registration queued");
+        LOGGER.info(LogMarkers.REGISTRATION, "ArgumentType registration queued");
     }
 
     @SubscribeEvent
     public static void fmlEntityRenderers(final RegisterRenderers event) {
-        LOGGER.info("Binding tile entity renderers...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Binding tile entity renderers...");
         event.registerBlockEntityRenderer(ModTileEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
-        LOGGER.info("Tile entity renderer binding complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Tile entity renderer binding complete");
     }
 
     @SubscribeEvent
     public static void fmlClientSetup(FMLClientSetupEvent event) {
-        LOGGER.info("Registering screens...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering screens...");
         MenuScreens.register(ModContainerTypes.GRINDER.get(), GrinderGui::new);
         MenuScreens.register(ModContainerTypes.GRINDER_UPGRADE.get(), GrinderUpgradeGui::new);
         MenuScreens.register(ModContainerTypes.BALL_MILL.get(), BallMillGui::new);
         MenuScreens.register(ModContainerTypes.BALL_MILL_UPGRADE.get(), BallMillUpgradeGui::new);
-        LOGGER.info("Screen registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Screen registration complete");
     }
 }

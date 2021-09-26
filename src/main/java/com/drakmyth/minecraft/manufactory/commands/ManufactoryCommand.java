@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.commands;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -17,11 +18,11 @@ public class ManufactoryCommand {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LOGGER.debug("Registering ManufactoryCommand...");
+        LOGGER.debug(LogMarkers.REGISTRATION, "Registering ManufactoryCommand...");
         dispatcher.register(
             LiteralArgumentBuilder.<CommandSourceStack>literal("manufactory")
             .then(PNetCommand.register())
         );
-        LOGGER.debug("ManufactoryCommand registered");
+        LOGGER.debug(LogMarkers.REGISTRATION, "ManufactoryCommand registered");
     }
 }

@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.network;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,21 +29,21 @@ public class ModPacketHandler {
 
     public static void registerMessages() {
         int messageId = 0;
-        LOGGER.info("Registering MachineProgressPacket with id %d...", messageId);
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering MachineProgressPacket with id %d...", messageId);
         INSTANCE.messageBuilder(MachineProgressPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(MachineProgressPacket::encode)
                 .decoder(MachineProgressPacket::decode)
                 .consumer(MachineProgressPacket::handle)
                 .add();
 
-        LOGGER.info("Registering PowerRatePacket with id %d...", messageId);
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering PowerRatePacket with id %d...", messageId);
         INSTANCE.messageBuilder(PowerRatePacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PowerRatePacket::encode)
                 .decoder(PowerRatePacket::decode)
                 .consumer(PowerRatePacket::handle)
                 .add();
 
-        LOGGER.info("Registering OpenContainerWithUpgradesPacket with id %d...", messageId);
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering OpenContainerWithUpgradesPacket with id %d...", messageId);
         INSTANCE.messageBuilder(OpenContainerWithUpgradesPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(OpenContainerWithUpgradesPacket::encode)
                 .decoder(OpenContainerWithUpgradesPacket::decode)

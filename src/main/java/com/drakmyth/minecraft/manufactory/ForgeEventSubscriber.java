@@ -33,8 +33,8 @@ public final class ForgeEventSubscriber {
 
     @SubscribeEvent
     public static void registerCommands(final RegisterCommandsEvent event) {
-        LOGGER.info("Registering commands...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering commands...");
         ManufactoryCommand.register(event.getDispatcher());
-        LOGGER.info("Command registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Command registration complete");
     }
 }

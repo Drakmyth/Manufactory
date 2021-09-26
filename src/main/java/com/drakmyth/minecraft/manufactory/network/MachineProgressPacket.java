@@ -7,6 +7,8 @@ package com.drakmyth.minecraft.manufactory.network;
 
 import java.util.function.Supplier;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,14 +50,14 @@ public class MachineProgressPacket {
         data.writeFloat(progress);
         data.writeFloat(total);
         data.writeBlockPos(pos);
-        LOGGER.trace("MachineProgress packet encoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "MachineProgress packet encoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static MachineProgressPacket decode(FriendlyByteBuf data) {
         float progress = data.readFloat();
         float total = data.readFloat();
         BlockPos pos = data.readBlockPos();
-        LOGGER.trace("MachineProgress packet decoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "MachineProgress packet decoded { progress: %f, total: %f, pos: (%d, %d, %d) }", progress, total, pos.getX(), pos.getY(), pos.getZ());
         return new MachineProgressPacket(progress, total, pos);
     }
 
@@ -67,25 +69,25 @@ public class MachineProgressPacket {
 
                 @Override
                 public void run() {
-                    LOGGER.trace("Processing MachineProgress packet...");
+                    LOGGER.trace(LogMarkers.NETWORK, "Processing MachineProgress packet...");
                     Minecraft minecraft = Minecraft.getInstance();
                     Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn("Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     BlockEntity te = world.getBlockEntity(pos);
                     if (!(te instanceof IMachineProgressListener)) {
-                        LOGGER.warn("Position (%d, %d, %d) does not contain an IMachineProgressListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) does not contain an IMachineProgressListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     IMachineProgressListener mpl = (IMachineProgressListener) te;
                     mpl.onProgressUpdate(progress, total);
-                    LOGGER.trace("Machine progress synced - progress %f, total %f", progress, total);
+                    LOGGER.trace(LogMarkers.NETWORK, "Machine progress synced - progress %f, total %f", progress, total);
                 }
             });
         });
         ctx.setPacketHandled(true);
-        LOGGER.trace("MachineProgress packet received and queued");
+        LOGGER.trace(LogMarkers.NETWORK, "MachineProgress packet received and queued");
     }
 }

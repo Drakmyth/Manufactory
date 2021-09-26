@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +51,7 @@ public class OpenContainerWithUpgradesPacket {
         }
         data.writeBlockPos(pos);
         String upgradesStr = String.join(" , ", Arrays.stream(upgrades).map(u -> u.toString()).toList());
-        LOGGER.trace("OpenContainerWithUpgrades packet encoded { upgrades: [ {} ], pos: ({}, {}, {}) }", upgradesStr, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "OpenContainerWithUpgrades packet encoded { upgrades: [ {} ], pos: ({}, {}, {}) }", upgradesStr, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static OpenContainerWithUpgradesPacket decode(FriendlyByteBuf data) {
@@ -60,7 +62,7 @@ public class OpenContainerWithUpgradesPacket {
         }
         BlockPos pos = data.readBlockPos();
         // TODO: Update log to print item information
-        LOGGER.trace("OpenContainerWithUpgrades packet decoded { upgrades: <todo>, pos: (%d, %d, %d) }", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "OpenContainerWithUpgrades packet decoded { upgrades: <todo>, pos: (%d, %d, %d) }", pos.getX(), pos.getY(), pos.getZ());
         return new OpenContainerWithUpgradesPacket(upgrades.toArray(new ItemStack[]{}), pos);
     }
 
@@ -72,26 +74,26 @@ public class OpenContainerWithUpgradesPacket {
 
                 @Override
                 public void run() {
-                    LOGGER.trace("Processing OpenContainerWithUpgrades packet...");
+                    LOGGER.trace(LogMarkers.NETWORK, "Processing OpenContainerWithUpgrades packet...");
                     Minecraft minecraft = Minecraft.getInstance();
                     Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn("Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     BlockEntity te = world.getBlockEntity(pos);
                     if (!(te instanceof IOpenContainerWithUpgradesListener)) {
-                        LOGGER.warn("Position (%d, %d, %d) does not contain an IOpenContainerWithUpgradesListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position (%d, %d, %d) does not contain an IOpenContainerWithUpgradesListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
                     IOpenContainerWithUpgradesListener prl = (IOpenContainerWithUpgradesListener) te;
                     prl.onContainerOpened(upgrades);
                     // TODO: Update log to print item information
-                    LOGGER.trace("Upgrades synced - upgrades <todo>");
+                    LOGGER.trace(LogMarkers.NETWORK, "Upgrades synced - upgrades <todo>");
                 }
             });
         });
         ctx.setPacketHandled(true);
-        LOGGER.trace("PowerRate packet received and queued");
+        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet received and queued");
     }
 }

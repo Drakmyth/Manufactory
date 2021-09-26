@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.gui;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -29,11 +30,11 @@ public class GrinderUpgradeGui extends AbstractContainerScreen<GrinderUpgradeCon
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        LOGGER.trace("Rendering Grinder Upgrade gui...");
+        LOGGER.trace(LogMarkers.RENDERING, "Rendering Grinder Upgrade gui...");
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
-        LOGGER.trace("Grinder Upgrade gui render complete");
+        LOGGER.trace(LogMarkers.RENDERING, "Grinder Upgrade gui render complete");
      }
 
     @Override

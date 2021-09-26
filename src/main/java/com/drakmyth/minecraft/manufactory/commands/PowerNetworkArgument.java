@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.commands;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -37,7 +38,7 @@ public class PowerNetworkArgument implements ArgumentType<String> {
         }
 
         String arg = reader.getString().substring(i, reader.getCursor());
-        LOGGER.trace("Parsed PowerNetworkArgument: %s", arg);
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Parsed PowerNetworkArgument: %s", arg);
         return arg;
     }
 
@@ -55,15 +56,15 @@ public class PowerNetworkArgument implements ArgumentType<String> {
 
     private static String[] getPowerNetworkIdsForDimension(CommandContext<CommandSourceStack> context) {
         ResourceLocation resourcelocation = context.getArgument("dim", ResourceLocation.class);
-        LOGGER.debug("Retrieving power network ids for dimension: %s...", resourcelocation);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Retrieving power network ids for dimension: %s...", resourcelocation);
         ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourcelocation);
         ServerLevel serverworld = context.getSource().getServer().getLevel(key);
         PowerNetworkManager pnm = PowerNetworkManager.get(serverworld);
         String[] powerNetworkIds = pnm.getNetworkIds();
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Power Network ids found:");
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Power Network ids found:");
             for (String pni : powerNetworkIds) {
-                LOGGER.debug(pni);
+                LOGGER.debug(LogMarkers.POWERNETWORK, pni);
             }
         }
         return powerNetworkIds;

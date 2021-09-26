@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.tileentities.renderers;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock.FillStatus;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
@@ -37,10 +38,10 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
 
     @Override
     public void render(LatexCollectorTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        LOGGER.trace("Beginning render of latex collector at (%d, %d, %d)...", tileEntity.getBlockPos().getX(), tileEntity.getBlockPos().getY(), tileEntity.getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at (%d, %d, %d)...", tileEntity.getBlockPos().getX(), tileEntity.getBlockPos().getY(), tileEntity.getBlockPos().getZ());
         BlockState state = tileEntity.getBlockState();
         if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {
-            LOGGER.trace("Latex collector is empty. Nothing to render.");
+            LOGGER.trace(LogMarkers.RENDERING, "Latex collector is empty. Nothing to render.");
             return;
         }
 
@@ -52,7 +53,7 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(LATEX_TEXTURE);
         VertexConsumer vertexBuffer = buffer.getBuffer(RenderType.solid());
 
-        LOGGER.trace("Beginning matrix manipulation and vertex construction...");
+        LOGGER.trace(LogMarkers.RENDERING, "Beginning matrix manipulation and vertex construction...");
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
         float x1 = -2f/16f; float z1 = -7f/16f; float u1 = sprite.getU0(); float v1 = sprite.getV1();
@@ -77,7 +78,7 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
         addVertex(vertexBuffer, matrixStack, x4, y, z4, u4, v4, combinedLight);
 
         matrixStack.popPose();
-        LOGGER.trace("Matrix manipulation and vertex construction complete");
+        LOGGER.trace(LogMarkers.RENDERING, "Matrix manipulation and vertex construction complete");
     }
 
     private void addVertex(VertexConsumer buffer, PoseStack matrix, float x, float y, float z, float u, float v, int combinedLight) {
