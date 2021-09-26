@@ -10,6 +10,8 @@ import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainerProv
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
+import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
+import com.drakmyth.minecraft.manufactory.network.OpenContainerWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
@@ -42,6 +44,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
@@ -122,6 +125,8 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
             LOGGER.debug("Opening main gui...");
             containerProvider = new GrinderContainerProvider(pos);
         }
+        OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((GrinderTileEntity)tileEntity).getInstalledUpgrades(), pos);
+        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
         NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
     }
 

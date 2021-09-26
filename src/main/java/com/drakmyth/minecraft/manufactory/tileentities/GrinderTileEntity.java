@@ -5,6 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.tileentities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
@@ -12,6 +14,7 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
+import com.drakmyth.minecraft.manufactory.network.IOpenContainerWithUpgradesListener;
 import com.drakmyth.minecraft.manufactory.network.IPowerRateListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
@@ -33,7 +36,7 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class GrinderTileEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener {
+public class GrinderTileEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener, IOpenContainerWithUpgradesListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
@@ -62,6 +65,14 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         return grinderUpgradeInventory;
     }
 
+    public ItemStack[] getInstalledUpgrades() {
+        List<ItemStack> upgrades = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            upgrades.add(grinderUpgradeInventory.getStackInSlot(i));
+        }
+        return upgrades.toArray(new ItemStack[]{});
+    }
+
     public float getProgress() {
         if (powerRequired <= 0) return 0;
         return (powerRequired - powerRemaining) / powerRequired;
@@ -88,6 +99,14 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         lastPowerReceived = received;
         maxPowerPerTick = expected;
         LOGGER.trace("Grinder at (%d, %d, %d) synced power rate with lastPowerReceived %f and maxPowerPerTick %f", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), lastPowerReceived, maxPowerPerTick);
+    }
+
+    // Client-Side Only
+    @Override
+    public void onContainerOpened(ItemStack[] upgrades) {
+        for(int i = 0; i < upgrades.length; i++) {
+            grinderUpgradeInventory.setStackInSlot(i, upgrades[i]);
+        }
     }
 
     @Override
