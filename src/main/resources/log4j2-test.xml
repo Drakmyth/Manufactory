@@ -2,12 +2,12 @@
 <Configuration status="warn" packages="com.drakmyth.minecraft.manufactory">
     <filters>
         <!-- Manufactory Markers -->
-        <MarkerFilter marker="CONTAINER" onMatch="${sys:forge.logging.marker.container:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="INTERACTION" onMatch="${sys:forge.logging.marker.interaction:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="MACHINE" onMatch="${sys:forge.logging.marker.machine:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="POWERNETWORK" onMatch="${sys:forge.logging.marker.powernetwork:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="REGISTRATION" onMatch="${sys:forge.logging.marker.registration:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="RENDERING" onMatch="${sys:forge.logging.marker.rendering:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CONTAINER" onMatch="${sys:forge.logging.marker.container:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="INTERACTION" onMatch="${sys:forge.logging.marker.interaction:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="MACHINE" onMatch="${sys:forge.logging.marker.machine:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="POWERNETWORK" onMatch="${sys:forge.logging.marker.powernetwork:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="REGISTRATION" onMatch="${sys:forge.logging.marker.registration:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="RENDERING" onMatch="${sys:forge.logging.marker.rendering:-ACCEPT}" onMismatch="NEUTRAL"/>
         <!-- Minecraft Markers -->
         <MarkerFilter marker="NETWORK" onMatch="${sys:forge.logging.marker.network:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="SOUNDS" onMatch="${sys:forge.logging.marker.sounds:-DENY}" onMismatch="NEUTRAL"/>
@@ -18,7 +18,7 @@
         <MarkerFilter marker="CLASSLOADING" onMatch="${sys:forge.logging.marker.classloading:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="CLIENTHOOKS" onMatch="${sys:forge.logging.marker.clienthooks:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="CONFIG" onMatch="${sys:forge.logging.marker.config:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="CORE" onMatch="${sys:forge.logging.marker.core:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CORE" onMatch="${sys:forge.logging.marker.core:-ACCEPT}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="COREMOD" onMatch="${sys:forge.logging.marker.coremod:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="COREMODLOG" onMatch="${sys:forge.logging.marker.coremodlog:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="CRAFTHELPER" onMatch="${sys:forge.logging.marker.crafthelper:-DENY}" onMismatch="NEUTRAL"/>
@@ -28,9 +28,9 @@
         <MarkerFilter marker="FMLNETWORK" onMatch="${sys:forge.logging.marker.fmlnetwork:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="FORGE" onMatch="${sys:forge.logging.marker.forge:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="FORGEHOOKS" onMatch="${sys:forge.logging.marker.forgehooks:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="FORGEMOD" onMatch="${sys:forge.logging.marker.forgemod:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="FORGEMOD" onMatch="${sys:forge.logging.marker.forgemod:-ACCEPT}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="LAUNCHPLUGIN" onMatch="${sys:forge.logging.marker.launchplugin:-DENY}" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="LOADING" onMatch="${sys:forge.logging.marker.loading:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="LOADING" onMatch="${sys:forge.logging.marker.loading:-ACCEPT}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="MODELLOADING" onMatch="${sys:forge.logging.marker.modelloading:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="MODLAUNCHER" onMatch="${sys:forge.logging.marker.modlauncher:-DENY}" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="NETREGISTRY" onMatch="${sys:forge.logging.marker.netregistry:-DENY}" onMismatch="NEUTRAL"/>
