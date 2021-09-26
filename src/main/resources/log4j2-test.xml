@@ -57,8 +57,6 @@
     <Appenders>
         <Console name="Console">
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%highlight{%level}{TRACE=dim}] [%c{2.}%notEmpty{/%style{%markerSimpleName}{dim,yellow}}] %m%n"/>
-                <!-- <PatternMatch pattern="[%d{HH:mm:ss} %level]: %minecraftFormatting{%msg}%n"/> -->
-            <!-- </PatternLayout> -->
         </Console>
         <Queue name="ServerGuiConsole">
             <PatternLayout>
