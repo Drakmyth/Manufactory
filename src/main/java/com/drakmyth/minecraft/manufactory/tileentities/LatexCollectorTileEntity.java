@@ -125,6 +125,6 @@ public class LatexCollectorTileEntity extends BlockEntity implements IMachinePro
     public void onProgressUpdate(float progress, float total) {
         totalTicks = (int)total;
         ticksRemaining = (int)progress;
-        LOGGER.debug(LogMarkers.MACHINE, "Latex Collector at ({}, {}, {}) synced progress with ticksRemaining {} and totalTicks {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), ticksRemaining, totalTicks);
+        LOGGER.trace(LogMarkers.MACHINE, "Latex Collector at ({}, {}, {}) synced progress with ticksRemaining {} and totalTicks {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), ticksRemaining, totalTicks);
     }
 }
