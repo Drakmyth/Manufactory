@@ -7,9 +7,9 @@ package com.drakmyth.minecraft.manufactory.items.upgrades;
 
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 public class PowerSocketItem extends Item implements IPowerUpgrade {
 
@@ -18,7 +18,7 @@ public class PowerSocketItem extends Item implements IPowerUpgrade {
     }
 
     @Override
-    public float consumePower(float requestedPower, ServerWorld world, BlockPos pos) {
+    public float consumePower(float requestedPower, ServerLevel world, BlockPos pos) {
         PowerNetworkManager pnm = PowerNetworkManager.get(world);
         return pnm.consumePower(requestedPower, pos);
     }

@@ -5,19 +5,21 @@
 
 package com.drakmyth.minecraft.manufactory.containers;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class GrinderUpgradeContainerProvider implements INamedContainerProvider {
+public class GrinderUpgradeContainerProvider implements MenuProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos pos;
 
@@ -26,13 +28,13 @@ public class GrinderUpgradeContainerProvider implements INamedContainerProvider 
     }
 
     @Override
-    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
-        LOGGER.debug("Creating Grinder upgrade gui...");
+    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+        LOGGER.debug(LogMarkers.CONTAINER, "Creating Grinder upgrade gui...");
         return new GrinderUpgradeContainer(windowId, new InvWrapper(playerInventory), player, pos);
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent("Grinder");
+    public Component getDisplayName() {
+        return new TextComponent("Grinder");
     }
 }

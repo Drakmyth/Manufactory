@@ -10,11 +10,11 @@ import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -187,19 +187,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private ModelFile generateCubeMachineModel(String name) {
         return models().getBuilder(name)
-            .parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/cube"), exFileHelper))
-            .texture("up", modLoc("block/" + name + "_top"))
-            .texture("down", modLoc("block/" + name + "_top"))
-            .texture("north", modLoc("block/" + name + "_front"))
-            .texture("east", modLoc("block/" + name + "_side"))
-            .texture("south", modLoc("block/" + name + "_back_socket"))
-            .texture("west", modLoc("block/" + name + "_side"))
-            .texture("particle", modLoc("block/" + name + "_top"));
+        .parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/cube"), exFileHelper))
+        .texture("up", modLoc("block/" + name + "_top"))
+        .texture("down", modLoc("block/" + name + "_top"))
+        .texture("north", modLoc("block/" + name + "_front"))
+        .texture("east", modLoc("block/" + name + "_side"))
+        .texture("south", modLoc("block/" + name + "_back_socket"))
+        .texture("west", modLoc("block/" + name + "_side"))
+        .texture("particle", modLoc("block/" + name + "_top"));
     }
-
+    
     private void generateCubeMachineBlockState(Block block, ModelFile model) {
         getVariantBuilder(block).forAllStates(state -> {
-            int yRotation = (int)state.get(BlockStateProperties.HORIZONTAL_FACING).getOpposite().getHorizontalAngle();
+            int yRotation = (int)state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite().toYRot();
             return ConfiguredModel.builder().modelFile(model).rotationY(yRotation).build();
         });
     }

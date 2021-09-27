@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" packages="com.drakmyth.minecraft.manufactory">
+    <Filters>
+        <!-- Manufactory Markers -->
+        <MarkerFilter marker="CONTAINER" onMatch="${sys:forge.logging.marker.container:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="INTERACTION" onMatch="${sys:forge.logging.marker.interaction:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="MACHINE" onMatch="${sys:forge.logging.marker.machine:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="POWERNETWORK" onMatch="${sys:forge.logging.marker.powernetwork:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="REGISTRATION" onMatch="${sys:forge.logging.marker.registration:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="RENDERING" onMatch="${sys:forge.logging.marker.rendering:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <!-- Minecraft Markers -->
+        <MarkerFilter marker="NETWORK" onMatch="${sys:forge.logging.marker.network:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="SOUNDS" onMatch="${sys:forge.logging.marker.sounds:-DENY}" onMismatch="NEUTRAL"/>
+        <!-- Forge Markers -->
+        <MarkerFilter marker="AXFORM" onMatch="${sys:forge.logging.marker.axform:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CAPABILITIES" onMatch="${sys:forge.logging.marker.capabilities:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CLASSDUMP" onMatch="${sys:forge.logging.marker.classdump:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CLASSLOADING" onMatch="${sys:forge.logging.marker.classloading:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CLIENTHOOKS" onMatch="${sys:forge.logging.marker.clienthooks:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CONFIG" onMatch="${sys:forge.logging.marker.config:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CORE" onMatch="${sys:forge.logging.marker.core:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="COREMOD" onMatch="${sys:forge.logging.marker.coremod:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="COREMODLOG" onMatch="${sys:forge.logging.marker.coremodlog:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="CRAFTHELPER" onMatch="${sys:forge.logging.marker.crafthelper:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="DISTXFORM" onMatch="${sys:forge.logging.marker.distxform:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="EVENTBUS" onMatch="${sys:forge.logging.marker.eventbus:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="FMLHANDSHAKE" onMatch="${sys:forge.logging.marker.fmlhandshake:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="FMLNETWORK" onMatch="${sys:forge.logging.marker.fmlnetwork:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="FORGE" onMatch="${sys:forge.logging.marker.forge:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="FORGEHOOKS" onMatch="${sys:forge.logging.marker.forgehooks:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="FORGEMOD" onMatch="${sys:forge.logging.marker.forgemod:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="LAUNCHPLUGIN" onMatch="${sys:forge.logging.marker.launchplugin:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="LOADING" onMatch="${sys:forge.logging.marker.loading:-ACCEPT}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="MODELLOADING" onMatch="${sys:forge.logging.marker.modelloading:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="MODLAUNCHER" onMatch="${sys:forge.logging.marker.modlauncher:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="NETREGISTRY" onMatch="${sys:forge.logging.marker.netregistry:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="REFLECTION" onMatch="${sys:forge.logging.marker.reflection:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="REGISTRIES" onMatch="${sys:forge.logging.marker.registries:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="REGISTRYDUMP" onMatch="${sys:forge.logging.marker.registrydump:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="SCAN" onMatch="${sys:forge.logging.marker.scan:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="SERVERHOOKS" onMatch="${sys:forge.logging.marker.serverhooks:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="SIMPLENET" onMatch="${sys:forge.logging.marker.simplenet:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="SPLASH" onMatch="${sys:forge.logging.marker.splash:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="USERNAMECACHE" onMatch="${sys:forge.logging.marker.usernamecache:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="WP" onMatch="${sys:forge.logging.marker.wp:-DENY}" onMismatch="NEUTRAL"/>
+        <!-- Log4J Markers -->
+        <MarkerFilter marker="CATCHING" onMatch="${sys:forge.logging.marker.catching:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="ENTER" onMatch="${sys:forge.logging.marker.enter:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="EVENT" onMatch="${sys:forge.logging.marker.event:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="EXCEPTION" onMatch="${sys:forge.logging.marker.exception:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="EXIT" onMatch="${sys:forge.logging.marker.exit:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="FLOW" onMatch="${sys:forge.logging.marker.flow:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="LOOKUP" onMatch="${sys:forge.logging.marker.lookup:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="SHUTDOWN HOOK" onMatch="${sys:forge.logging.marker.shutdownhook:-DENY}" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="THROWING" onMatch="${sys:forge.logging.marker.throwing:-DENY}" onMismatch="NEUTRAL"/>
+    </Filters>
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%highlight{%level}{TRACE=dim}] [%c{2.}%notEmpty{/%style{%markerSimpleName}{dim,yellow}}] %m%n"/>
+        </Console>
+        <Queue name="ServerGuiConsole">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%highlight{%level}{TRACE=dim}] [%c{2.}%notEmpty{/%style{%markerSimpleName}{dim,yellow}}] %m%n"/>
+        </Queue>
+        <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%c{2.}%notEmpty{/%markerSimpleName}] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="DebugFile" fileName="logs/debug.log" filePattern="logs/debug-%i.log.gz">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%c{2.}%notEmpty{/%markerSimpleName}] %m%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="200MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5" fileIndex="min"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="ManufactoryFile" fileName="logs/manufactory.log" filePattern="logs/manufactory-%i.log.gz">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%c{2.}%notEmpty{/%markerSimpleName}] %m%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="200MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5" fileIndex="min"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Logger level="${sys:forge.logging.mojang.level:-info}" name="com.mojang"/>
+        <Logger level="${sys:forge.logging.mojang.level:-info}" name="net.minecraft"/>
+        <Logger level="${sys:forge.logging.classtransformer.level:-info}" name="cpw.mods.modlauncher.ClassTransformer"/>
+        <Logger level="${sys:forge.logging.console.level:-info}" name="com.drakmyth.minecraft.manufactory">
+            <AppenderRef ref="ManufactoryFile" level="${sys:forge.logging.debugFile.level:-debug}"/>
+        </Logger>
+        <Root level="all">
+            <AppenderRef ref="Console" level="${sys:forge.logging.console.level:-info}"/>
+            <AppenderRef ref="ServerGuiConsole" level="${sys:forge.logging.console.level:-info}"/>
+            <AppenderRef ref="File" level="${sys:forge.logging.file.level:-info}"/>
+            <AppenderRef ref="DebugFile" level="${sys:forge.logging.debugFile.level:-debug}"/>
+        </Root>
+    </Loggers>
+</Configuration>

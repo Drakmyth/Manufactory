@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.commands;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -12,65 +13,65 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 
 public class PNetCommand {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    static ArgumentBuilder<CommandSource, ?> register()
+    static ArgumentBuilder<CommandSourceStack, ?> register()
     {
-        LOGGER.debug("Registering PNetCommand...");
-        ArgumentBuilder<CommandSource, ?> builder = Commands.literal("pnet")
-            .requires(cs->cs.hasPermissionLevel(0)) //permission
-            .then(Commands.argument("dim", DimensionArgument.getDimension())
+        LOGGER.debug(LogMarkers.REGISTRATION, "Registering PNetCommand...");
+        ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("pnet")
+            .requires(cs->cs.hasPermission(0)) //permission
+            .then(Commands.argument("dim", DimensionArgument.dimension())
                 .then(Commands.literal("list")
-                    .executes(ctx -> listNetworksInDimension(ctx.getSource(), DimensionArgument.getDimensionArgument(ctx, "dim")))
+                    .executes(ctx -> listNetworksInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim")))
                 )
                 .then(Commands.literal("delete")
                     .then(Commands.argument("networkId", PowerNetworkArgument.getPowerNetwork())
                         .suggests(PowerNetworkArgument.SUGGESTIONS)
-                        .executes(ctx -> deleteNetworkInDimension(ctx.getSource(), DimensionArgument.getDimensionArgument(ctx, "dim"), PowerNetworkArgument.getPowerNetworkArgument(ctx, "networkId")))
+                        .executes(ctx -> deleteNetworkInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim"), PowerNetworkArgument.getPowerNetworkArgument(ctx, "networkId")))
                     )
                 )
                 .then(Commands.literal("time")
-                    .executes(ctx -> printTime(ctx.getSource(), DimensionArgument.getDimensionArgument(ctx, "dim")))
+                    .executes(ctx -> printTime(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim")))
                 )
             )
         ;
-        LOGGER.debug("PNetCommand registered");
+        LOGGER.debug(LogMarkers.REGISTRATION, "PNetCommand registered");
         return builder;
     }
 
-    private static int listNetworksInDimension(CommandSource cs, ServerWorld dim) throws CommandSyntaxException {
+    private static int listNetworksInDimension(CommandSourceStack cs, ServerLevel dim) throws CommandSyntaxException {
         PowerNetworkManager pnm = PowerNetworkManager.get(dim);
         String[] networkIds = pnm.getNetworkIds();
         for (String networkId : networkIds) {
             int blockCount = pnm.getBlockCount(networkId);
             int sourceCount = pnm.getSourceCount(networkId);
             int sinkCount = pnm.getSinkCount(networkId);
-            cs.sendFeedback(new StringTextComponent(String.format("%s Size:%d, In:%d, Out:%d", networkId, blockCount, sourceCount, sinkCount)), false);
+            cs.sendSuccess(new TextComponent(String.format("%s Size:%d, In:%d, Out:%d", networkId, blockCount, sourceCount, sinkCount)), false);
         }
 
         return 1;
     }
 
-    private static int deleteNetworkInDimension(CommandSource cs, ServerWorld dim, String networkId) throws CommandSyntaxException {
+    private static int deleteNetworkInDimension(CommandSourceStack cs, ServerLevel dim, String networkId) throws CommandSyntaxException {
         PowerNetworkManager pnm = PowerNetworkManager.get(dim);
         pnm.deleteNetwork(networkId);
-        cs.sendFeedback(new StringTextComponent(String.format("Network %s deleted", networkId)), false);
+        cs.sendSuccess(new TextComponent(String.format("Network %s deleted", networkId)), false);
 
         return 1;
     }
 
-    private static int printTime(CommandSource cs, ServerWorld dim) {
+    private static int printTime(CommandSourceStack cs, ServerLevel dim) {
         long daytime = dim.getDayTime();
-        float celestialAngle = dim.getCelestialAngleRadians(1.0F);
+        float celestialAngle = dim.getSunAngle(1.0F);
 
-        cs.sendFeedback(new StringTextComponent(String.format("daytime: %d, angle: %f", daytime, celestialAngle)), false);
+        cs.sendSuccess(new TextComponent(String.format("daytime: %d, angle: %f", daytime, celestialAngle)), false);
         return 1;
     }
 }

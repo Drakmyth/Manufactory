@@ -5,6 +5,9 @@
 
 package com.drakmyth.minecraft.manufactory.network;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -16,30 +19,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
-public class PowerRatePacket {
+public class OpenContainerWithUpgradesPacket {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private float received;
-    private float expected;
+    private ItemStack[] upgrades;
     private BlockPos pos;
 
-    public PowerRatePacket(float received, float expected, BlockPos pos) {
-        this.received = received;
-        this.expected = expected;
+    public OpenContainerWithUpgradesPacket(ItemStack[] upgrades, BlockPos pos) {
+        this.upgrades = upgrades;
         this.pos = pos;
     }
 
-    public float getReceived() {
-        return received;
-    }
-
-    public float getExpected() {
-        return expected;
+    public ItemStack[] getUpgrades() {
+        return upgrades;
     }
 
     public BlockPos getPos() {
@@ -47,18 +45,25 @@ public class PowerRatePacket {
     }
 
     public void encode(FriendlyByteBuf data) {
-        data.writeFloat(received);
-        data.writeFloat(expected);
+        data.writeInt(upgrades.length);
+        for(ItemStack upgrade : upgrades) {
+            data.writeItem(upgrade);
+        }
         data.writeBlockPos(pos);
-        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet encoded { received: {}, expected: {}, pos: ({}, {}, {}) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
+        String upgradesStr = String.join(" , ", Arrays.stream(upgrades).map(u -> u.toString()).toList());
+        LOGGER.trace(LogMarkers.NETWORK, "OpenContainerWithUpgrades packet encoded { upgrades: [ {} ], pos: ({}, {}, {}) }", upgradesStr, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static PowerRatePacket decode(FriendlyByteBuf data) {
-        float received = data.readFloat();
-        float expected = data.readFloat();
+    public static OpenContainerWithUpgradesPacket decode(FriendlyByteBuf data) {
+        float count = data.readInt();
+        List<ItemStack> upgrades = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            upgrades.add(data.readItem());
+        }
         BlockPos pos = data.readBlockPos();
-        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet decoded { received: {}, expected: {}, pos: ({}, {}, {}) }", received, expected, pos.getX(), pos.getY(), pos.getZ());
-        return new PowerRatePacket(received, expected, pos);
+        // TODO: Update log to print item information
+        LOGGER.trace(LogMarkers.NETWORK, "OpenContainerWithUpgrades packet decoded { upgrades: <todo>, pos: ({}, {}, {}) }", pos.getX(), pos.getY(), pos.getZ());
+        return new OpenContainerWithUpgradesPacket(upgrades.toArray(new ItemStack[]{}), pos);
     }
 
     public void handle(Supplier<Context> contextSupplier) {
@@ -69,7 +74,7 @@ public class PowerRatePacket {
 
                 @Override
                 public void run() {
-                    LOGGER.trace(LogMarkers.NETWORK, "Processing PowerRate packet...");
+                    LOGGER.trace(LogMarkers.NETWORK, "Processing OpenContainerWithUpgrades packet...");
                     Minecraft minecraft = Minecraft.getInstance();
                     Level world = minecraft.level;
                     if (!world.isAreaLoaded(pos, 1)) {
@@ -77,13 +82,14 @@ public class PowerRatePacket {
                         return;
                     }
                     BlockEntity te = world.getBlockEntity(pos);
-                    if (!(te instanceof IPowerRateListener)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) does not contain an IPowerRateListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                    if (!(te instanceof IOpenContainerWithUpgradesListener)) {
+                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) does not contain an IOpenContainerWithUpgradesListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    IPowerRateListener prl = (IPowerRateListener) te;
-                    prl.onPowerRateUpdate(received, expected);
-                    LOGGER.trace(LogMarkers.NETWORK, "Power rate synced - received {}, expected {}", received, expected);
+                    IOpenContainerWithUpgradesListener prl = (IOpenContainerWithUpgradesListener) te;
+                    prl.onContainerOpened(upgrades);
+                    // TODO: Update log to print item information
+                    LOGGER.trace(LogMarkers.NETWORK, "Upgrades synced - upgrades <todo>");
                 }
             });
         });

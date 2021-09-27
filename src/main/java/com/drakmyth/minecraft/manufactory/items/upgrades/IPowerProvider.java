@@ -4,9 +4,9 @@
  */
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 public interface IPowerProvider {
-    float consumePower(float requestedPower, ServerWorld world, BlockPos pos);
+    float consumePower(float requestedPower, ServerLevel world, BlockPos pos);
 }

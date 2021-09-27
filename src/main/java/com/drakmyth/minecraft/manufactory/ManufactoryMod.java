@@ -31,37 +31,37 @@ public class ManufactoryMod {
         LOGGER.info("HELLO from Manufactory!");
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        LOGGER.info("Registering Packet Handlers...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering Packet Handlers...");
         ModPacketHandler.registerMessages();
-        LOGGER.info("Packet Handler registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Packet Handler registration complete");
 
-        LOGGER.info("Registering blocks...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering blocks...");
         ModBlocks.BLOCKS.register(modEventBus);
-        LOGGER.info("Block registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Block registration complete");
 
-        LOGGER.info("Registering items...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering items...");
         ModItems.ITEMS.register(modEventBus);
-        LOGGER.info("Item registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Item registration complete");
 
         ModFluids.FLUIDS.register(modEventBus);
 
-        LOGGER.info("Registering tile entity types...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering tile entity types...");
         ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-        LOGGER.info("Tile entity type registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Tile entity type registration complete");
 
-        LOGGER.info("Registering container types...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering container types...");
         ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
-        LOGGER.info("Container type registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Container type registration complete");
 
-        LOGGER.info("Registering recipe serializers...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Registering recipe serializers...");
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
-        LOGGER.info("Recipe serializer registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Recipe serializer registration complete");
 
         final ModLoadingContext modLoadingContext = ModLoadingContext.get();
-        LOGGER.info("Register config files...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Register config files...");
         modLoadingContext.registerConfig(ModConfig.Type.SERVER, ConfigData.SERVER_SPEC);
         modLoadingContext.registerConfig(ModConfig.Type.CLIENT, ConfigData.CLIENT_SPEC);
         modLoadingContext.registerConfig(ModConfig.Type.COMMON, ConfigData.COMMON_SPEC);
-        LOGGER.info("Config file registration complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Config file registration complete");
     }
 }

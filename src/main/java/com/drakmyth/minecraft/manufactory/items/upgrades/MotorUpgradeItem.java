@@ -5,7 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class MotorUpgradeItem extends Item implements IMotorUpgrade {
     private float powerCapMultiplier;

@@ -5,21 +5,21 @@
 
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
 
 public class MillingBallUpgradeItem extends Item implements IMillingBallUpgrade {
-    private ItemTier tier;
+    private Tiers tier;
     private float efficiency;
 
-    public MillingBallUpgradeItem(Properties properties, ItemTier tier, float efficiency) {
+    public MillingBallUpgradeItem(Properties properties, Tiers tier, float efficiency) {
         super(properties);
         this.tier = tier;
         this.efficiency = efficiency;
     }
 
-    public ItemTier getTier() {
+    public Tiers getTier() {
         return tier;
     }
 

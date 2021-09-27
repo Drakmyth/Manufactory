@@ -5,14 +5,14 @@
 
 package com.drakmyth.minecraft.manufactory.init;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 public final class ModItemGroups {
 
-    public static final ItemGroup MANUFACTORY_ITEM_GROUP = new ItemGroup("manufactory") {
+    public static final CreativeModeTab MANUFACTORY_ITEM_GROUP = new CreativeModeTab("manufactory") {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(ModItems.TAPPING_KNIFE.get());
         }
     };
