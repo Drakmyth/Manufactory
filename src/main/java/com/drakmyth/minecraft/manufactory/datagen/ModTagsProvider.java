@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.datagen;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModFluids;
+import com.drakmyth.minecraft.manufactory.init.ModTags;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
@@ -66,6 +67,8 @@ public class ModTagsProvider {
                                             .add(ModBlocks.BALL_MILL.get())
                                             .add(ModBlocks.SOLAR_PANEL.get())
                                             .add(ModBlocks.LATEX_COLLECTOR.get());
+            
+            tag(ModTags.Blocks.BLOCKS_WITH_LATEX).addTag(BlockTags.LOGS);
         }
     }
 }
