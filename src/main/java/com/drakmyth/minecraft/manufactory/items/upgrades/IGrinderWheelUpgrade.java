@@ -4,9 +4,9 @@
  */
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
-import net.minecraft.item.ItemTier;
+import net.minecraft.world.item.Tiers;
 
 public interface IGrinderWheelUpgrade {
-    ItemTier getTier();
+    Tiers getTier();
     float getEfficiency();
 }

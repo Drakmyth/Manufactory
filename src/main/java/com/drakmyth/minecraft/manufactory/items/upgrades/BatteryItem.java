@@ -5,9 +5,9 @@
 
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 public class BatteryItem extends Item implements IPowerUpgrade {
 
@@ -16,7 +16,7 @@ public class BatteryItem extends Item implements IPowerUpgrade {
     }
 
     @Override
-    public float consumePower(float requestedPower, ServerWorld world, BlockPos pos) {
+    public float consumePower(float requestedPower, ServerLevel world, BlockPos pos) {
         return 0;
     }
 

@@ -208,11 +208,10 @@ fabric.properties
 hs_err_pid*
 
 ### VisualStudioCode ###
-.vscode/
-#.vscode/*
+.vscode/*
 #!.vscode/settings.json
-#!.vscode/tasks.json
-#!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/launch.json
 #!.vscode/extensions.json
 
 ### VisualStudioCode Patch ###

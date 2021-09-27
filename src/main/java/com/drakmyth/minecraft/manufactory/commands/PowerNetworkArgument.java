@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory.commands;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -15,18 +16,18 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 public class PowerNetworkArgument implements ArgumentType<String> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static SuggestionProvider<CommandSource> SUGGESTIONS = (ctx, sb) -> ISuggestionProvider.suggest(PowerNetworkArgument.getPowerNetworkIdsForDimension(ctx), sb);
+    public static SuggestionProvider<CommandSourceStack> SUGGESTIONS = (ctx, sb) -> SharedSuggestionProvider.suggest(PowerNetworkArgument.getPowerNetworkIdsForDimension(ctx), sb);
 
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
@@ -37,7 +38,7 @@ public class PowerNetworkArgument implements ArgumentType<String> {
         }
 
         String arg = reader.getString().substring(i, reader.getCursor());
-        LOGGER.trace("Parsed PowerNetworkArgument: %s", arg);
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Parsed PowerNetworkArgument: {}", arg);
         return arg;
     }
 
@@ -49,21 +50,21 @@ public class PowerNetworkArgument implements ArgumentType<String> {
         return new PowerNetworkArgument();
     }
 
-    public static String getPowerNetworkArgument(CommandContext<CommandSource> context, String name) {
+    public static String getPowerNetworkArgument(CommandContext<CommandSourceStack> context, String name) {
         return context.getArgument(name, String.class);
     }
 
-    private static String[] getPowerNetworkIdsForDimension(CommandContext<CommandSource> context) {
+    private static String[] getPowerNetworkIdsForDimension(CommandContext<CommandSourceStack> context) {
         ResourceLocation resourcelocation = context.getArgument("dim", ResourceLocation.class);
-        LOGGER.debug("Retrieving power network ids for dimension: %s...", resourcelocation);
-        RegistryKey<World> registrykey = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, resourcelocation);
-        ServerWorld serverworld = context.getSource().getServer().getWorld(registrykey);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Retrieving power network ids for dimension: {}...", resourcelocation);
+        ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourcelocation);
+        ServerLevel serverworld = context.getSource().getServer().getLevel(key);
         PowerNetworkManager pnm = PowerNetworkManager.get(serverworld);
         String[] powerNetworkIds = pnm.getNetworkIds();
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Power Network ids found:");
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Power Network ids found:");
             for (String pni : powerNetworkIds) {
-                LOGGER.debug(pni);
+                LOGGER.debug(LogMarkers.POWERNETWORK, pni);
             }
         }
         return powerNetworkIds;

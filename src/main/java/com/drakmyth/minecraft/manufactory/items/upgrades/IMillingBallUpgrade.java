@@ -4,11 +4,11 @@
  */
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
 
 public interface IMillingBallUpgrade {
-    ItemTier getTier();
+    Tiers getTier();
     float getProcessChance(ItemStack stack);
     float getEfficiency(ItemStack stack);
 }

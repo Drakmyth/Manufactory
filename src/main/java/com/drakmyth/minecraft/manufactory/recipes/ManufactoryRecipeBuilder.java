@@ -15,17 +15,17 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ManufactoryRecipeBuilder {
@@ -36,7 +36,7 @@ public class ManufactoryRecipeBuilder {
    private int tierRequired;
    private int powerRequired;
    private int processTime;
-   private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+   private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
    private String group;
    private final ManufactoryRecipeSerializer<?> recipeSerializer;
 
@@ -55,19 +55,19 @@ public class ManufactoryRecipeBuilder {
       return new ManufactoryRecipeBuilder(ingredient, result, serializer);
    }
 
-   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, IItemProvider result) {
+   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, ItemLike result) {
       return grinderRecipe(ingredient, result, 1);
    }
 
-   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, IItemProvider result, int count) {
+   public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, ItemLike result, int count) {
       return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
    }
 
-   public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, IItemProvider result) {
+   public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, ItemLike result) {
       return ballMillRecipe(ingredient, result, 1);
    }
 
-   public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, IItemProvider result, int count) {
+   public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, ItemLike result, int count) {
       return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.BALL_MILL.get());
    }
 
@@ -96,16 +96,16 @@ public class ManufactoryRecipeBuilder {
       return this;
    }
 
-   public ManufactoryRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
-      this.advancementBuilder.withCriterion(name, criterionIn);
+   public ManufactoryRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
+      this.advancementBuilder.addCriterion(name, criterionIn);
       return this;
    }
 
-   public void build(Consumer<IFinishedRecipe> consumerIn) {
+   public void build(Consumer<FinishedRecipe> consumerIn) {
       this.build(consumerIn, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
    }
 
-   public void build(Consumer<IFinishedRecipe> consumerIn, String save) {
+   public void build(Consumer<FinishedRecipe> consumerIn, String save) {
       ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result.getItem());
       ResourceLocation resourcelocation1 = new ResourceLocation(save);
       if (resourcelocation1.equals(resourcelocation)) {
@@ -115,10 +115,10 @@ public class ManufactoryRecipeBuilder {
       }
    }
 
-   public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id) {
+   public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
       this.validate(id);
-      this.advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getGroup().getPath() + "/" + id.getPath()), this.recipeSerializer));
+      this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + id.getPath()), this.recipeSerializer));
    }
 
    /**
@@ -130,7 +130,7 @@ public class ManufactoryRecipeBuilder {
       }
    }
 
-   public static class Result implements IFinishedRecipe {
+   public static class Result implements FinishedRecipe {
       private final ResourceLocation id;
       private final String group;
       private Ingredient ingredient;
@@ -142,9 +142,9 @@ public class ManufactoryRecipeBuilder {
       private int processTime;
       private final Advancement.Builder advancementBuilder;
       private final ResourceLocation advancementId;
-      private final IRecipeSerializer<? extends IRecipe<IInventory>> serializer;
+      private final RecipeSerializer<? extends Recipe<Container>> serializer;
 
-      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, IRecipeSerializer<? extends IRecipe<IInventory>> serializerIn) {
+      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, RecipeSerializer<? extends Recipe<Container>> serializerIn) {
          this.id = idIn;
          this.group = groupIn;
          this.ingredient = ingredient;
@@ -159,12 +159,13 @@ public class ManufactoryRecipeBuilder {
          this.serializer = serializerIn;
       }
 
-      public void serialize(JsonObject json) {
+      @Override
+      public void serializeRecipeData(JsonObject json) {
          if (!this.group.isEmpty()) {
             json.addProperty("group", this.group);
          }
 
-         json.add("ingredient", this.ingredient.serialize());
+         json.add("ingredient", this.ingredient.toJson());
          ItemStack resultStack = this.result.copy();
          json.add("result", serializeItemStack(resultStack));
          json.addProperty("extraChance", this.extraChance);
@@ -185,31 +186,35 @@ public class ManufactoryRecipeBuilder {
          return json;
       }
 
-      public IRecipeSerializer<?> getSerializer() {
+      @Override
+      public RecipeSerializer<?> getType() {
          return this.serializer;
       }
 
       /**
        * Gets the ID for the recipe.
        */
-      public ResourceLocation getID() {
+      @Override
+      public ResourceLocation getId() {
          return this.id;
       }
 
       /**
        * Gets the JSON for the advancement that unlocks this recipe. Null if there is no advancement.
        */
+      @Override
       @Nullable
-      public JsonObject getAdvancementJson() {
-         return this.advancementBuilder.serialize();
+      public JsonObject serializeAdvancement() {
+         return this.advancementBuilder.serializeToJson();
       }
 
       /**
        * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
        * is non-null.
        */
+      @Override
       @Nullable
-      public ResourceLocation getAdvancementID() {
+      public ResourceLocation getAdvancementId() {
          return this.advancementId;
       }
    }

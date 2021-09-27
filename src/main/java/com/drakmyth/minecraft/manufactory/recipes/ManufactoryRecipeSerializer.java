@@ -10,17 +10,17 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>>
-        implements IRecipeSerializer<T> {
+public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<T> {
     private final ManufactoryRecipeSerializer.IFactory<T> factory;
 
 
@@ -29,30 +29,30 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
     }
 
     @Override
-    public T read(ResourceLocation recipeId, JsonObject json) {
-        Ingredient ingredient = Ingredient.deserialize(json.get("ingredient"));
+    public T fromJson(ResourceLocation recipeId, JsonObject json) {
+        Ingredient ingredient = Ingredient.fromJson(json.get("ingredient"));
         JsonObject resultObj = json.get("result").getAsJsonObject();
-        ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(resultObj, "item", "minecraft:empty"), ':');
-        int amount = JSONUtils.getInt(resultObj, "count", 0);
+        ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(resultObj, "item", "minecraft:empty"), ':');
+        int amount = GsonHelper.getAsInt(resultObj, "count", 0);
         ItemStack result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), amount);
-        float extraChance = JSONUtils.getFloat(json, "extraChance");
+        float extraChance = GsonHelper.getAsFloat(json, "extraChance");
         JsonArray resultArray = json.getAsJsonArray("extraAmounts");
         int[] extraAmounts = new int[resultArray.size()];
         for (int i = 0; i < resultArray.size(); i++) {
             int element = resultArray.get(i).getAsInt();
             extraAmounts[i] = element;
         }
-        int tierRequired = JSONUtils.getInt(json, "tierRequired", 0);
-        int powerRequired = JSONUtils.getInt(json, "powerRequired", 25);
-        int processTime = JSONUtils.getInt(json, "processTime", 200);
+        int tierRequired = GsonHelper.getAsInt(json, "tierRequired", 0);
+        int powerRequired = GsonHelper.getAsInt(json, "powerRequired", 25);
+        int processTime = GsonHelper.getAsInt(json, "processTime", 200);
         return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }
 
     @Nullable
     @Override
-    public T read(ResourceLocation recipeId, PacketBuffer buffer) {
-        Ingredient ingredient = Ingredient.read(buffer);
-        ItemStack result = buffer.readItemStack();
+    public T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        Ingredient ingredient = Ingredient.fromNetwork(buffer);
+        ItemStack result = buffer.readItem();
         float extraChance = buffer.readFloat();
         int extraAmountsCount = buffer.readInt();
         int[] extraAmounts = new int[extraAmountsCount];
@@ -66,9 +66,9 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
     }
 
     @Override
-    public void write(PacketBuffer buffer, T recipe) {
-        recipe.getIngredient().write(buffer);
-        buffer.writeItemStack(recipe.getRecipeOutput());
+    public void toNetwork(FriendlyByteBuf buffer, T recipe) {
+        recipe.getIngredient().toNetwork(buffer);
+        buffer.writeItem(recipe.getResultItem());
         buffer.writeFloat(recipe.getExtraChance());
         int[] extraAmounts = recipe.getExtraAmounts();
         buffer.writeInt(extraAmounts.length);

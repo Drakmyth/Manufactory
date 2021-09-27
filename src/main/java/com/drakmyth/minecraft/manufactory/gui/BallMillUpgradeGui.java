@@ -5,40 +5,45 @@
 
 package com.drakmyth.minecraft.manufactory.gui;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.containers.BallMillUpgradeContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
-public class BallMillUpgradeGui extends ContainerScreen<BallMillUpgradeContainer> {
+public class BallMillUpgradeGui extends AbstractContainerScreen<BallMillUpgradeContainer> {
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/ball_mill_upgrade.png");
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public BallMillUpgradeGui(BallMillUpgradeContainer screenContainer, PlayerInventory inv, ITextComponent name) {
+    public BallMillUpgradeGui(BallMillUpgradeContainer screenContainer, Inventory inv, Component name) {
         super(screenContainer, inv, name);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        LOGGER.trace("Rendering Ball Mill Upgrade gui...");
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        LOGGER.trace(LogMarkers.RENDERING, "Rendering Ball Mill Upgrade gui...");
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
-        LOGGER.trace("Ball Mill Upgrade gui render complete");
+        this.renderTooltip(matrixStack, mouseX, mouseY);
+        LOGGER.trace(LogMarkers.RENDERING, "Ball Mill Upgrade gui render complete");
      }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
-        this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
-        int i = this.guiLeft;
-        int j = this.guiTop;
-        this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
+    protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
+        int i = this.leftPos;
+        int j = this.topPos;
+        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
     }
 }
