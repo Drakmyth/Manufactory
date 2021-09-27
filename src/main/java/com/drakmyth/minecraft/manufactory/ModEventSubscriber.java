@@ -34,6 +34,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -67,13 +68,15 @@ public final class ModEventSubscriber {
     public static void gatherData(final GatherDataEvent event) {
         LOGGER.info(LogMarkers.REGISTRATION, "Registering data generators...");
         DataGenerator generator = event.getGenerator();
+        ExistingFileHelper helper = event.getExistingFileHelper();
         generator.addProvider(new ModRecipeProvider(generator));
         generator.addProvider(new ModLootTableProvider(generator));
-        generator.addProvider(new ModItemProvider(generator, event.getExistingFileHelper()));
-        generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
+        generator.addProvider(new ModItemProvider(generator, helper));
+        generator.addProvider(new ModBlockStateProvider(generator, helper));
         generator.addProvider(new ModLanguageProvider(generator, "en_us"));
-        generator.addProvider(new ModAnimatedTextureProvider(generator, event.getExistingFileHelper()));
-        generator.addProvider(new ModTagsProvider.Fluids(generator, event.getExistingFileHelper()));
+        generator.addProvider(new ModAnimatedTextureProvider(generator, helper));
+        generator.addProvider(new ModTagsProvider.Fluids(generator, helper));
+        generator.addProvider(new ModTagsProvider.Blocks(generator, helper));
         LOGGER.info(LogMarkers.REGISTRATION, "Data generator registration complete");
     }
 
