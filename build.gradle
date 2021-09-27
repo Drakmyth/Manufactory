@@ -77,6 +77,9 @@ minecraft {
             // Enable colors in terminal log
             property 'log4j.skipJansi', 'false'
 
+            // Use custom log4j2 configuration
+            property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
+
             // Stop forge from killing the Gradle daemon on exit
             forceExit false
 
@@ -98,6 +101,9 @@ minecraft {
             
             // Enable colors in terminal log
             property 'log4j.skipJansi', 'false'
+
+            // Use custom log4j2 configuration
+            property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
 
             // Stop forge from killing the Gradle daemon on exit
             forceExit false
