@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "manufactory:amber_block"
+            "items": [
+              "manufactory:amber_block"
+            ]
           }
         ]
       }

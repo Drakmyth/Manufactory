@@ -37,8 +37,8 @@
     },
     {
       "when": {
-        "fill_status": "filling",
-        "facing": "north"
+        "facing": "north",
+        "fill_status": "filling"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling"
@@ -46,8 +46,8 @@
     },
     {
       "when": {
-        "fill_status": "filling",
-        "facing": "east"
+        "facing": "east",
+        "fill_status": "filling"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling",
@@ -56,8 +56,8 @@
     },
     {
       "when": {
-        "fill_status": "filling",
-        "facing": "south"
+        "facing": "south",
+        "fill_status": "filling"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling",
@@ -66,8 +66,8 @@
     },
     {
       "when": {
-        "fill_status": "filling",
-        "facing": "west"
+        "facing": "west",
+        "fill_status": "filling"
       },
       "apply": {
         "model": "manufactory:block/latex_collector_filling",
