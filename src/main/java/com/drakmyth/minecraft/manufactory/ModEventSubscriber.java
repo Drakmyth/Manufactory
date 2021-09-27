@@ -8,6 +8,7 @@ package com.drakmyth.minecraft.manufactory;
 import com.drakmyth.minecraft.manufactory.commands.PowerNetworkArgument;
 import com.drakmyth.minecraft.manufactory.datagen.ModAnimatedTextureProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModItemProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
@@ -68,6 +69,7 @@ public final class ModEventSubscriber {
         DataGenerator generator = event.getGenerator();
         generator.addProvider(new ModRecipeProvider(generator));
         generator.addProvider(new ModLootTableProvider(generator));
+        generator.addProvider(new ModItemProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModBlockStateProvider(generator, event.getExistingFileHelper()));
         generator.addProvider(new ModLanguageProvider(generator, "en_us"));
         generator.addProvider(new ModAnimatedTextureProvider(generator, event.getExistingFileHelper()));
