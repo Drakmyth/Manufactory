@@ -8,6 +8,7 @@ package com.drakmyth.minecraft.manufactory.blocks;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
+import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
 
@@ -28,7 +29,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -120,8 +120,8 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         final Direction face = context.getClickedFace();
-        if (!isFaceHorizontal(face) || !isBlockLog(context.getLevel(), context.getClickedPos().relative(face.getOpposite()))) {
-            LOGGER.debug(LogMarkers.INTERACTION, "Latex Collector must be placed on the side of a log");
+        if (!isFaceHorizontal(face) || !blockHasLatex(context.getLevel(), context.getClickedPos().relative(face.getOpposite()))) {
+            LOGGER.debug(LogMarkers.INTERACTION, "Latex Collector must be placed on the side of a block with latex");
             return null;
         }
 
@@ -149,8 +149,8 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         // Only pay attention to the neighbor we're attached to
         if (!pos.relative(facing).equals(neighborPos)) return;
 
-        if (!isBlockLog(world, neighborPos)) {
-            LOGGER.debug(LogMarkers.MACHINE, "Log destroyed. Destroying attached latex collector...");
+        if (!blockHasLatex(world, neighborPos)) {
+            LOGGER.debug(LogMarkers.MACHINE, "Block destroyed. Destroying attached latex collector...");
             world.destroyBlock(pos, true);
         }
     }
@@ -159,8 +159,8 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         return Plane.HORIZONTAL.test(direction);
     }
 
-    private boolean isBlockLog(LevelReader world, BlockPos pos) {
-        return world.getBlockState(pos).is(BlockTags.LOGS);
+    private boolean blockHasLatex(LevelReader world, BlockPos pos) {
+        return world.getBlockState(pos).is(ModTags.Blocks.BLOCKS_WITH_LATEX);
     }
 
     @Override

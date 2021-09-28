@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory.items;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
 public class TappingKnifeItem extends Item {
@@ -41,8 +43,13 @@ public class TappingKnifeItem extends Item {
             LOGGER.debug(LogMarkers.MACHINE, "Latex Collector tile entity not found");
             return InteractionResult.PASS;
         }
-        LOGGER.debug(LogMarkers.INTERACTION, "Tapping...");
+        Direction collectorFacing = world.getBlockState(tePos).getValue(LatexCollectorBlock.HORIZONTAL_FACING);
+        if (collectorFacing.compareTo(context.getClickedFace().getOpposite()) != 0) {
+            LOGGER.debug(LogMarkers.INTERACTION, "Latex Collector found, but not attached to clicked face");
+            return InteractionResult.PASS;
+        }
         LatexCollectorTileEntity lcte = (LatexCollectorTileEntity)te;
+        LOGGER.debug(LogMarkers.INTERACTION, "Tapping...");
         boolean tapped = lcte.onTap(world, tePos, world.getBlockState(tePos));
         if (tapped) {
             tryGiveAmber(context.getPlayer(), context.getHand());

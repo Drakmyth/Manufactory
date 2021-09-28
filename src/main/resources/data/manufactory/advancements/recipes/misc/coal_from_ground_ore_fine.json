@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "manufactory:ground_coal_ore_fine"
+            "items": [
+              "manufactory:ground_coal_ore_fine"
+            ]
           }
         ]
       }

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "manufactory:ground_ancient_debris_fine"
+            "items": [
+              "manufactory:ground_ancient_debris_fine"
+            ]
           }
         ]
       }

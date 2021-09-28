@@ -6,12 +6,14 @@
     ]
   },
   "criteria": {
-    "has_minecraft:coal_ore": {
+    "has_coal_ore": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:coal_ore"
+            "items": [
+              "minecraft:coal_ore"
+            ]
           }
         ]
       }
@@ -25,7 +27,7 @@
   },
   "requirements": [
     [
-      "has_minecraft:coal_ore",
+      "has_coal_ore",
       "has_the_recipe"
     ]
   ]

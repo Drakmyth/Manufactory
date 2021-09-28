@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.blocks;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.containers.BallMillContainerProvider;
 import com.drakmyth.minecraft.manufactory.containers.BallMillUpgradeContainerProvider;
-import com.drakmyth.minecraft.manufactory.init.ModItems;
+import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
@@ -119,7 +119,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
         }
 
         MenuProvider containerProvider;
-        if (heldItem.getItem() == ModItems.WRENCH.get() && face == state.getValue(HORIZONTAL_FACING).getOpposite()) {
+        if (ModTags.Items.UPGRADE_ACCESS_TOOL.contains(heldItem.getItem()) && face == state.getValue(HORIZONTAL_FACING).getOpposite()) {
             LOGGER.debug(LogMarkers.INTERACTION, "Used wrench on back face. Opening upgrade gui...");
             containerProvider = new BallMillUpgradeContainerProvider(pos);
         } else {
