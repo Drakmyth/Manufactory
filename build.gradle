@@ -6,17 +6,20 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'org.parchmentmc', name: 'librarian', version: '1.+'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 // apply plugin: 'jacoco'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(project.javaversion)
@@ -37,7 +40,8 @@ dependencies {
 }
 
 minecraft {
-    mappings channel: 'official', version: project.mappingsversion
+    // mappings channel: 'official', version: project.mappingsversion
+    mappings channel: 'parchment', version: "${project.parchmentversion}-${project.mappingsversion}"
 
     runs {
         client {
