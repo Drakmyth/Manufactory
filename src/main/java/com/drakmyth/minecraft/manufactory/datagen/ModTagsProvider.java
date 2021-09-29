@@ -41,6 +41,28 @@ public class ModTagsProvider {
                                             .add(ModBlocks.LATEX_COLLECTOR.get());
             
             tag(ModTags.Blocks.BLOCKS_WITH_LATEX).addTag(BlockTags.LOGS);
+            
+            tag(ModTags.Blocks.ROCK_DRILL_SILK_TOUCH).addTag(BlockTags.COAL_ORES)
+                                                     .addTag(BlockTags.GOLD_ORES)
+                                                     .addTag(BlockTags.IRON_ORES)
+                                                     .addTag(BlockTags.LAPIS_ORES)
+                                                     .addTag(BlockTags.COPPER_ORES)
+                                                     .addTag(BlockTags.DIAMOND_ORES)
+                                                     .addTag(BlockTags.EMERALD_ORES)
+                                                     .addTag(BlockTags.REDSTONE_ORES)
+                                                     .add(net.minecraft.world.level.block.Blocks.NETHER_QUARTZ_ORE)
+                                                     .add(net.minecraft.world.level.block.Blocks.ANCIENT_DEBRIS)
+                                                     .add(net.minecraft.world.level.block.Blocks.GILDED_BLACKSTONE);
+
+            tag(ModTags.Blocks.MINEABLE_WITH_ROCK_DRILL).addTag(ModTags.Blocks.ROCK_DRILL_SILK_TOUCH)
+                                                        .addTag(BlockTags.BASE_STONE_OVERWORLD)
+                                                        .addTag(BlockTags.BASE_STONE_NETHER)
+                                                        .addTag(net.minecraftforge.common.Tags.Blocks.COBBLESTONE)
+                                                        .addTag(net.minecraftforge.common.Tags.Blocks.STONE)
+                                                        .addTag(net.minecraftforge.common.Tags.Blocks.SANDSTONE)
+                                                        .addTag(net.minecraftforge.common.Tags.Blocks.OBSIDIAN)
+                                                        .addTag(net.minecraftforge.common.Tags.Blocks.END_STONES)
+                                                        .add(net.minecraft.world.level.block.Blocks.CRYING_OBSIDIAN);
         }
     }
 
