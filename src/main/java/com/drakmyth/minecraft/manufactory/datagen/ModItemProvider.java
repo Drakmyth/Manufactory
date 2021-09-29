@@ -24,6 +24,7 @@ public class ModItemProvider extends ItemModelProvider {
 
         registerTool("wrench");
         registerTool("tapping_knife");
+        registerTool("rock_drill");
 
         registerItem("latex_collector");
         registerItem("amber");

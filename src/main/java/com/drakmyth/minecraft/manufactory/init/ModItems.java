@@ -12,6 +12,7 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.MillingBallTier0Upgrade
 import com.drakmyth.minecraft.manufactory.items.upgrades.MillingBallUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.MotorUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.PowerSocketItem;
+import com.drakmyth.minecraft.manufactory.items.RockDrillItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import net.minecraft.world.item.BucketItem;
@@ -74,6 +75,7 @@ public final class ModItems {
     public static final RegistryObject<Item> SLURRIED_NETHER_QUARTZ_ORE_BUCKET = ITEMS.register("slurried_nether_quartz_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_REDSTONE_ORE_BUCKET = ITEMS.register("slurried_redstone_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_ANCIENT_DEBRIS_BUCKET = ITEMS.register("slurried_ancient_debris_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), singleItemProperties()));
+    public static final RegistryObject<Item> ROCK_DRILL = ITEMS.register("rock_drill", () -> new RockDrillItem(singleItemProperties()));
 
     private static Item.Properties singleItemProperties() {
         return defaultItemProperties().stacksTo(1);

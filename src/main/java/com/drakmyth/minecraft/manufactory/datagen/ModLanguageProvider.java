@@ -76,6 +76,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET, "Slurried Nether Quartz Ore Bucket");
         addItem(ModItems.SLURRIED_REDSTONE_ORE_BUCKET, "Slurried Redstone Ore Bucket");
         addItem(ModItems.SLURRIED_ANCIENT_DEBRIS_BUCKET, "Slurried Ancient Debris Bucket");
+        addItem(ModItems.ROCK_DRILL, "Rock Drill");
 
         add("itemGroup.manufactory", "Manufactory");
     }
