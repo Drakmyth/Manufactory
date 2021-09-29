@@ -3,7 +3,7 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-package com.drakmyth.minecraft.manufactory.gui;
+package com.drakmyth.minecraft.manufactory.menus.screens;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.mojang.blaze3d.systems.RenderSystem;
