@@ -9,8 +9,9 @@ import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
-import com.drakmyth.minecraft.manufactory.menus.providers.BallMillContainerProvider;
-import com.drakmyth.minecraft.manufactory.menus.providers.BallMillUpgradeContainerProvider;
+import com.drakmyth.minecraft.manufactory.menus.BallMillMenu;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
+import com.drakmyth.minecraft.manufactory.menus.providers.BlockMenuProvider;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.network.OpenContainerWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
@@ -121,10 +122,10 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
         MenuProvider containerProvider;
         if (ModTags.Items.UPGRADE_ACCESS_TOOL.contains(heldItem.getItem()) && face == state.getValue(HORIZONTAL_FACING).getOpposite()) {
             LOGGER.debug(LogMarkers.INTERACTION, "Used wrench on back face. Opening upgrade gui...");
-            containerProvider = new BallMillUpgradeContainerProvider(pos);
+            containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillUpgradeMenu::new);
         } else {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
-            containerProvider = new BallMillContainerProvider(pos);
+            containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillMenu::new);
         }
         OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((BallMillTileEntity)tileEntity).getInstalledUpgrades(), pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);

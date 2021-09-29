@@ -6,7 +6,6 @@
 package com.drakmyth.minecraft.manufactory.menus.providers;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.menus.GrinderMenu;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,22 +19,26 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class GrinderContainerProvider implements MenuProvider {
+public class BlockMenuProvider implements MenuProvider {
     private static final Logger LOGGER = LogManager.getLogger();
+    private String displayName;
     private BlockPos pos;
+    private IBlockMenuFactory factory;
 
-    public GrinderContainerProvider(BlockPos pos) {
+    public BlockMenuProvider(String displayName, BlockPos pos, IBlockMenuFactory factory) {
+        this.displayName = displayName;
         this.pos = pos;
+        this.factory = factory;
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int windowId, Inventory Inventory, Player player) {
-        LOGGER.debug(LogMarkers.CONTAINER, "Creating Grinder gui...");
-        return new GrinderMenu(windowId, new InvWrapper(Inventory), player, pos);
+    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+        LOGGER.debug(LogMarkers.CONTAINER, "Creating {} gui...", displayName);
+        return factory.create(windowId, new InvWrapper(playerInventory), player, pos);
     }
 
     @Override
     public Component getDisplayName() {
-        return new TextComponent("Grinder");
+        return new TextComponent(displayName);
     }
 }
