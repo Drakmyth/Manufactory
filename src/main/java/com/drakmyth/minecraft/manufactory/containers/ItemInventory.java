@@ -25,24 +25,24 @@ public class ItemInventory extends SimpleContainer {
 		super(size);
 		this.host = stack;
 
-        ListTag items = host.getOrCreateTag().getList(ITEMS_KEY, NBT.TAG_COMPOUND);
+		ListTag items = host.getOrCreateTag().getList(ITEMS_KEY, NBT.TAG_COMPOUND);
 		for (int i = 0; i < size && i < items.size(); i++) {
-            setItem(i, ItemStack.of(items.getCompound(i)));
+			setItem(i, ItemStack.of(items.getCompound(i)));
 		}
 	}
-    
+
 	@Override
 	public boolean stillValid(Player player) {
-        return !host.isEmpty();
+		return !host.isEmpty();
 	}
-    
+
 	@Override
 	public void setChanged() {
-        super.setChanged();
+		super.setChanged();
 		ListTag list = new ListTag();
 		for (int i = 0; i < getContainerSize(); i++) {
-            list.add(getItem(i).save(new CompoundTag()));
+			list.add(getItem(i).save(new CompoundTag()));
 		}
-        host.getOrCreateTag().put(ITEMS_KEY, list);
+		host.getOrCreateTag().put(ITEMS_KEY, list);
 	}
 }
