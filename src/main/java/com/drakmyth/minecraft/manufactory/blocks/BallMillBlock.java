@@ -14,7 +14,7 @@ import com.drakmyth.minecraft.manufactory.menus.BallMillMenu;
 import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
 import com.drakmyth.minecraft.manufactory.menus.providers.BlockMenuProvider;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
-import com.drakmyth.minecraft.manufactory.network.OpenContainerWithUpgradesPacket;
+import com.drakmyth.minecraft.manufactory.network.OpenMenuWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
@@ -127,7 +127,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
             containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillMenu::new);
         }
-        OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((BallMillBlockEntity)tileEntity).getInstalledUpgrades(), pos);
+        OpenMenuWithUpgradesPacket packet = new OpenMenuWithUpgradesPacket(((BallMillBlockEntity)tileEntity).getInstalledUpgrades(), pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
         NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
     }

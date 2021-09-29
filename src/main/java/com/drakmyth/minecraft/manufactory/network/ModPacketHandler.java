@@ -44,10 +44,10 @@ public class ModPacketHandler {
                 .add();
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering OpenContainerWithUpgradesPacket with id {}...", messageId);
-        INSTANCE.messageBuilder(OpenContainerWithUpgradesPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(OpenContainerWithUpgradesPacket::encode)
-                .decoder(OpenContainerWithUpgradesPacket::decode)
-                .consumer(OpenContainerWithUpgradesPacket::handle)
+        INSTANCE.messageBuilder(OpenMenuWithUpgradesPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(OpenMenuWithUpgradesPacket::encode)
+                .decoder(OpenMenuWithUpgradesPacket::decode)
+                .consumer(OpenMenuWithUpgradesPacket::handle)
                 .add();
     }
 }

@@ -15,7 +15,7 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.IMillingBallUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
-import com.drakmyth.minecraft.manufactory.network.IOpenContainerWithUpgradesListener;
+import com.drakmyth.minecraft.manufactory.network.IOpenMenuWithUpgradesListener;
 import com.drakmyth.minecraft.manufactory.network.IPowerRateListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
@@ -37,7 +37,7 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class BallMillBlockEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener, IOpenContainerWithUpgradesListener {
+public class BallMillBlockEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener, IOpenMenuWithUpgradesListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;

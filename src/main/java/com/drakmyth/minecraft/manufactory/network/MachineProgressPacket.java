@@ -71,17 +71,17 @@ public class MachineProgressPacket {
                 public void run() {
                     LOGGER.trace(LogMarkers.NETWORK, "Processing MachineProgress packet...");
                     Minecraft minecraft = Minecraft.getInstance();
-                    Level world = minecraft.level;
-                    if (!world.isAreaLoaded(pos, 1)) {
+                    Level level = minecraft.level;
+                    if (!level.isAreaLoaded(pos, 1)) {
                         LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    BlockEntity te = world.getBlockEntity(pos);
-                    if (!(te instanceof IMachineProgressListener)) {
+                    BlockEntity be = level.getBlockEntity(pos);
+                    if (!(be instanceof IMachineProgressListener)) {
                         LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) does not contain an IMachineProgressListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    IMachineProgressListener mpl = (IMachineProgressListener) te;
+                    IMachineProgressListener mpl = (IMachineProgressListener) be;
                     mpl.onProgressUpdate(progress, total);
                     LOGGER.trace(LogMarkers.NETWORK, "Machine progress synced - progress {}, total {}", progress, total);
                 }

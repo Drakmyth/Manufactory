@@ -71,17 +71,17 @@ public class PowerRatePacket {
                 public void run() {
                     LOGGER.trace(LogMarkers.NETWORK, "Processing PowerRate packet...");
                     Minecraft minecraft = Minecraft.getInstance();
-                    Level world = minecraft.level;
-                    if (!world.isAreaLoaded(pos, 1)) {
+                    Level level = minecraft.level;
+                    if (!level.isAreaLoaded(pos, 1)) {
                         LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    BlockEntity te = world.getBlockEntity(pos);
-                    if (!(te instanceof IPowerRateListener)) {
+                    BlockEntity be = level.getBlockEntity(pos);
+                    if (!(be instanceof IPowerRateListener)) {
                         LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) does not contain an IPowerRateListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
                         return;
                     }
-                    IPowerRateListener prl = (IPowerRateListener) te;
+                    IPowerRateListener prl = (IPowerRateListener) be;
                     prl.onPowerRateUpdate(received, expected);
                     LOGGER.trace(LogMarkers.NETWORK, "Power rate synced - received {}, expected {}", received, expected);
                 }
