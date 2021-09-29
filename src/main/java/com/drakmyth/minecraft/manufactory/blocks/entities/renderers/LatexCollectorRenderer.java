@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.blocks.entities.renderers;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock.FillStatus;
-import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -30,14 +30,14 @@ import net.minecraft.util.Mth;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
-public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollectorTileEntity> {
+public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollectorBlockEntity> {
     public static final ResourceLocation LATEX_TEXTURE = new ResourceLocation("minecraft", "block/quartz_block_top");
     private static final Logger LOGGER = LogManager.getLogger();
 
     public LatexCollectorRenderer(BlockEntityRendererProvider.Context context) { }
 
     @Override
-    public void render(LatexCollectorTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public void render(LatexCollectorBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at ({}, {}, {})...", tileEntity.getBlockPos().getX(), tileEntity.getBlockPos().getY(), tileEntity.getBlockPos().getZ());
         BlockState state = tileEntity.getBlockState();
         if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {

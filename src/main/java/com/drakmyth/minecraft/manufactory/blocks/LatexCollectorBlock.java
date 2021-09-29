@@ -6,7 +6,7 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
@@ -95,7 +95,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState s, BlockEntityType<T> blockEntityType) {
         return (level, pos, state, tile) -> {
-            if (tile instanceof LatexCollectorTileEntity t) {
+            if (tile instanceof LatexCollectorBlockEntity t) {
                 t.tick(level, pos, state);
             }
         };

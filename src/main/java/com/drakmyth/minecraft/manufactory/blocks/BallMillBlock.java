@@ -6,7 +6,7 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
@@ -70,7 +70,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> blockEntityType) {
         return (l, p, s, t) -> {
-            if (t instanceof BallMillTileEntity tile) {
+            if (t instanceof BallMillBlockEntity tile) {
                 tile.tick();
             }
         };
@@ -79,10 +79,10 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (!(te instanceof BallMillTileEntity)) return false;
+        if (!(te instanceof BallMillBlockEntity)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
 
-        BallMillTileEntity gte = (BallMillTileEntity)te;
+        BallMillBlockEntity gte = (BallMillBlockEntity)te;
         ItemStackHandler upgradeInventory = gte.getUpgradeInventory();
         Item powerUpgrade = upgradeInventory.getStackInSlot(2).getItem();
         if (!(powerUpgrade instanceof IPowerUpgrade)) return false;
@@ -114,7 +114,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     private void interactWith(BlockState state, Level world, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
         BlockEntity tileEntity = world.getBlockEntity(pos);
-        if (!(tileEntity instanceof BallMillTileEntity)) {
+        if (!(tileEntity instanceof BallMillBlockEntity)) {
             LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of BallMillTileEntity!");
             return;
         }
@@ -127,7 +127,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
             containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillMenu::new);
         }
-        OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((BallMillTileEntity)tileEntity).getInstalledUpgrades(), pos);
+        OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((BallMillBlockEntity)tileEntity).getInstalledUpgrades(), pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
         NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
     }
@@ -148,12 +148,12 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
         pnm.untrackBlock(pos);
 
         BlockEntity tileentity = world.getBlockEntity(pos);
-        if (!(tileentity instanceof BallMillTileEntity)) {
+        if (!(tileentity instanceof BallMillBlockEntity)) {
             LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of BallMillTileEntity!");
             return;
         }
 
-        BallMillTileEntity ballMillTE = (BallMillTileEntity)tileentity;
+        BallMillBlockEntity ballMillTE = (BallMillBlockEntity)tileentity;
         ItemStackHandler inventory = ballMillTE.getInventory();
         for (int i = 0; i < inventory.getSlots(); i++) {
             LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in world...");

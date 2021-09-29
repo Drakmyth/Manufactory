@@ -6,7 +6,7 @@
 package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
@@ -35,7 +35,7 @@ public class GrinderUpgradeMenu extends AbstractContainerMenu {
 
     public final ItemStackHandler upgradeInventory;
     private final ContainerLevelAccess posCallable;
-    private final GrinderTileEntity tileEntity;
+    private final GrinderBlockEntity tileEntity;
 
     public GrinderUpgradeMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
@@ -46,7 +46,7 @@ public class GrinderUpgradeMenu extends AbstractContainerMenu {
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderUpgradeContainer...");
         Level world = player.getCommandSenderWorld();
         posCallable = ContainerLevelAccess.create(world, pos);
-        tileEntity = (GrinderTileEntity)world.getBlockEntity(pos);
+        tileEntity = (GrinderBlockEntity)world.getBlockEntity(pos);
         upgradeInventory = tileEntity.getUpgradeInventory();
 
         // Grinder Slots

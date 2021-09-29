@@ -24,13 +24,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
-public class LatexCollectorTileEntity extends BlockEntity implements IMachineProgressListener {
+public class LatexCollectorBlockEntity extends BlockEntity implements IMachineProgressListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private int totalTicks = 0;
     private int ticksRemaining = 0;
 
-    public LatexCollectorTileEntity(BlockPos pos, BlockState state) {
+    public LatexCollectorBlockEntity(BlockPos pos, BlockState state) {
         super(ModTileEntityTypes.LATEX_COLLECTOR.get(), pos, state);
     }
 

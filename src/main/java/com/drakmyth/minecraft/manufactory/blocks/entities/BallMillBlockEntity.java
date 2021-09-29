@@ -11,7 +11,7 @@ import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
-import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IMillingBallUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
@@ -20,7 +20,7 @@ import com.drakmyth.minecraft.manufactory.network.IPowerRateListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.network.PowerRatePacket;
-import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
+import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,39 +37,39 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public class GrinderTileEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener, IOpenContainerWithUpgradesListener {
+public class BallMillBlockEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener, IOpenContainerWithUpgradesListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean firstTick;
-    private ItemStackHandler grinderInventory;
-    private ItemStackHandler grinderUpgradeInventory;
-    private GrinderRecipe currentRecipe;
+    private ItemStackHandler ballMillInventory;
+    private ItemStackHandler ballMillUpgradeInventory;
+    private BallMillRecipe currentRecipe;
     private float lastPowerReceived;
     private float powerRequired;
     private float powerRemaining;
     private float maxPowerPerTick;
 
-    public GrinderTileEntity(BlockPos pos, BlockState state) {
-        super(ModTileEntityTypes.GRINDER.get(), pos, state);
+    public BallMillBlockEntity(BlockPos pos, BlockState state) {
+        super(ModTileEntityTypes.BALL_MILL.get(), pos, state);
 
         firstTick = true;
-        grinderInventory = new ItemStackHandler(2);
-        grinderUpgradeInventory = new ItemStackHandler(4);
-        LOGGER.debug(LogMarkers.MACHINE, "Grinder tile entity initialized with {} inventory slots and {} upgrade inventory slots", grinderInventory.getSlots(), grinderUpgradeInventory.getSlots());
+        ballMillInventory = new ItemStackHandler(2);
+        ballMillUpgradeInventory = new ItemStackHandler(3);
+        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill tile entity initialized with {} inventory slots and {} upgrade inventory slots", ballMillInventory.getSlots(), ballMillUpgradeInventory.getSlots());
     }
 
     public ItemStackHandler getInventory() {
-        return grinderInventory;
+        return ballMillInventory;
     }
 
     public ItemStackHandler getUpgradeInventory() {
-        return grinderUpgradeInventory;
+        return ballMillUpgradeInventory;
     }
 
     public ItemStack[] getInstalledUpgrades() {
         List<ItemStack> upgrades = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            upgrades.add(grinderUpgradeInventory.getStackInSlot(i));
+            upgrades.add(ballMillUpgradeInventory.getStackInSlot(i));
         }
         return upgrades.toArray(new ItemStack[]{});
     }
@@ -90,7 +90,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at ({}, {}, {}) synced progress with powerRequired {} and powerRemaining {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), powerRequired, powerRemaining);
+        LOGGER.trace(LogMarkers.MACHINE, "Ball Mill at ({}, {}, {}) synced progress with powerRequired {} and powerRemaining {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), powerRequired, powerRemaining);
     }
 
     // Client-Side Only
@@ -99,23 +99,23 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = received;
         maxPowerPerTick = expected;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at ({}, {}, {}) synced power rate with lastPowerReceived {} and maxPowerPerTick {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), lastPowerReceived, maxPowerPerTick);
+        LOGGER.trace(LogMarkers.MACHINE, "Ball Mill at ({}, {}, {}) synced power rate with lastPowerReceived {} and maxPowerPerTick {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), lastPowerReceived, maxPowerPerTick);
     }
 
     // Client-Side Only
     @Override
     public void onContainerOpened(ItemStack[] upgrades) {
         for(int i = 0; i < upgrades.length; i++) {
-            grinderUpgradeInventory.setStackInSlot(i, upgrades[i]);
+            ballMillUpgradeInventory.setStackInSlot(i, upgrades[i]);
         }
     }
 
     @Override
     public CompoundTag save(CompoundTag compound) {
         super.save(compound);
-        LOGGER.trace(LogMarkers.MACHINE, "Writing Grinder at ({}, {}, {}) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-        compound.put("inventory", grinderInventory.serializeNBT());
-        compound.put("upgradeInventory", grinderUpgradeInventory.serializeNBT());
+        LOGGER.trace(LogMarkers.MACHINE, "Writing Ball Mill at ({}, {}, {}) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        compound.put("inventory", ballMillInventory.serializeNBT());
+        compound.put("upgradeInventory", ballMillUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
         compound.putFloat("powerRemaining", powerRemaining);
         compound.putFloat("maxPowerPerTick", maxPowerPerTick);
@@ -125,45 +125,41 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        LOGGER.debug(LogMarkers.MACHINE, "Reading Grinder at ({}, {}, {}) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-        grinderInventory.deserializeNBT(nbt.getCompound("inventory"));
-        grinderUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
+        LOGGER.debug(LogMarkers.MACHINE, "Reading Ball Mill at ({}, {}, {}) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        ballMillInventory.deserializeNBT(nbt.getCompound("inventory"));
+        ballMillUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
         powerRequired = nbt.getFloat("powerRequired");
         powerRemaining = nbt.getFloat("powerRemaining");
         maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
-        LOGGER.debug(LogMarkers.MACHINE, "Grinder Loaded!");
+        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill Loaded!");
     }
 
     private int getTier() {
-        if (!hasBothWheels()) return -1;
-        IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
-        IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
-        return Math.max(wheel1.getTier().getLevel(), wheel2.getTier().getLevel());
+        Item millingBallItem = ballMillUpgradeInventory.getStackInSlot(0).getItem();
+        if (!(millingBallItem instanceof IMillingBallUpgrade)) return -1;
+        IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallItem;
+        return millingBall.getTier().getLevel();
+    }
+
+    private float getProcessChance() {
+        ItemStack millingBallStack = ballMillUpgradeInventory.getStackInSlot(0);
+        if (!(millingBallStack.getItem() instanceof IMillingBallUpgrade)) return 0;
+        IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallStack.getItem();
+        return millingBall.getProcessChance(millingBallStack);
     }
 
     private float getEfficiencyModifier() {
-        if (!hasBothWheels()) return 0;
-        IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
-        IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
-        return wheel1.getTier().getLevel() <= wheel2.getTier().getLevel() ? wheel1.getEfficiency() : wheel2.getEfficiency();
-    }
-
-    private boolean hasBothWheels() {
-        Item wheel1 = grinderUpgradeInventory.getStackInSlot(0).getItem();
-        Item wheel2 = grinderUpgradeInventory.getStackInSlot(1).getItem();
-        if (!(wheel1 instanceof IGrinderWheelUpgrade) || !(wheel2 instanceof IGrinderWheelUpgrade)) return false;
-        return true;
+        ItemStack millingBallStack = ballMillUpgradeInventory.getStackInSlot(0);
+        if (!(millingBallStack.getItem() instanceof IMillingBallUpgrade)) return 0;
+        IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallStack.getItem();
+        return millingBall.getEfficiency(millingBallStack);
     }
 
     private boolean tryStartRecipe() {
-        LOGGER.trace(LogMarkers.MACHINE, "Trying to start Grinder recipe...");
-        GrinderRecipe recipe = level.getRecipeManager().getRecipeFor(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), level).orElse(null);
+        LOGGER.trace(LogMarkers.MACHINE, "Trying to start Ball Mill recipe...");
+        BallMillRecipe recipe = level.getRecipeManager().getRecipeFor(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), level).orElse(null);
         if (recipe == null) {
             LOGGER.trace(LogMarkers.MACHINE, "No recipe matches input. Skipping...");
-            return false;
-        }
-        if (!hasBothWheels()) {
-            LOGGER.trace(LogMarkers.MACHINE, "Missing one or both grinder wheels. Skipping...");
             return false;
         }
         if (getTier() < recipe.getTierRequired()) {
@@ -171,7 +167,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
             return false;
         }
         ItemStack maxResult = recipe.getMaxOutput();
-        if (!grinderInventory.insertItem(1, maxResult, true).isEmpty()) {
+        if (!ballMillInventory.insertItem(1, maxResult, true).isEmpty()) {
             LOGGER.trace(LogMarkers.MACHINE, "Simulation shows this recipe may not have enough room in output to complete. Skipping...");
             return false;
         }
@@ -196,12 +192,12 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
     }
 
     private float getMotorSpeed() {
-        Item motor = grinderUpgradeInventory.getStackInSlot(2).getItem();
+        Item motor = ballMillUpgradeInventory.getStackInSlot(1).getItem();
         return motor instanceof IMotorUpgrade ? ((IMotorUpgrade)motor).getPowerCapMultiplier() : 0.0f;
     }
 
     private IPowerProvider getPowerProvider() {
-        Item powerProvider = grinderUpgradeInventory.getStackInSlot(3).getItem();
+        Item powerProvider = ballMillUpgradeInventory.getStackInSlot(2).getItem();
         IPowerProvider emptyPowerProvider = (requestedPower, world, pos) -> 0;
         return powerProvider instanceof IPowerProvider ? (IPowerProvider)powerProvider : emptyPowerProvider;
     }
@@ -211,9 +207,9 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
 
         if (firstTick) {
             firstTick = false;
-            if (!grinderInventory.getStackInSlot(0).isEmpty()) {
-                currentRecipe = level.getRecipeManager().getRecipeFor(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), level).orElse(null);
-                LOGGER.debug(LogMarkers.MACHINE, "Grinder input at ({}, {}, {}) not empty on first tick, initialized current recipe", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+            if (!ballMillInventory.getStackInSlot(0).isEmpty()) {
+                currentRecipe = level.getRecipeManager().getRecipeFor(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), level).orElse(null);
+                LOGGER.debug(LogMarkers.MACHINE, "Ball Mill input at ({}, {}, {}) not empty on first tick, initialized current recipe", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             }
         }
 
@@ -222,7 +218,7 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
             if (!recipeStarted) return;
         }
 
-        if (!currentRecipe.getIngredient().test(grinderInventory.getStackInSlot(0))) {
+        if (!currentRecipe.getIngredient().test(ballMillInventory.getStackInSlot(0))) {
             LOGGER.warn(LogMarkers.MACHINE, "The item in the input slot changed out from under us. Bail!");
             currentRecipe = null;
             lastPowerReceived = 0;
@@ -243,18 +239,27 @@ public class GrinderTileEntity extends BlockEntity implements IMachineProgressLi
         lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerLevel)level, worldPosition);
         powerRemaining -= lastPowerReceived;
         if (powerRemaining <= 0) {
-            LOGGER.debug(LogMarkers.MACHINE, "Grinder operation complete, processing results...");
-            grinderInventory.extractItem(0, 1, false);
-            ItemStack resultStack = currentRecipe.getResultItem().copy();
+            LOGGER.debug(LogMarkers.MACHINE, "Ball Mill operation complete, processing results...");
             Random rand = level.getRandom();
-            if (getEfficiencyModifier() > 0) {
+            ItemStack resultStack;
+            LOGGER.debug(LogMarkers.MACHINE, "Rolling to determine if process was successful...");
+            if (rand.nextFloat() > getProcessChance()) {
+                LOGGER.debug(LogMarkers.MACHINE, "Failed!");
+                resultStack = ItemStack.EMPTY;
+            } else {
+                LOGGER.debug(LogMarkers.MACHINE, "Success!");
+                ballMillInventory.extractItem(0, 1, false);
+                resultStack = currentRecipe.getResultItem().copy();
+            }
+
+            if (!resultStack.isEmpty() && getEfficiencyModifier() > 0) {
                 LOGGER.debug(LogMarkers.MACHINE, "Rolling to determine if extra results happen...");
                 if (currentRecipe.hasExtraChance() && rand.nextFloat() <= (currentRecipe.getExtraChance() * getEfficiencyModifier())) {
                     LOGGER.debug(LogMarkers.MACHINE, "Success!");
                     resultStack.grow(currentRecipe.getRandomExtraAmount(rand));
                 }
             }
-            grinderInventory.insertItem(1, resultStack, false);
+            ballMillInventory.insertItem(1, resultStack, false);
             currentRecipe = null;
             lastPowerReceived = 0;
             powerRequired = 0;

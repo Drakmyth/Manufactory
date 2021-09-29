@@ -6,7 +6,7 @@
 package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 
@@ -32,7 +32,7 @@ public class BallMillMenu extends AbstractContainerMenu {
 
     public final ItemStackHandler ballMillInventory;
     private final ContainerLevelAccess posCallable;
-    private final BallMillTileEntity tileEntity;
+    private final BallMillBlockEntity tileEntity;
 
     public BallMillMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
@@ -43,7 +43,7 @@ public class BallMillMenu extends AbstractContainerMenu {
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillContainer...");
         Level world = player.getCommandSenderWorld();
         posCallable = ContainerLevelAccess.create(world, pos);
-        tileEntity = (BallMillTileEntity)world.getBlockEntity(pos);
+        tileEntity = (BallMillBlockEntity)world.getBlockEntity(pos);
         ballMillInventory = tileEntity.getInventory();
 
         // Grinder Slots

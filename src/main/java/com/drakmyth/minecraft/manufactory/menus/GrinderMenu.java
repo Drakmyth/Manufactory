@@ -6,7 +6,7 @@
 package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 
@@ -32,7 +32,7 @@ public class GrinderMenu extends AbstractContainerMenu {
 
     public final ItemStackHandler grinderInventory;
     private final ContainerLevelAccess posCallable;
-    private final GrinderTileEntity tileEntity;
+    private final GrinderBlockEntity tileEntity;
 
     public GrinderMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
@@ -43,7 +43,7 @@ public class GrinderMenu extends AbstractContainerMenu {
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderContainer...");
         Level world = player.getCommandSenderWorld();
         posCallable = ContainerLevelAccess.create(world, pos);
-        tileEntity = (GrinderTileEntity)world.getBlockEntity(pos);
+        tileEntity = (GrinderBlockEntity)world.getBlockEntity(pos);
         grinderInventory = tileEntity.getInventory();
 
         // Grinder Slots

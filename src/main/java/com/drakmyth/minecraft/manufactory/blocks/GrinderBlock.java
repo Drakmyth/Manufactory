@@ -6,7 +6,7 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
@@ -70,7 +70,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> blockEntityType) {
         return (l, p, s, t) -> {
-            if (t instanceof GrinderTileEntity tile) {
+            if (t instanceof GrinderBlockEntity tile) {
                 tile.tick();
             }
         };
@@ -79,10 +79,10 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (!(te instanceof GrinderTileEntity)) return false;
+        if (!(te instanceof GrinderBlockEntity)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
 
-        GrinderTileEntity gte = (GrinderTileEntity)te;
+        GrinderBlockEntity gte = (GrinderBlockEntity)te;
         ItemStackHandler upgradeInventory = gte.getUpgradeInventory();
         Item powerUpgrade = upgradeInventory.getStackInSlot(3).getItem();
         if (!(powerUpgrade instanceof IPowerUpgrade)) return false;
@@ -114,7 +114,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
 
     private void interactWith(BlockState state, Level world, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
         BlockEntity tileEntity = world.getBlockEntity(pos);
-        if (!(tileEntity instanceof GrinderTileEntity)) {
+        if (!(tileEntity instanceof GrinderBlockEntity)) {
             LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of GrinderTileEntity!");
             return;
         }
@@ -127,7 +127,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
             containerProvider = new BlockMenuProvider("Grinder", pos, GrinderMenu::new);
         }
-        OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((GrinderTileEntity)tileEntity).getInstalledUpgrades(), pos);
+        OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((GrinderBlockEntity)tileEntity).getInstalledUpgrades(), pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
         NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
     }
@@ -147,12 +147,12 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
         pnm.untrackBlock(pos);
 
         BlockEntity tileentity = world.getBlockEntity(pos);
-        if (!(tileentity instanceof GrinderTileEntity)) {
+        if (!(tileentity instanceof GrinderBlockEntity)) {
             LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of GrinderTileEntity!");
             return;
         }
 
-        GrinderTileEntity grinderTE = (GrinderTileEntity)tileentity;
+        GrinderBlockEntity grinderTE = (GrinderBlockEntity)tileentity;
         ItemStackHandler inventory = grinderTE.getInventory();
         for (int i = 0; i < inventory.getSlots(); i++) {
             LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in world...");
