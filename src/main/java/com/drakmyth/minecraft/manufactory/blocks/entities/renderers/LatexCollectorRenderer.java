@@ -3,13 +3,13 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-package com.drakmyth.minecraft.manufactory.tileentities.renderers;
+package com.drakmyth.minecraft.manufactory.blocks.entities.renderers;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock.FillStatus;
+import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorTileEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
-import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 

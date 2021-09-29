@@ -6,9 +6,9 @@
 package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
-import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
-import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderTileEntity;
+import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorTileEntity;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fmllegacy.RegistryObject;

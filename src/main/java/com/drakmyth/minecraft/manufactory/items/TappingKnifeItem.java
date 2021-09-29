@@ -7,9 +7,9 @@ package com.drakmyth.minecraft.manufactory.items;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
+import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorTileEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
-import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

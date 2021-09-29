@@ -5,6 +5,7 @@
 
 package com.drakmyth.minecraft.manufactory;
 
+import com.drakmyth.minecraft.manufactory.blocks.entities.renderers.LatexCollectorRenderer;
 import com.drakmyth.minecraft.manufactory.commands.PowerNetworkArgument;
 import com.drakmyth.minecraft.manufactory.datagen.ModAnimatedTextureProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModBlockStateProvider;
@@ -21,7 +22,6 @@ import com.drakmyth.minecraft.manufactory.gui.RockDrillUpgradeGui;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
-import com.drakmyth.minecraft.manufactory.tileentities.renderers.LatexCollectorRenderer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

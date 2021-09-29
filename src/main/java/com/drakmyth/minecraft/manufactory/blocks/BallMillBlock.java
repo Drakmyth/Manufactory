@@ -6,6 +6,7 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillTileEntity;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
@@ -16,7 +17,6 @@ import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.network.OpenContainerWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
-import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
