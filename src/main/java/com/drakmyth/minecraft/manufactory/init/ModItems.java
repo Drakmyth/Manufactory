@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.items.upgrades.BatteryItem;
+import com.drakmyth.minecraft.manufactory.items.upgrades.DrillHeadUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.GrinderWheelUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.MillingBallTier0UpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.MillingBallUpgradeItem;
@@ -76,6 +77,11 @@ public final class ModItems {
     public static final RegistryObject<Item> SLURRIED_REDSTONE_ORE_BUCKET = ITEMS.register("slurried_redstone_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_ANCIENT_DEBRIS_BUCKET = ITEMS.register("slurried_ancient_debris_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), singleItemProperties()));
     public static final RegistryObject<Item> ROCK_DRILL = ITEMS.register("rock_drill", () -> new RockDrillItem(singleItemProperties()));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER0 = ITEMS.register("drill_head_tier0", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.WOOD));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER1 = ITEMS.register("drill_head_tier1", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.STONE));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER2 = ITEMS.register("drill_head_tier2", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.IRON));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER3 = ITEMS.register("drill_head_tier3", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.DIAMOND));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER4 = ITEMS.register("drill_head_tier4", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.NETHERITE));
 
     private static Item.Properties singleItemProperties() {
         return defaultItemProperties().stacksTo(1);

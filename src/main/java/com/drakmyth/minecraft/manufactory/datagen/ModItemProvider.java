@@ -21,6 +21,7 @@ public class ModItemProvider extends ItemModelProvider {
         registerTieredItem("motor", 4);
         registerTieredItem("grinder_wheel", 5);
         registerTieredItem("milling_ball", 5);
+        registerTieredItem("drill_head", 5);
 
         registerTool("wrench");
         registerTool("tapping_knife");
