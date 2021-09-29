@@ -96,29 +96,29 @@ public class ManufactoryRecipeBuilder {
       return this;
    }
 
-   public ManufactoryRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
-      this.advancementBuilder.addCriterion(name, criterionIn);
+   public ManufactoryRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterion) {
+      this.advancementBuilder.addCriterion(name, criterion);
       return this;
    }
 
-   public void build(Consumer<FinishedRecipe> consumerIn) {
-      this.build(consumerIn, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
+   public void build(Consumer<FinishedRecipe> consumer) {
+      this.build(consumer, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
    }
 
-   public void build(Consumer<FinishedRecipe> consumerIn, String save) {
+   public void build(Consumer<FinishedRecipe> consumer, String save) {
       ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result.getItem());
       ResourceLocation resourcelocation1 = new ResourceLocation(save);
       if (resourcelocation1.equals(resourcelocation)) {
          throw new IllegalStateException("Recipe " + resourcelocation1 + " should remove its 'save' argument");
       } else {
-         this.build(consumerIn, resourcelocation1);
+         this.build(consumer, resourcelocation1);
       }
    }
 
-   public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
+   public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
       this.validate(id);
       this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + id.getPath()), this.recipeSerializer));
+      consumer.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + id.getPath()), this.recipeSerializer));
    }
 
    /**
@@ -144,9 +144,9 @@ public class ManufactoryRecipeBuilder {
       private final ResourceLocation advancementId;
       private final RecipeSerializer<? extends Recipe<Container>> serializer;
 
-      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, RecipeSerializer<? extends Recipe<Container>> serializerIn) {
-         this.id = idIn;
-         this.group = groupIn;
+      public Result(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilder, ResourceLocation advancementId, RecipeSerializer<? extends Recipe<Container>> serializer) {
+         this.id = id;
+         this.group = group;
          this.ingredient = ingredient;
          this.result = result;
          this.extraChance = extraChance;
@@ -154,9 +154,9 @@ public class ManufactoryRecipeBuilder {
          this.tierRequired = tierRequired;
          this.powerRequired = powerRequired;
          this.processTime = processTime;
-         this.advancementBuilder = advancementBuilderIn;
-         this.advancementId = advancementIdIn;
-         this.serializer = serializerIn;
+         this.advancementBuilder = advancementBuilder;
+         this.advancementId = advancementId;
+         this.serializer = serializer;
       }
 
       @Override

@@ -68,7 +68,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container inv, Level worldIn) {
+    public boolean matches(Container inv, Level level) {
         return ingredient.test(inv.getItem(0));
     }
 
