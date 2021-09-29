@@ -41,15 +41,15 @@ public class PowerNetworkManager extends SavedData {
         networks = new HashMap<>();
     }
 
-    public static PowerNetworkManager get(ServerLevel world) {
-        DimensionDataStorage storage = world.getDataStorage();
+    public static PowerNetworkManager get(ServerLevel level) {
+        DimensionDataStorage storage = level.getDataStorage();
         return storage.computeIfAbsent(PowerNetworkManager::load, PowerNetworkManager::new, DATA_NAME);
     }
 
-    public void tick(Level world) {
+    public void tick(Level level) {
         LOGGER.trace(LogMarkers.POWERNETWORK, "Ticking power networks...");
         boolean setDirty = networks.values().stream().reduce(false, (isDirty, network) -> {
-            network.tick(world);
+            network.tick(level);
             return isDirty || network.isDirty();
         }, (a, b) -> a || b);
 
@@ -201,8 +201,8 @@ public class PowerNetworkManager extends SavedData {
         LOGGER.debug(LogMarkers.POWERNETWORK, "Loading Power Networks from NBT...");
         pnm.blockCache = new HashMap<>();
         pnm.networks = new HashMap<>();
-        ListTag networkNBTs = nbt.getList("powerNetworks", Constants.NBT.TAG_COMPOUND);
-        networkNBTs.stream().forEach(compound -> {
+        ListTag networkTags = nbt.getList("powerNetworks", Constants.NBT.TAG_COMPOUND);
+        networkTags.stream().forEach(compound -> {
             PowerNetwork network = PowerNetwork.fromNBT((CompoundTag)compound);
             pnm.networks.put(network.getId(), network);
             network.getBlocks().stream().forEach(block -> {
@@ -216,12 +216,12 @@ public class PowerNetworkManager extends SavedData {
     @Override
     public CompoundTag save(CompoundTag compound) {
         LOGGER.trace(LogMarkers.POWERNETWORK, "Writing Power Networks to NBT...");
-        ListTag powerNetworksNBT = new ListTag();
+        ListTag powerNetworksTag = new ListTag();
         networks.values().stream().forEach(network -> {
-            CompoundTag networkNBT = network.write(new CompoundTag());
-            powerNetworksNBT.add(networkNBT);
+            CompoundTag networkTag = network.write(new CompoundTag());
+            powerNetworksTag.add(networkTag);
         });
-        compound.put("powerNetworks", powerNetworksNBT);
+        compound.put("powerNetworks", powerNetworksTag);
         LOGGER.trace(LogMarkers.POWERNETWORK, "All Power Networks written!");
         return compound;
     }

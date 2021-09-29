@@ -12,9 +12,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 
 public interface IPowerBlock {
-    boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir);
+    boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir);
     Type getPowerBlockType();
-    float getAvailablePower(BlockState state, Level world, BlockPos pos);
+    float getAvailablePower(BlockState state, Level level, BlockPos pos);
 
     public static enum Type {
         NONE,
