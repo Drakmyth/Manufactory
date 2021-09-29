@@ -57,7 +57,7 @@ public class RockDrillUpgradeContainer extends AbstractContainerMenu {
         });
         LOGGER.debug(LogMarkers.CONTAINER, "Motor slot added with index 1");
         // Power Slot
-        this.addSlot(new SlotItemHandler(upgradeInventory, 2, 80, 58) {
+        this.addSlot(new SlotItemHandler(upgradeInventory, 2, 116, 36) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof IPowerUpgrade;
