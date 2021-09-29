@@ -6,11 +6,12 @@
 package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
-import com.drakmyth.minecraft.manufactory.items.RockDrillItem;
-import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IMillingBallUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
+import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,33 +22,41 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class RockDrillUpgradeContainer extends AbstractContainerMenu {
+public class BallMillUpgradeMenu extends AbstractContainerMenu {
     private static final Logger LOGGER = LogManager.getLogger();
-    public final IItemHandler upgradeInventory;
+    public final ItemStackHandler upgradeInventory;
+    private final ContainerLevelAccess posCallable;
+    private final BallMillTileEntity tileEntity;
 
-    public RockDrillUpgradeContainer(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-        this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readItem());
+    public BallMillUpgradeMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+        this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
     }
 
-    public RockDrillUpgradeContainer(int windowId, IItemHandler playerInventory, Player player, ItemStack stack) {
-        super(ModContainerTypes.ROCK_DRILL_UPGRADE.get(), windowId);
-        LOGGER.debug(LogMarkers.CONTAINER, "Initializing RockDrillUpgradeContainer...");
-        RockDrillItem item = (RockDrillItem)stack.getItem();
-        upgradeInventory = new InvWrapper(item.getInventory(stack));
+    public BallMillUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
+        super(ModContainerTypes.BALL_MILL_UPGRADE.get(), windowId);
+        LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillUpgradeContainer...");
+        Level world = player.getCommandSenderWorld();
+        posCallable = ContainerLevelAccess.create(world, pos);
+        tileEntity = (BallMillTileEntity)world.getBlockEntity(pos);
+        upgradeInventory = tileEntity.getUpgradeInventory();
 
-        // Rock Drill Slots
-        // Drill Head Slot
+        // Ball Mill Slots
+        // Milling Ball Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 0, 44, 36) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.getItem() instanceof IDrillHeadUpgrade;
+                return stack.getItem() instanceof IMillingBallUpgrade;
             }
         });
-        LOGGER.debug(LogMarkers.CONTAINER, "Drill head slot added with index 0");
+        LOGGER.debug(LogMarkers.CONTAINER, "Milling ball slot added with index 0");
         // Motor Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 1, 80, 36) {
             @Override
@@ -57,10 +66,17 @@ public class RockDrillUpgradeContainer extends AbstractContainerMenu {
         });
         LOGGER.debug(LogMarkers.CONTAINER, "Motor slot added with index 1");
         // Power Slot
-        this.addSlot(new SlotItemHandler(upgradeInventory, 2, 116, 36) {
+        this.addSlot(new SlotItemHandler(upgradeInventory, 2, 80, 58) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof IPowerUpgrade;
+            }
+
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                LOGGER.debug(LogMarkers.CONTAINER, "Power slot contents changed. Notifying neighbors...");
+                tileEntity.getBlockState().updateNeighbourShapes(world, pos, 3);
             }
         });
         LOGGER.debug(LogMarkers.CONTAINER, "Power slot added with index 2");
@@ -88,14 +104,14 @@ public class RockDrillUpgradeContainer extends AbstractContainerMenu {
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < upgradeInventory.getSlots()) { // transfer from rock drill to inventory
-                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from rock drill upgrade slot {} to player inventory...", index);
+            if (index < upgradeInventory.getSlots()) { // transfer from ball mill to inventory
+                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from ball mill upgrade slot {} to player inventory...", index);
                 if (!this.moveItemStackTo(itemstack1, upgradeInventory.getSlots(), this.slots.size(), false)) {
                     LOGGER.debug(LogMarkers.CONTAINER, "Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 0, upgradeInventory.getSlots(), false)) { // transfer from inventory to rock drill
-                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot {} to rock drill upgrade inventory failed because upgrade inputs are full", index);
+            } else if (!this.moveItemStackTo(itemstack1, 0, upgradeInventory.getSlots(), false)) { // transfer from inventory to ball mill
+                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot {} to ball mill upgrade inventory failed because upgrade inputs are full", index);
                 return ItemStack.EMPTY;
             }
 
@@ -114,16 +130,16 @@ public class RockDrillUpgradeContainer extends AbstractContainerMenu {
         return itemstack;
     }
 
-    // public float getProgress() {
-    //     return tileEntity.getProgress();
-    // }
+    public float getProgress() {
+        return tileEntity.getProgress();
+    }
 
-    // public float getPowerRate() {
-    //     return tileEntity.getPowerRate();
-    // }
+    public float getPowerRate() {
+        return tileEntity.getPowerRate();
+    }
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return true;
+        return stillValid(posCallable, playerIn, ModBlocks.BALL_MILL.get());
     }
 }

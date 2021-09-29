@@ -6,11 +6,11 @@
 package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.menus.BallMillContainer;
-import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeContainer;
-import com.drakmyth.minecraft.manufactory.menus.GrinderContainer;
-import com.drakmyth.minecraft.manufactory.menus.GrinderUpgradeContainer;
-import com.drakmyth.minecraft.manufactory.menus.RockDrillUpgradeContainer;
+import com.drakmyth.minecraft.manufactory.menus.BallMillMenu;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
+import com.drakmyth.minecraft.manufactory.menus.GrinderMenu;
+import com.drakmyth.minecraft.manufactory.menus.GrinderUpgradeMenu;
+import com.drakmyth.minecraft.manufactory.menus.RockDrillUpgradeMenu;
 
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -21,9 +21,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class ModContainerTypes {
     public static final DeferredRegister<MenuType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
 
-    public static final RegistryObject<MenuType<GrinderContainer>> GRINDER = CONTAINER_TYPES.register("grinder", () -> IForgeContainerType.create(GrinderContainer::new));
-    public static final RegistryObject<MenuType<GrinderUpgradeContainer>> GRINDER_UPGRADE = CONTAINER_TYPES.register("grinder_upgrade", () -> IForgeContainerType.create(GrinderUpgradeContainer::new));
-    public static final RegistryObject<MenuType<BallMillContainer>> BALL_MILL = CONTAINER_TYPES.register("ball_mill", () -> IForgeContainerType.create(BallMillContainer::new));
-    public static final RegistryObject<MenuType<BallMillUpgradeContainer>> BALL_MILL_UPGRADE = CONTAINER_TYPES.register("ball_mill_upgrade", () -> IForgeContainerType.create(BallMillUpgradeContainer::new));
-    public static final RegistryObject<MenuType<RockDrillUpgradeContainer>> ROCK_DRILL_UPGRADE = CONTAINER_TYPES.register("rock_drill_upgrade", () -> IForgeContainerType.create(RockDrillUpgradeContainer::new));
+    public static final RegistryObject<MenuType<GrinderMenu>> GRINDER = CONTAINER_TYPES.register("grinder", () -> IForgeContainerType.create(GrinderMenu::new));
+    public static final RegistryObject<MenuType<GrinderUpgradeMenu>> GRINDER_UPGRADE = CONTAINER_TYPES.register("grinder_upgrade", () -> IForgeContainerType.create(GrinderUpgradeMenu::new));
+    public static final RegistryObject<MenuType<BallMillMenu>> BALL_MILL = CONTAINER_TYPES.register("ball_mill", () -> IForgeContainerType.create(BallMillMenu::new));
+    public static final RegistryObject<MenuType<BallMillUpgradeMenu>> BALL_MILL_UPGRADE = CONTAINER_TYPES.register("ball_mill_upgrade", () -> IForgeContainerType.create(BallMillUpgradeMenu::new));
+    public static final RegistryObject<MenuType<RockDrillUpgradeMenu>> ROCK_DRILL_UPGRADE = CONTAINER_TYPES.register("rock_drill_upgrade", () -> IForgeContainerType.create(RockDrillUpgradeMenu::new));
 }

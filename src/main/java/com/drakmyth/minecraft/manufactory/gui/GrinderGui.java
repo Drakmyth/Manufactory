@@ -7,7 +7,7 @@ package com.drakmyth.minecraft.manufactory.gui;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.menus.GrinderContainer;
+import com.drakmyth.minecraft.manufactory.menus.GrinderMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -20,11 +20,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 
-public class GrinderGui extends AbstractContainerScreen<GrinderContainer> {
+public class GrinderGui extends AbstractContainerScreen<GrinderMenu> {
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/grinder.png");
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GrinderGui(GrinderContainer screenContainer, Inventory inv, Component name) {
+    public GrinderGui(GrinderMenu screenContainer, Inventory inv, Component name) {
         super(screenContainer, inv, name);
     }
 

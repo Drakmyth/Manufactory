@@ -30,7 +30,7 @@ public class RockDrillUpgradeContainerProvider implements MenuProvider {
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
         LOGGER.debug(LogMarkers.CONTAINER, "Creating Rock Drill upgrade gui...");
-        return new RockDrillUpgradeContainer(windowId, new InvWrapper(playerInventory), player, stack);
+        return new RockDrillUpgradeMenu(windowId, new InvWrapper(playerInventory), player, stack);
     }
 
     @Override

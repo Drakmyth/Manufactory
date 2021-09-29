@@ -30,7 +30,7 @@ public class GrinderUpgradeContainerProvider implements MenuProvider {
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
         LOGGER.debug(LogMarkers.CONTAINER, "Creating Grinder upgrade gui...");
-        return new GrinderUpgradeContainer(windowId, new InvWrapper(playerInventory), player, pos);
+        return new GrinderUpgradeMenu(windowId, new InvWrapper(playerInventory), player, pos);
     }
 
     @Override

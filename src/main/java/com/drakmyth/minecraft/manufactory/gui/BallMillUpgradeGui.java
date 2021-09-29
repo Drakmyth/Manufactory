@@ -7,7 +7,7 @@ package com.drakmyth.minecraft.manufactory.gui;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeContainer;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -20,11 +20,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 
-public class BallMillUpgradeGui extends AbstractContainerScreen<BallMillUpgradeContainer> {
+public class BallMillUpgradeGui extends AbstractContainerScreen<BallMillUpgradeMenu> {
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/ball_mill_upgrade.png");
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public BallMillUpgradeGui(BallMillUpgradeContainer screenContainer, Inventory inv, Component name) {
+    public BallMillUpgradeGui(BallMillUpgradeMenu screenContainer, Inventory inv, Component name) {
         super(screenContainer, inv, name);
     }
 

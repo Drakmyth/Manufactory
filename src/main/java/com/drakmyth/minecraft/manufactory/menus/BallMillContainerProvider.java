@@ -30,7 +30,7 @@ public class BallMillContainerProvider implements MenuProvider {
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
         LOGGER.debug(LogMarkers.CONTAINER, "Creating Ball Mill gui...");
-        return new BallMillContainer(windowId, new InvWrapper(playerInventory), player, pos);
+        return new BallMillMenu(windowId, new InvWrapper(playerInventory), player, pos);
     }
 
     @Override
