@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.menus;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +39,7 @@ public class GrinderMenu extends AbstractContainerMenu {
     }
 
     public GrinderMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
-        super(ModContainerTypes.GRINDER.get(), windowId);
+        super(ModMenuTypes.GRINDER.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderContainer...");
         Level world = player.getCommandSenderWorld();
         posCallable = ContainerLevelAccess.create(world, pos);

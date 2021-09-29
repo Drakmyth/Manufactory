@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.menus;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +39,7 @@ public class BallMillMenu extends AbstractContainerMenu {
     }
 
     public BallMillMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
-        super(ModContainerTypes.BALL_MILL.get(), windowId);
+        super(ModMenuTypes.BALL_MILL.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillContainer...");
         Level world = player.getCommandSenderWorld();
         posCallable = ContainerLevelAccess.create(world, pos);

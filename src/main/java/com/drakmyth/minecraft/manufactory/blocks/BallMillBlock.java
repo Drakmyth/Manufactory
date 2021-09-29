@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.blocks;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.menus.BallMillMenu;
 import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
@@ -64,7 +64,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         LOGGER.trace(LogMarkers.MACHINE, "Creating Ball Mill tile entity...");
-        return ModTileEntityTypes.BALL_MILL.get().create(pos, state);
+        return ModBlockEntityTypes.BALL_MILL.get().create(pos, state);
     }
 
     @Override

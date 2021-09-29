@@ -20,8 +20,8 @@ import com.drakmyth.minecraft.manufactory.gui.GrinderGui;
 import com.drakmyth.minecraft.manufactory.gui.GrinderUpgradeGui;
 import com.drakmyth.minecraft.manufactory.gui.RockDrillUpgradeGui;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,18 +101,18 @@ public final class ModEventSubscriber {
     @SubscribeEvent
     public static void fmlEntityRenderers(final RegisterRenderers event) {
         LOGGER.info(LogMarkers.REGISTRATION, "Binding tile entity renderers...");
-        event.registerBlockEntityRenderer(ModTileEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
         LOGGER.info(LogMarkers.REGISTRATION, "Tile entity renderer binding complete");
     }
 
     @SubscribeEvent
     public static void fmlClientSetup(FMLClientSetupEvent event) {
         LOGGER.info(LogMarkers.REGISTRATION, "Registering screens...");
-        MenuScreens.register(ModContainerTypes.GRINDER.get(), GrinderGui::new);
-        MenuScreens.register(ModContainerTypes.GRINDER_UPGRADE.get(), GrinderUpgradeGui::new);
-        MenuScreens.register(ModContainerTypes.BALL_MILL.get(), BallMillGui::new);
-        MenuScreens.register(ModContainerTypes.BALL_MILL_UPGRADE.get(), BallMillUpgradeGui::new);
-        MenuScreens.register(ModContainerTypes.ROCK_DRILL_UPGRADE.get(), RockDrillUpgradeGui::new);
+        MenuScreens.register(ModMenuTypes.GRINDER.get(), GrinderGui::new);
+        MenuScreens.register(ModMenuTypes.GRINDER_UPGRADE.get(), GrinderUpgradeGui::new);
+        MenuScreens.register(ModMenuTypes.BALL_MILL.get(), BallMillGui::new);
+        MenuScreens.register(ModMenuTypes.BALL_MILL_UPGRADE.get(), BallMillUpgradeGui::new);
+        MenuScreens.register(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), RockDrillUpgradeGui::new);
         LOGGER.info(LogMarkers.REGISTRATION, "Screen registration complete");
     }
 }

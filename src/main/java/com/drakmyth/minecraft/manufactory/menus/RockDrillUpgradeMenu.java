@@ -6,7 +6,7 @@
 package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 import com.drakmyth.minecraft.manufactory.items.RockDrillItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
@@ -34,7 +34,7 @@ public class RockDrillUpgradeMenu extends AbstractContainerMenu {
     }
 
     public RockDrillUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, ItemStack stack) {
-        super(ModContainerTypes.ROCK_DRILL_UPGRADE.get(), windowId);
+        super(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing RockDrillUpgradeContainer...");
         RockDrillItem item = (RockDrillItem)stack.getItem();
         upgradeInventory = new InvWrapper(item.getInventory(stack));

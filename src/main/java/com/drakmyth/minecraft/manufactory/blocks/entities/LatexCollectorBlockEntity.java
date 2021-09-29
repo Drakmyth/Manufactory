@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.blocks.entities;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
@@ -31,7 +31,7 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     private int ticksRemaining = 0;
 
     public LatexCollectorBlockEntity(BlockPos pos, BlockState state) {
-        super(ModTileEntityTypes.LATEX_COLLECTOR.get(), pos, state);
+        super(ModBlockEntityTypes.LATEX_COLLECTOR.get(), pos, state);
     }
 
     public boolean onTap(Level level, BlockPos pos, BlockState state) {

@@ -7,11 +7,11 @@ package com.drakmyth.minecraft.manufactory;
 
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 import com.drakmyth.minecraft.manufactory.init.ModFluids;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 
 import org.apache.logging.log4j.LogManager;
@@ -46,11 +46,11 @@ public class ManufactoryMod {
         ModFluids.FLUIDS.register(modEventBus);
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering tile entity types...");
-        ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
         LOGGER.info(LogMarkers.REGISTRATION, "Tile entity type registration complete");
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering container types...");
-        ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        ModMenuTypes.MENU_TYPES.register(modEventBus);
         LOGGER.info(LogMarkers.REGISTRATION, "Container type registration complete");
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering recipe serializers...");

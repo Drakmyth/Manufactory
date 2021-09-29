@@ -10,7 +10,7 @@ import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEnt
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,7 +89,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         LOGGER.trace(LogMarkers.MACHINE, "Creating Latex Collector tile entity...");
-        return ModTileEntityTypes.LATEX_COLLECTOR.get().create(pos, state);
+        return ModBlockEntityTypes.LATEX_COLLECTOR.get().create(pos, state);
     }
 
     @Override

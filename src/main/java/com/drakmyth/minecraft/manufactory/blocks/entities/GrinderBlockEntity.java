@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
@@ -50,7 +50,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     private float maxPowerPerTick;
 
     public GrinderBlockEntity(BlockPos pos, BlockState state) {
-        super(ModTileEntityTypes.GRINDER.get(), pos, state);
+        super(ModBlockEntityTypes.GRINDER.get(), pos, state);
 
         firstTick = true;
         grinderInventory = new ItemStackHandler(2);

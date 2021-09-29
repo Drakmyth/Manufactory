@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMillingBallUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
@@ -50,7 +50,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
     private float maxPowerPerTick;
 
     public BallMillBlockEntity(BlockPos pos, BlockState state) {
-        super(ModTileEntityTypes.BALL_MILL.get(), pos, state);
+        super(ModBlockEntityTypes.BALL_MILL.get(), pos, state);
 
         firstTick = true;
         ballMillInventory = new ItemStackHandler(2);

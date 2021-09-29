@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.menus;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMillingBallUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
@@ -41,7 +41,7 @@ public class BallMillUpgradeMenu extends AbstractContainerMenu {
     }
 
     public BallMillUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
-        super(ModContainerTypes.BALL_MILL_UPGRADE.get(), windowId);
+        super(ModMenuTypes.BALL_MILL_UPGRADE.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillUpgradeContainer...");
         Level world = player.getCommandSenderWorld();
         posCallable = ContainerLevelAccess.create(world, pos);
