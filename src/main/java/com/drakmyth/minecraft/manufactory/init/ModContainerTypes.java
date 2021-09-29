@@ -6,11 +6,11 @@
 package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.containers.BallMillContainer;
-import com.drakmyth.minecraft.manufactory.containers.BallMillUpgradeContainer;
-import com.drakmyth.minecraft.manufactory.containers.GrinderContainer;
-import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainer;
-import com.drakmyth.minecraft.manufactory.containers.RockDrillUpgradeContainer;
+import com.drakmyth.minecraft.manufactory.menus.BallMillContainer;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeContainer;
+import com.drakmyth.minecraft.manufactory.menus.GrinderContainer;
+import com.drakmyth.minecraft.manufactory.menus.GrinderUpgradeContainer;
+import com.drakmyth.minecraft.manufactory.menus.RockDrillUpgradeContainer;
 
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeContainerType;

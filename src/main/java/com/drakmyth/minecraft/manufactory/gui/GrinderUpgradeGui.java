@@ -7,7 +7,7 @@ package com.drakmyth.minecraft.manufactory.gui;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
-import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainer;
+import com.drakmyth.minecraft.manufactory.menus.GrinderUpgradeContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 

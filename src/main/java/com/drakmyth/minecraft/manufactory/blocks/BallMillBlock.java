@@ -6,8 +6,8 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.containers.BallMillContainerProvider;
-import com.drakmyth.minecraft.manufactory.containers.BallMillUpgradeContainerProvider;
+import com.drakmyth.minecraft.manufactory.menus.BallMillContainerProvider;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeContainerProvider;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;

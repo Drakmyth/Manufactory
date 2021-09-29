@@ -3,7 +3,7 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-package com.drakmyth.minecraft.manufactory.containers;
+package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 
@@ -19,18 +19,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class GrinderUpgradeContainerProvider implements MenuProvider {
+public class GrinderContainerProvider implements MenuProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos pos;
 
-    public GrinderUpgradeContainerProvider(BlockPos pos) {
+    public GrinderContainerProvider(BlockPos pos) {
         this.pos = pos;
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-        LOGGER.debug(LogMarkers.CONTAINER, "Creating Grinder upgrade gui...");
-        return new GrinderUpgradeContainer(windowId, new InvWrapper(playerInventory), player, pos);
+    public AbstractContainerMenu createMenu(int windowId, Inventory Inventory, Player player) {
+        LOGGER.debug(LogMarkers.CONTAINER, "Creating Grinder gui...");
+        return new GrinderContainer(windowId, new InvWrapper(Inventory), player, pos);
     }
 
     @Override

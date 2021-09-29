@@ -6,8 +6,8 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.containers.GrinderContainerProvider;
-import com.drakmyth.minecraft.manufactory.containers.GrinderUpgradeContainerProvider;
+import com.drakmyth.minecraft.manufactory.menus.GrinderContainerProvider;
+import com.drakmyth.minecraft.manufactory.menus.GrinderUpgradeContainerProvider;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
