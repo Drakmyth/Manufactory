@@ -18,4 +18,14 @@ public class MotorUpgradeItem extends Item implements IMotorUpgrade {
     public float getPowerCapMultiplier() {
         return powerCapMultiplier;
     }
+
+    @Override
+    public float getMachineSpeedMultiplier() {
+        return 1;
+    }
+
+    @Override
+    public float getItemSpeed() {
+        return 8;
+    }
 }
