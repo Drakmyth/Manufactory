@@ -76,6 +76,12 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET, "Slurried Nether Quartz Ore Bucket");
         addItem(ModItems.SLURRIED_REDSTONE_ORE_BUCKET, "Slurried Redstone Ore Bucket");
         addItem(ModItems.SLURRIED_ANCIENT_DEBRIS_BUCKET, "Slurried Ancient Debris Bucket");
+        addItem(ModItems.ROCK_DRILL, "Rock Drill");
+        addItem(ModItems.DRILL_HEAD_TIER0, "Basic Drill Head");
+        addItem(ModItems.DRILL_HEAD_TIER1, "Tapered Drill Head");
+        addItem(ModItems.DRILL_HEAD_TIER2, "Retractable Drill Head");
+        addItem(ModItems.DRILL_HEAD_TIER3, "Pneumatic Drill Head");
+        addItem(ModItems.DRILL_HEAD_TIER4, "Tri-Cone Drill Head");
 
         add("itemGroup.manufactory", "Manufactory");
     }

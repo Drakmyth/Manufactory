@@ -20,6 +20,8 @@ public final class ModTags {
         }
 
         public static final Named<Block> BLOCKS_WITH_LATEX = tag("blocks_with_latex");
+        public static final Named<Block> MINEABLE_WITH_ROCK_DRILL = tag("mineable/rock_drill");
+        public static final Named<Block> ROCK_DRILL_SILK_TOUCH = tag("rock_drill_silk_touch");
     }
 
     public static final class Items {

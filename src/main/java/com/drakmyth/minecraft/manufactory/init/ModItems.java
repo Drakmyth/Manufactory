@@ -7,11 +7,13 @@ package com.drakmyth.minecraft.manufactory.init;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.items.upgrades.BatteryItem;
+import com.drakmyth.minecraft.manufactory.items.upgrades.DrillHeadUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.GrinderWheelUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.MillingBallTier0UpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.MillingBallUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.MotorUpgradeItem;
 import com.drakmyth.minecraft.manufactory.items.upgrades.PowerSocketItem;
+import com.drakmyth.minecraft.manufactory.items.RockDrillItem;
 import com.drakmyth.minecraft.manufactory.items.TappingKnifeItem;
 
 import net.minecraft.world.item.BucketItem;
@@ -25,10 +27,10 @@ public final class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
     public static final RegistryObject<Item> AMBER = ITEMS.register("amber", () -> new Item(defaultItemProperties()));
-    public static final RegistryObject<Item> MOTOR_TIER0 = ITEMS.register("motor_tier0", () -> new MotorUpgradeItem(singleItemProperties(), 1.0f));
-    public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(singleItemProperties(), 2.0f));
-    public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(singleItemProperties(), 4.0f));
-    public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(singleItemProperties(), 8.0f));
+    public static final RegistryObject<Item> MOTOR_TIER0 = ITEMS.register("motor_tier0", () -> new MotorUpgradeItem(singleItemProperties(), 1.0f, Tiers.WOOD.getSpeed()));
+    public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(singleItemProperties(), 2.0f, Tiers.STONE.getSpeed()));
+    public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(singleItemProperties(), 4.0f, Tiers.IRON.getSpeed()));
+    public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(singleItemProperties(), 8.0f, Tiers.DIAMOND.getSpeed()));
     public static final RegistryObject<Item> GRINDER_WHEEL_TIER0 = ITEMS.register("grinder_wheel_tier0", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.WOOD, 0f));
     public static final RegistryObject<Item> GRINDER_WHEEL_TIER1 = ITEMS.register("grinder_wheel_tier1", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.STONE, 0.25f));
     public static final RegistryObject<Item> GRINDER_WHEEL_TIER2 = ITEMS.register("grinder_wheel_tier2", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.IRON, 0.5f));
@@ -74,6 +76,12 @@ public final class ModItems {
     public static final RegistryObject<Item> SLURRIED_NETHER_QUARTZ_ORE_BUCKET = ITEMS.register("slurried_nether_quartz_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_REDSTONE_ORE_BUCKET = ITEMS.register("slurried_redstone_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_ANCIENT_DEBRIS_BUCKET = ITEMS.register("slurried_ancient_debris_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), singleItemProperties()));
+    public static final RegistryObject<Item> ROCK_DRILL = ITEMS.register("rock_drill", () -> new RockDrillItem(singleItemProperties()));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER0 = ITEMS.register("drill_head_tier0", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.WOOD));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER1 = ITEMS.register("drill_head_tier1", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.STONE));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER2 = ITEMS.register("drill_head_tier2", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.IRON));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER3 = ITEMS.register("drill_head_tier3", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.DIAMOND));
+    public static final RegistryObject<Item> DRILL_HEAD_TIER4 = ITEMS.register("drill_head_tier4", () -> new DrillHeadUpgradeItem(singleItemProperties(), Tiers.NETHERITE));
 
     private static Item.Properties singleItemProperties() {
         return defaultItemProperties().stacksTo(1);

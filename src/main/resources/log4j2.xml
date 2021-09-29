@@ -59,7 +59,7 @@
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%highlight{%level}{TRACE=dim}] [%c{2.}%notEmpty{/%style{%markerSimpleName}{dim,yellow}}] %m%n"/>
         </Console>
         <Queue name="ServerGuiConsole">
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%highlight{%level}{TRACE=dim}] [%c{2.}%notEmpty{/%style{%markerSimpleName}{dim,yellow}}] %m%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level{TRACE=dim}] [%c{2.}%notEmpty{/%markerSimpleName}] %m%n"/>
         </Queue>
         <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%c{2.}%notEmpty{/%markerSimpleName}] %m%n"/>
