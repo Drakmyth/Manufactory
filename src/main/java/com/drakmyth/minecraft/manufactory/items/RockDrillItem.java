@@ -62,7 +62,7 @@ public class RockDrillItem extends Item {
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         IMotorUpgrade motor = getMotor(stack);
-        return isReadyToDig(stack) ? motor.getItemSpeed() : 1;
+        return isReadyToDig(stack) ? motor.getBlockBreakingSpeed() : 1;
     }
 
     @Override

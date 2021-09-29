@@ -9,10 +9,12 @@ import net.minecraft.world.item.Item;
 
 public class MotorUpgradeItem extends Item implements IMotorUpgrade {
     private float powerCapMultiplier;
+    private float blockBreakingSpeed;
 
-    public MotorUpgradeItem(Properties properties, float powerCapMultiplier) {
+    public MotorUpgradeItem(Properties properties, float powerCapMultiplier, float blockBreakingSpeed) {
         super(properties);
         this.powerCapMultiplier = powerCapMultiplier;
+        this.blockBreakingSpeed = blockBreakingSpeed;
     }
 
     public float getPowerCapMultiplier() {
@@ -25,7 +27,7 @@ public class MotorUpgradeItem extends Item implements IMotorUpgrade {
     }
 
     @Override
-    public float getItemSpeed() {
-        return 8;
+    public float getBlockBreakingSpeed() {
+        return blockBreakingSpeed;
     }
 }

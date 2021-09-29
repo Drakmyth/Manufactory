@@ -26,10 +26,10 @@ public final class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
     public static final RegistryObject<Item> AMBER = ITEMS.register("amber", () -> new Item(defaultItemProperties()));
-    public static final RegistryObject<Item> MOTOR_TIER0 = ITEMS.register("motor_tier0", () -> new MotorUpgradeItem(singleItemProperties(), 1.0f));
-    public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(singleItemProperties(), 2.0f));
-    public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(singleItemProperties(), 4.0f));
-    public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(singleItemProperties(), 8.0f));
+    public static final RegistryObject<Item> MOTOR_TIER0 = ITEMS.register("motor_tier0", () -> new MotorUpgradeItem(singleItemProperties(), 1.0f, Tiers.WOOD.getSpeed()));
+    public static final RegistryObject<Item> MOTOR_TIER1 = ITEMS.register("motor_tier1", () -> new MotorUpgradeItem(singleItemProperties(), 2.0f, Tiers.STONE.getSpeed()));
+    public static final RegistryObject<Item> MOTOR_TIER2 = ITEMS.register("motor_tier2", () -> new MotorUpgradeItem(singleItemProperties(), 4.0f, Tiers.IRON.getSpeed()));
+    public static final RegistryObject<Item> MOTOR_TIER3 = ITEMS.register("motor_tier3", () -> new MotorUpgradeItem(singleItemProperties(), 8.0f, Tiers.DIAMOND.getSpeed()));
     public static final RegistryObject<Item> GRINDER_WHEEL_TIER0 = ITEMS.register("grinder_wheel_tier0", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.WOOD, 0f));
     public static final RegistryObject<Item> GRINDER_WHEEL_TIER1 = ITEMS.register("grinder_wheel_tier1", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.STONE, 0.25f));
     public static final RegistryObject<Item> GRINDER_WHEEL_TIER2 = ITEMS.register("grinder_wheel_tier2", () -> new GrinderWheelUpgradeItem(singleItemProperties(), Tiers.IRON, 0.5f));
