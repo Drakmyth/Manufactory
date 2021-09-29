@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.menus.ItemInventory;
-import com.drakmyth.minecraft.manufactory.menus.RockDrillUpgradeContainerProvider;
+import com.drakmyth.minecraft.manufactory.menus.providers.RockDrillUpgradeContainerProvider;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;

@@ -3,9 +3,10 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-package com.drakmyth.minecraft.manufactory.menus;
+package com.drakmyth.minecraft.manufactory.menus.providers;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,18 +20,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class BallMillContainerProvider implements MenuProvider {
+public class BallMillUpgradeContainerProvider implements MenuProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos pos;
 
-    public BallMillContainerProvider(BlockPos pos) {
+    public BallMillUpgradeContainerProvider(BlockPos pos) {
         this.pos = pos;
     }
 
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-        LOGGER.debug(LogMarkers.CONTAINER, "Creating Ball Mill gui...");
-        return new BallMillMenu(windowId, new InvWrapper(playerInventory), player, pos);
+        LOGGER.debug(LogMarkers.CONTAINER, "Creating Ball Mill upgrade gui...");
+        return new BallMillUpgradeMenu(windowId, new InvWrapper(playerInventory), player, pos);
     }
 
     @Override
