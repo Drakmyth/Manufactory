@@ -14,13 +14,16 @@ import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModTagsProvider;
-import com.drakmyth.minecraft.manufactory.gui.BallMillGui;
-import com.drakmyth.minecraft.manufactory.gui.BallMillUpgradeGui;
-import com.drakmyth.minecraft.manufactory.gui.GrinderGui;
-import com.drakmyth.minecraft.manufactory.gui.GrinderUpgradeGui;
-import com.drakmyth.minecraft.manufactory.gui.RockDrillUpgradeGui;
+import com.drakmyth.minecraft.manufactory.gui.PowerProgressScreen;
+import com.drakmyth.minecraft.manufactory.gui.ScreenTextures;
+import com.drakmyth.minecraft.manufactory.gui.SimpleScreen;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
+import com.drakmyth.minecraft.manufactory.menus.BallMillMenu;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
+import com.drakmyth.minecraft.manufactory.menus.GrinderMenu;
+import com.drakmyth.minecraft.manufactory.menus.GrinderUpgradeMenu;
+import com.drakmyth.minecraft.manufactory.menus.RockDrillUpgradeMenu;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 
 import org.apache.logging.log4j.LogManager;
@@ -100,19 +103,20 @@ public final class ModEventSubscriber {
 
     @SubscribeEvent
     public static void fmlEntityRenderers(final RegisterRenderers event) {
-        LOGGER.info(LogMarkers.REGISTRATION, "Binding tile entity renderers...");
+        LOGGER.info(LogMarkers.REGISTRATION, "Binding block entity renderers...");
         event.registerBlockEntityRenderer(ModBlockEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
-        LOGGER.info(LogMarkers.REGISTRATION, "Tile entity renderer binding complete");
+        LOGGER.info(LogMarkers.REGISTRATION, "Block entity renderer binding complete");
     }
 
     @SubscribeEvent
     public static void fmlClientSetup(FMLClientSetupEvent event) {
+        ScreenTextures.init();
         LOGGER.info(LogMarkers.REGISTRATION, "Registering screens...");
-        MenuScreens.register(ModMenuTypes.GRINDER.get(), GrinderGui::new);
-        MenuScreens.register(ModMenuTypes.GRINDER_UPGRADE.get(), GrinderUpgradeGui::new);
-        MenuScreens.register(ModMenuTypes.BALL_MILL.get(), BallMillGui::new);
-        MenuScreens.register(ModMenuTypes.BALL_MILL_UPGRADE.get(), BallMillUpgradeGui::new);
-        MenuScreens.register(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), RockDrillUpgradeGui::new);
+        MenuScreens.register(ModMenuTypes.GRINDER.get(), PowerProgressScreen<GrinderMenu>::new);
+        MenuScreens.register(ModMenuTypes.GRINDER_UPGRADE.get(), SimpleScreen<GrinderUpgradeMenu>::new);
+        MenuScreens.register(ModMenuTypes.BALL_MILL.get(), PowerProgressScreen<BallMillMenu>::new);
+        MenuScreens.register(ModMenuTypes.BALL_MILL_UPGRADE.get(), SimpleScreen<BallMillUpgradeMenu>::new);
+        MenuScreens.register(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), SimpleScreen<RockDrillUpgradeMenu>::new);
         LOGGER.info(LogMarkers.REGISTRATION, "Screen registration complete");
     }
 }

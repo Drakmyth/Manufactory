@@ -27,7 +27,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class BallMillMenu extends AbstractContainerMenu {
+public class BallMillMenu extends AbstractContainerMenu implements IPowerProgressMenu {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public final ItemStackHandler ballMillInventory;
