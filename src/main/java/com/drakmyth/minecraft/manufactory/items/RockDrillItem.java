@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.items;
 
 import java.util.Map;
 
+import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +48,6 @@ public class RockDrillItem extends Item {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        // TODO: Implement valid block detection
         return state.is(ModTags.Blocks.MINEABLE_WITH_ROCK_DRILL);
     }
 
@@ -56,15 +56,22 @@ public class RockDrillItem extends Item {
         BlockState state = player.level.getBlockState(pos);
         if (state.is(ModTags.Blocks.ROCK_DRILL_SILK_TOUCH)) {
             itemstack.enchant(Enchantments.SILK_TOUCH, 1);
+            LOGGER.debug(LogMarkers.INTERACTION, "Silk touch added to rock drill");
         }
         return super.onBlockStartBreak(itemstack, pos, player);
     }
 
+    /*
+    / This is a bit of a hack. Since there doesn't seem to be a way to set the loot context to use silk touch
+    / without actually adding it to the rock drill, we *do* actually add it to the drill in onBlockStartBreak
+    / if it's a block we want to silk touch. Then, since we don't want to silk touch all blocks, we immediately
+    / remove silk touch here in the next inventory tick after the block has been mined.
+    */
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
-
         if (enchantments.containsKey(Enchantments.SILK_TOUCH)) {
+            LOGGER.debug(LogMarkers.INTERACTION, "Silk touch detected on rock drill. Removing...");
             enchantments.remove(Enchantments.SILK_TOUCH);
             EnchantmentHelper.setEnchantments(enchantments, stack);
         }
