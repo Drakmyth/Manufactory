@@ -8,7 +8,7 @@ package com.drakmyth.minecraft.manufactory.containers;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
 import com.drakmyth.minecraft.manufactory.items.RockDrillItem;
-import com.drakmyth.minecraft.manufactory.items.upgrades.IMillingBallUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 
@@ -39,15 +39,15 @@ public class RockDrillUpgradeContainer extends AbstractContainerMenu {
         RockDrillItem item = (RockDrillItem)stack.getItem();
         upgradeInventory = new InvWrapper(item.getInventory(stack));
 
-        // Ball Mill Slots
-        // Milling Ball Slot
+        // Rock Drill Slots
+        // Drill Head Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 0, 44, 36) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.getItem() instanceof IMillingBallUpgrade;
+                return stack.getItem() instanceof IDrillHeadUpgrade;
             }
         });
-        LOGGER.debug(LogMarkers.CONTAINER, "Milling ball slot added with index 0");
+        LOGGER.debug(LogMarkers.CONTAINER, "Drill head slot added with index 0");
         // Motor Slot
         this.addSlot(new SlotItemHandler(upgradeInventory, 1, 80, 36) {
             @Override
