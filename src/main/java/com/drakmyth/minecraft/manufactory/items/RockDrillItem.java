@@ -13,7 +13,9 @@ import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.containers.ItemInventory;
 import com.drakmyth.minecraft.manufactory.containers.RockDrillUpgradeContainerProvider;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
+import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +35,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class RockDrillItem extends Item {
@@ -46,23 +49,44 @@ public class RockDrillItem extends Item {
         return new ItemInventory(stack, 3);
     }
 
-    @Nullable
-    private IMotorUpgrade getMotor(ItemStack stack) {
+    private IDrillHeadUpgrade getDrillHead(ItemStack stack) {
         Container inv = getInventory(stack);
+        return getDrillHead(inv);
+    }
+
+    @Nullable
+    private IDrillHeadUpgrade getDrillHead(Container inv) {
+        ItemStack head = inv.getItem(0);
+        return head.getItem() instanceof IDrillHeadUpgrade ? (IDrillHeadUpgrade)head.getItem() : null;
+    }
+
+    @Nullable
+    private IMotorUpgrade getMotor(Container inv) {
         ItemStack motor = inv.getItem(1);
         return motor.getItem() instanceof IMotorUpgrade ? (IMotorUpgrade)motor.getItem() : null;
     }
 
+    @Nullable
+    private IPowerUpgrade getPowerAdapter(Container inv) {
+        ItemStack power = inv.getItem(2);
+        return power.getItem() instanceof IPowerUpgrade ? (IPowerUpgrade)power.getItem() : null;
+    }
+    
     private boolean isReadyToDig(ItemStack stack) {
-        IMotorUpgrade motor = getMotor(stack);
-        // TODO: Add drill head and power checks
-        return motor != null;
+        Container upgradeInventory = getInventory(stack);
+        IDrillHeadUpgrade head = getDrillHead(upgradeInventory);
+        IMotorUpgrade motor = getMotor(upgradeInventory);
+        IPowerUpgrade power = getPowerAdapter(upgradeInventory);
+        // TODO: check if enough power is available
+        return head != null && motor != null && power != null;
     }
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        IMotorUpgrade motor = getMotor(stack);
-        return isReadyToDig(stack) ? motor.getBlockBreakingSpeed() : 1;
+        Container upgradeInventory = getInventory(stack);
+        IMotorUpgrade motor = getMotor(upgradeInventory);
+        IDrillHeadUpgrade head = getDrillHead(upgradeInventory);
+        return isReadyToDig(stack) && TierSortingRegistry.isCorrectTierForDrops(head.getTier(), state) ? motor.getBlockBreakingSpeed() : 1;
     }
 
     @Override
@@ -86,7 +110,8 @@ public class RockDrillItem extends Item {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return isReadyToDig(stack) && state.is(ModTags.Blocks.MINEABLE_WITH_ROCK_DRILL);
+        IDrillHeadUpgrade head = getDrillHead(stack);
+        return isReadyToDig(stack) && state.is(ModTags.Blocks.MINEABLE_WITH_ROCK_DRILL) && TierSortingRegistry.isCorrectTierForDrops(head.getTier(), state);
     }
 
     @Override
