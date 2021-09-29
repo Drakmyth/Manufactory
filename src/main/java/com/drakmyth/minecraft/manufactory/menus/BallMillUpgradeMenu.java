@@ -34,7 +34,7 @@ public class BallMillUpgradeMenu extends AbstractContainerMenu {
     private static final Logger LOGGER = LogManager.getLogger();
     public final ItemStackHandler upgradeInventory;
     private final ContainerLevelAccess posCallable;
-    private final BallMillBlockEntity tileEntity;
+    private final BallMillBlockEntity blockEntity;
 
     public BallMillUpgradeMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
@@ -42,11 +42,11 @@ public class BallMillUpgradeMenu extends AbstractContainerMenu {
 
     public BallMillUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModMenuTypes.BALL_MILL_UPGRADE.get(), windowId);
-        LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillUpgradeContainer...");
-        Level world = player.getCommandSenderWorld();
-        posCallable = ContainerLevelAccess.create(world, pos);
-        tileEntity = (BallMillBlockEntity)world.getBlockEntity(pos);
-        upgradeInventory = tileEntity.getUpgradeInventory();
+        LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillUpgradeMenu...");
+        Level level = player.getCommandSenderWorld();
+        posCallable = ContainerLevelAccess.create(level, pos);
+        blockEntity = (BallMillBlockEntity)level.getBlockEntity(pos);
+        upgradeInventory = blockEntity.getUpgradeInventory();
 
         // Ball Mill Slots
         // Milling Ball Slot
@@ -76,7 +76,7 @@ public class BallMillUpgradeMenu extends AbstractContainerMenu {
             public void setChanged() {
                 super.setChanged();
                 LOGGER.debug(LogMarkers.CONTAINER, "Power slot contents changed. Notifying neighbors...");
-                tileEntity.getBlockState().updateNeighbourShapes(world, pos, 3);
+                blockEntity.getBlockState().updateNeighbourShapes(level, pos, 3);
             }
         });
         LOGGER.debug(LogMarkers.CONTAINER, "Power slot added with index 2");
@@ -97,7 +97,7 @@ public class BallMillUpgradeMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
 
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
@@ -125,21 +125,21 @@ public class BallMillUpgradeMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(playerIn, itemstack1);
+            slot.onTake(player, itemstack1);
         }
         return itemstack;
     }
 
     public float getProgress() {
-        return tileEntity.getProgress();
+        return blockEntity.getProgress();
     }
 
     public float getPowerRate() {
-        return tileEntity.getPowerRate();
+        return blockEntity.getPowerRate();
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(posCallable, playerIn, ModBlocks.BALL_MILL.get());
+    public boolean stillValid(Player player) {
+        return stillValid(posCallable, player, ModBlocks.BALL_MILL.get());
     }
 }

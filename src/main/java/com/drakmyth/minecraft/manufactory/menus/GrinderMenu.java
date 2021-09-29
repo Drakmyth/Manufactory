@@ -32,7 +32,7 @@ public class GrinderMenu extends AbstractContainerMenu {
 
     public final ItemStackHandler grinderInventory;
     private final ContainerLevelAccess posCallable;
-    private final GrinderBlockEntity tileEntity;
+    private final GrinderBlockEntity blockEntity;
 
     public GrinderMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
@@ -40,11 +40,11 @@ public class GrinderMenu extends AbstractContainerMenu {
 
     public GrinderMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModMenuTypes.GRINDER.get(), windowId);
-        LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderContainer...");
-        Level world = player.getCommandSenderWorld();
-        posCallable = ContainerLevelAccess.create(world, pos);
-        tileEntity = (GrinderBlockEntity)world.getBlockEntity(pos);
-        grinderInventory = tileEntity.getInventory();
+        LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderMenu...");
+        Level level = player.getCommandSenderWorld();
+        posCallable = ContainerLevelAccess.create(level, pos);
+        blockEntity = (GrinderBlockEntity)level.getBlockEntity(pos);
+        grinderInventory = blockEntity.getInventory();
 
         // Grinder Slots
         // Input Slot
@@ -75,7 +75,7 @@ public class GrinderMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
 
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
@@ -103,21 +103,21 @@ public class GrinderMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(playerIn, itemstack1);
+            slot.onTake(player, itemstack1);
         }
         return itemstack;
     }
 
     public float getProgress() {
-        return tileEntity.getProgress();
+        return blockEntity.getProgress();
     }
 
     public float getPowerRate() {
-        return tileEntity.getPowerRate();
+        return blockEntity.getPowerRate();
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(posCallable, playerIn, ModBlocks.GRINDER.get());
+    public boolean stillValid(Player player) {
+        return stillValid(posCallable, player, ModBlocks.GRINDER.get());
     }
 }

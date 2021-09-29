@@ -35,7 +35,7 @@ public class RockDrillUpgradeMenu extends AbstractContainerMenu {
 
     public RockDrillUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, ItemStack stack) {
         super(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), windowId);
-        LOGGER.debug(LogMarkers.CONTAINER, "Initializing RockDrillUpgradeContainer...");
+        LOGGER.debug(LogMarkers.CONTAINER, "Initializing RockDrillUpgradeMenu...");
         RockDrillItem item = (RockDrillItem)stack.getItem();
         upgradeInventory = new InvWrapper(item.getInventory(stack));
 
@@ -81,7 +81,7 @@ public class RockDrillUpgradeMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
 
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
@@ -109,7 +109,7 @@ public class RockDrillUpgradeMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(playerIn, itemstack1);
+            slot.onTake(player, itemstack1);
         }
         return itemstack;
     }
@@ -123,7 +123,7 @@ public class RockDrillUpgradeMenu extends AbstractContainerMenu {
     // }
 
     @Override
-    public boolean stillValid(Player playerIn) {
+    public boolean stillValid(Player player) {
         return true;
     }
 }
