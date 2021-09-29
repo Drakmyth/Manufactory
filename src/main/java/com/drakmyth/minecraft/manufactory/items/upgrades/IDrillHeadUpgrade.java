@@ -4,8 +4,8 @@
  */
 package com.drakmyth.minecraft.manufactory.items.upgrades;
 
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.Tier;
 
 public interface IDrillHeadUpgrade {
-    Tiers getTier();
+    Tier getTier();
 }

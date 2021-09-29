@@ -35,22 +35,22 @@ public class TappingKnifeItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         LOGGER.debug(LogMarkers.INTERACTION, "Tapping knife used");
-        Level world = context.getLevel();
-        if (world.isClientSide) return InteractionResult.SUCCESS;
-        BlockPos tePos = context.getClickedPos().relative(context.getClickedFace());
-        BlockEntity te = world.getBlockEntity(tePos);
-        if (!LatexCollectorBlockEntity.class.isInstance(te)) {
-            LOGGER.debug(LogMarkers.MACHINE, "Latex Collector tile entity not found");
+        Level level = context.getLevel();
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        BlockPos bePos = context.getClickedPos().relative(context.getClickedFace());
+        BlockEntity be = level.getBlockEntity(bePos);
+        if (!LatexCollectorBlockEntity.class.isInstance(be)) {
+            LOGGER.debug(LogMarkers.MACHINE, "Latex Collector block entity not found");
             return InteractionResult.PASS;
         }
-        Direction collectorFacing = world.getBlockState(tePos).getValue(LatexCollectorBlock.HORIZONTAL_FACING);
+        Direction collectorFacing = level.getBlockState(bePos).getValue(LatexCollectorBlock.HORIZONTAL_FACING);
         if (collectorFacing.compareTo(context.getClickedFace().getOpposite()) != 0) {
             LOGGER.debug(LogMarkers.INTERACTION, "Latex Collector found, but not attached to clicked face");
             return InteractionResult.PASS;
         }
-        LatexCollectorBlockEntity lcte = (LatexCollectorBlockEntity)te;
+        LatexCollectorBlockEntity lcte = (LatexCollectorBlockEntity)be;
         LOGGER.debug(LogMarkers.INTERACTION, "Tapping...");
-        boolean tapped = lcte.onTap(world, tePos, world.getBlockState(tePos));
+        boolean tapped = lcte.onTap(level, bePos, level.getBlockState(bePos));
         if (tapped) {
             tryGiveAmber(context.getPlayer(), context.getHand());
         }

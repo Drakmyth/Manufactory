@@ -16,7 +16,7 @@ public class BatteryItem extends Item implements IPowerUpgrade {
     }
 
     @Override
-    public float consumePower(float requestedPower, ServerLevel world, BlockPos pos) {
+    public float consumePower(float requestedPower, ServerLevel level, BlockPos pos) {
         return 0;
     }
 

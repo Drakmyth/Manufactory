@@ -7,6 +7,7 @@ package com.drakmyth.minecraft.manufactory.items.upgrades;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 
 public class MillingBallTier0UpgradeItem extends Item implements IMillingBallUpgrade {
@@ -15,7 +16,7 @@ public class MillingBallTier0UpgradeItem extends Item implements IMillingBallUpg
         super(properties);
     }
 
-    public Tiers getTier() {
+    public Tier getTier() {
         return Tiers.WOOD;
     }
 

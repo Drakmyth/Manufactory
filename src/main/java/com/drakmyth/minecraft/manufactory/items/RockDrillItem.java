@@ -93,7 +93,7 @@ public class RockDrillItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
-        if (!(stack.getItem() instanceof RockDrillItem)) {
+        if (!RockDrillItem.class.isInstance(stack.getItem())) {
             LOGGER.warn(LogMarkers.MACHINE, "Stack not instance of RockDrillItem!");
             return InteractionResultHolder.fail(stack);
         }
