@@ -72,7 +72,7 @@ public class TappingKnifeItem extends Item {
             LOGGER.debug(LogMarkers.INTERACTION, "{} amber put in player's hand", configAmberSpawnCount);
         } else if (!player.addItem(amberItemStack)) {
             player.drop(amberItemStack, false);
-            LOGGER.debug(LogMarkers.INTERACTION, "Player inventory full. {} amber spawned into world", configAmberSpawnCount);
+            LOGGER.debug(LogMarkers.INTERACTION, "Player inventory full. {} amber spawned into level", configAmberSpawnCount);
         }
     }
 }

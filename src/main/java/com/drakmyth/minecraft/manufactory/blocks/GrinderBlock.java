@@ -99,7 +99,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Grinder at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
         interactWith(state, level, pos, player, player.getItemInHand(hand), hit.getDirection());
         return InteractionResult.CONSUME;
     }
@@ -155,13 +155,13 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
         GrinderBlockEntity grinderBE = (GrinderBlockEntity)be;
         ItemStackHandler inventory = grinderBE.getInventory();
         for (int i = 0; i < inventory.getSlots(); i++) {
-            LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in world...");
+            LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in level...");
             popResource(level, pos, inventory.getStackInSlot(i));
         }
 
         ItemStackHandler upgradeInventory = grinderBE.getUpgradeInventory();
         for (int i = 0; i < upgradeInventory.getSlots(); i++) {
-            LOGGER.debug(LogMarkers.MACHINE, "Spawning upgrade inventory contents in world...");
+            LOGGER.debug(LogMarkers.MACHINE, "Spawning upgrade inventory contents in level...");
             popResource(level, pos, upgradeInventory.getStackInSlot(i));
         }
         level.removeBlockEntity(pos);

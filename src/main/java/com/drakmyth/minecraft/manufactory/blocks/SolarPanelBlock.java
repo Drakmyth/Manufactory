@@ -52,7 +52,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
         return dir == state.getValue(HORIZONTAL_FACING).getOpposite();
     }
 

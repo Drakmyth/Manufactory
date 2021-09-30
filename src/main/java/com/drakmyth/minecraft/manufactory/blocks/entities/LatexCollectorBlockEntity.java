@@ -112,7 +112,7 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
         }
 
         if (ticksRemaining <= 0) return;
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         ticksRemaining--;
         updateClient(level, pos);
         if (ticksRemaining > 0) return;

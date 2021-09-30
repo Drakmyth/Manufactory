@@ -244,7 +244,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         }
 
         IPowerProvider powerProvider = getPowerProvider();
-        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerLevel)level, worldPosition);
+        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerLevel)level, getBlockPos());
         powerRemaining -= lastPowerReceived;
         if (powerRemaining <= 0) {
             LOGGER.debug(LogMarkers.MACHINE, "Grinder operation complete, processing results...");

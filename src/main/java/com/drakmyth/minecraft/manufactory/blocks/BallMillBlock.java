@@ -156,13 +156,13 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
         BallMillBlockEntity ballMillBE = (BallMillBlockEntity)be;
         ItemStackHandler inventory = ballMillBE.getInventory();
         for (int i = 0; i < inventory.getSlots(); i++) {
-            LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in world...");
+            LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in level...");
             popResource(level, pos, inventory.getStackInSlot(i));
         }
 
         ItemStackHandler upgradeInventory = ballMillBE.getUpgradeInventory();
         for (int i = 0; i < upgradeInventory.getSlots(); i++) {
-            LOGGER.debug(LogMarkers.MACHINE, "Spawning upgrade inventory contents in world...");
+            LOGGER.debug(LogMarkers.MACHINE, "Spawning upgrade inventory contents in level...");
             popResource(level, pos, upgradeInventory.getStackInSlot(i));
         }
         level.removeBlockEntity(pos);

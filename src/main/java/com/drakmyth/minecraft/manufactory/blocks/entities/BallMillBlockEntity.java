@@ -235,7 +235,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
         }
 
         IPowerProvider powerProvider = getPowerProvider();
-        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerLevel)level, worldPosition);
+        lastPowerReceived = powerProvider.consumePower(maxPowerPerTick * getMotorSpeed(), (ServerLevel)level, getBlockPos());
         powerRemaining -= lastPowerReceived;
         if (powerRemaining <= 0) {
             LOGGER.debug(LogMarkers.MACHINE, "Ball Mill operation complete, processing results...");
