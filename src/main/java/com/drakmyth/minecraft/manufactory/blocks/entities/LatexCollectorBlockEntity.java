@@ -90,11 +90,11 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         LOGGER.debug(LogMarkers.MACHINE, "Reading Latex Collector at ({}, {}, {}) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-        totalTicks = nbt.getInt("totalTicks");
-        ticksRemaining = nbt.getInt("ticksRemaining");
+        totalTicks = tag.getInt("totalTicks");
+        ticksRemaining = tag.getInt("ticksRemaining");
         LOGGER.debug(LogMarkers.MACHINE, "Latex Collector Loaded!");
     }
 

@@ -63,26 +63,26 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        LOGGER.trace(LogMarkers.MACHINE, "Creating Grinder tile entity...");
+        LOGGER.trace(LogMarkers.MACHINE, "Creating Grinder block entity...");
         return ModBlockEntityTypes.GRINDER.get().create(pos, state);
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> blockEntityType) {
-        return (l, p, s, t) -> {
-            if (t instanceof GrinderBlockEntity tile) {
-                tile.tick();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return (tickerLevel, pos, tickerState, blockEntity) -> {
+            if (blockEntity instanceof GrinderBlockEntity be) {
+                be.tick();
             }
         };
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
-        BlockEntity te = world.getBlockEntity(pos);
-        if (!(te instanceof GrinderBlockEntity)) return false;
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!GrinderBlockEntity.class.isInstance(be)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
 
-        GrinderBlockEntity gte = (GrinderBlockEntity)te;
+        GrinderBlockEntity gte = (GrinderBlockEntity)be;
         ItemStackHandler upgradeInventory = gte.getUpgradeInventory();
         Item powerUpgrade = upgradeInventory.getStackInSlot(3).getItem();
         if (!(powerUpgrade instanceof IPowerUpgrade)) return false;
@@ -97,25 +97,25 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Grinder at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide) return InteractionResult.SUCCESS;
-        interactWith(state, world, pos, player, player.getItemInHand(hand), hit.getDirection());
+        if (level.isClientSide) return InteractionResult.SUCCESS;
+        interactWith(state, level, pos, player, player.getItemInHand(hand), hit.getDirection());
         return InteractionResult.CONSUME;
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         LOGGER.debug(LogMarkers.INTERACTION, "Grinder placed at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+        if (level.isClientSide()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
     }
 
-    private void interactWith(BlockState state, Level world, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
-        BlockEntity tileEntity = world.getBlockEntity(pos);
-        if (!(tileEntity instanceof GrinderBlockEntity)) {
-            LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of GrinderTileEntity!");
+    private void interactWith(BlockState state, Level level, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!GrinderBlockEntity.class.isInstance(be)) {
+            LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of GrinderBlockEntity!");
             return;
         }
 
@@ -127,7 +127,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
             containerProvider = new BlockMenuProvider("Grinder", pos, GrinderMenu::new);
         }
-        OpenMenuWithUpgradesPacket packet = new OpenMenuWithUpgradesPacket(((GrinderBlockEntity)tileEntity).getInstalledUpgrades(), pos);
+        OpenMenuWithUpgradesPacket packet = new OpenMenuWithUpgradesPacket(((GrinderBlockEntity)be).getInstalledUpgrades(), pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
         NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
     }
@@ -138,33 +138,33 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         LOGGER.debug(LogMarkers.MACHINE, "Grinder at ({}, {}, {}) replaced.", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
+        if (level.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.untrackBlock(pos);
 
-        BlockEntity tileentity = world.getBlockEntity(pos);
-        if (!(tileentity instanceof GrinderBlockEntity)) {
-            LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of GrinderTileEntity!");
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!GrinderBlockEntity.class.isInstance(be)) {
+            LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of GrinderBlockEntity!");
             return;
         }
 
-        GrinderBlockEntity grinderTE = (GrinderBlockEntity)tileentity;
-        ItemStackHandler inventory = grinderTE.getInventory();
+        GrinderBlockEntity grinderBE = (GrinderBlockEntity)be;
+        ItemStackHandler inventory = grinderBE.getInventory();
         for (int i = 0; i < inventory.getSlots(); i++) {
             LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in world...");
-            popResource(world, pos, inventory.getStackInSlot(i));
+            popResource(level, pos, inventory.getStackInSlot(i));
         }
 
-        ItemStackHandler upgradeInventory = grinderTE.getUpgradeInventory();
+        ItemStackHandler upgradeInventory = grinderBE.getUpgradeInventory();
         for (int i = 0; i < upgradeInventory.getSlots(); i++) {
             LOGGER.debug(LogMarkers.MACHINE, "Spawning upgrade inventory contents in world...");
-            popResource(world, pos, upgradeInventory.getStackInSlot(i));
+            popResource(level, pos, upgradeInventory.getStackInSlot(i));
         }
-        world.removeBlockEntity(pos);
+        level.removeBlockEntity(pos);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public float getAvailablePower(BlockState state, Level world, BlockPos pos) {
+    public float getAvailablePower(BlockState state, Level level, BlockPos pos) {
         return 0;
     }
 }

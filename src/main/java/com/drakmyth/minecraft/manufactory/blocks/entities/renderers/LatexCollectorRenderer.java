@@ -37,16 +37,16 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
     public LatexCollectorRenderer(BlockEntityRendererProvider.Context context) { }
 
     @Override
-    public void render(LatexCollectorBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at ({}, {}, {})...", tileEntity.getBlockPos().getX(), tileEntity.getBlockPos().getY(), tileEntity.getBlockPos().getZ());
-        BlockState state = tileEntity.getBlockState();
+    public void render(LatexCollectorBlockEntity blockEntity, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at ({}, {}, {})...", blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
+        BlockState state = blockEntity.getBlockState();
         if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {
             LOGGER.trace(LogMarkers.RENDERING, "Latex collector is empty. Nothing to render.");
             return;
         }
 
         int totalTime = ConfigData.SERVER.LatexFillSeconds.get() * 20;
-        int remainingTime = tileEntity.getTicksRemaining();
+        int remainingTime = blockEntity.getTicksRemaining();
         float progress = (totalTime - remainingTime) / (float)totalTime;
 
         @SuppressWarnings("deprecation")
@@ -54,8 +54,8 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
         VertexConsumer vertexBuffer = buffer.getBuffer(RenderType.solid());
 
         LOGGER.trace(LogMarkers.RENDERING, "Beginning matrix manipulation and vertex construction...");
-        matrixStack.pushPose();
-        matrixStack.translate(0.5, 0.5, 0.5);
+        pose.pushPose();
+        pose.translate(0.5, 0.5, 0.5);
         float x1 = -2f/16f; float z1 = -7f/16f; float u1 = sprite.getU0(); float v1 = sprite.getV1();
         float x2 = -2f/16f; float z2 = -3f/16f; float u2 = sprite.getU0(); float v2 = sprite.getV0();
         float x3 =  2f/16f; float z3 = -3f/16f; float u3 = sprite.getU1(); float v3 = sprite.getV0();
@@ -66,24 +66,24 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
             facing = facing.getOpposite();
         }
         float angle = facing.toYRot();
-        matrixStack.mulPose(new Quaternion(0, angle, 0, true));
+        pose.mulPose(new Quaternion(0, angle, 0, true));
 
         float yEmpty = -5f/16f;
         float yFull = -3f/16f;
         float y = Mth.lerp(progress, yEmpty, yFull);
 
-        addVertex(vertexBuffer, matrixStack, x1, y, z1, u1, v1, combinedLight);
-        addVertex(vertexBuffer, matrixStack, x2, y, z2, u2, v2, combinedLight);
-        addVertex(vertexBuffer, matrixStack, x3, y, z3, u3, v3, combinedLight);
-        addVertex(vertexBuffer, matrixStack, x4, y, z4, u4, v4, combinedLight);
+        addVertex(vertexBuffer, pose, x1, y, z1, u1, v1, combinedLight);
+        addVertex(vertexBuffer, pose, x2, y, z2, u2, v2, combinedLight);
+        addVertex(vertexBuffer, pose, x3, y, z3, u3, v3, combinedLight);
+        addVertex(vertexBuffer, pose, x4, y, z4, u4, v4, combinedLight);
 
-        matrixStack.popPose();
+        pose.popPose();
         LOGGER.trace(LogMarkers.RENDERING, "Matrix manipulation and vertex construction complete");
     }
 
-    private void addVertex(VertexConsumer buffer, PoseStack matrix, float x, float y, float z, float u, float v, int combinedLight) {
+    private void addVertex(VertexConsumer buffer, PoseStack pose, float x, float y, float z, float u, float v, int combinedLight) {
         Vector3f normal = Direction.UP.step();
-        buffer.vertex(matrix.last().pose(), x, y, z)
+        buffer.vertex(pose.last().pose(), x, y, z)
             .color(1f, 1f, 1f, 1f)
             .uv(u, v)
             .uv2(combinedLight)

@@ -59,7 +59,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
         firstTick = true;
         ballMillInventory = new ItemStackHandler(2);
         ballMillUpgradeInventory = new ItemStackHandler(3);
-        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill tile entity initialized with {} inventory slots and {} upgrade inventory slots", ballMillInventory.getSlots(), ballMillUpgradeInventory.getSlots());
+        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill block entity initialized with {} inventory slots and {} upgrade inventory slots", ballMillInventory.getSlots(), ballMillUpgradeInventory.getSlots());
     }
 
     public ItemStackHandler getInventory() {
@@ -127,37 +127,31 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         LOGGER.debug(LogMarkers.MACHINE, "Reading Ball Mill at ({}, {}, {}) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-        ballMillInventory.deserializeNBT(nbt.getCompound("inventory"));
-        ballMillUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
-        powerRequired = nbt.getFloat("powerRequired");
-        powerRemaining = nbt.getFloat("powerRemaining");
-        maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
+        ballMillInventory.deserializeNBT(tag.getCompound("inventory"));
+        ballMillUpgradeInventory.deserializeNBT(tag.getCompound("upgradeInventory"));
+        powerRequired = tag.getFloat("powerRequired");
+        powerRemaining = tag.getFloat("powerRemaining");
+        maxPowerPerTick = tag.getFloat("maxPowerPerTick");
         LOGGER.debug(LogMarkers.MACHINE, "Ball Mill Loaded!");
     }
 
     @Nullable
     private Tier getTier() {
         Item millingBallItem = ballMillUpgradeInventory.getStackInSlot(0).getItem();
-        if (!IMillingBallUpgrade.class.isInstance(millingBallItem)) return null;
-        IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallItem;
-        return millingBall.getTier();
+        return millingBallItem instanceof IMillingBallUpgrade millingBall ? millingBall.getTier() : null;
     }
 
     private float getProcessChance() {
         ItemStack millingBallStack = ballMillUpgradeInventory.getStackInSlot(0);
-        if (!IMillingBallUpgrade.class.isInstance(millingBallStack.getItem())) return 0;
-        IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallStack.getItem();
-        return millingBall.getProcessChance(millingBallStack);
+        return millingBallStack.getItem() instanceof IMillingBallUpgrade millingBall ? millingBall.getProcessChance(millingBallStack) : 0;
     }
 
     private float getEfficiencyModifier() {
         ItemStack millingBallStack = ballMillUpgradeInventory.getStackInSlot(0);
-        if (!IMillingBallUpgrade.class.isInstance(millingBallStack.getItem())) return 0;
-        IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallStack.getItem();
-        return millingBall.getEfficiency(millingBallStack);
+        return millingBallStack.getItem() instanceof IMillingBallUpgrade millingBall ? millingBall.getEfficiency(millingBallStack) : 0;
     }
 
     private boolean tryStartRecipe() {
@@ -185,30 +179,30 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
         return true;
     }
 
-    private void updateClientGui() {
+    private void updateClientScreen() {
         MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
         PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
         LevelChunk chunk = level.getChunkAt(getBlockPos());
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update gui at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update screen at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
-        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update gui at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update screen at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
         LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
     }
 
     private float getMotorSpeed() {
-        Item motor = ballMillUpgradeInventory.getStackInSlot(1).getItem();
-        return motor instanceof IMotorUpgrade ? ((IMotorUpgrade)motor).getPowerCapMultiplier() : 0.0f;
+        Item motorItem = ballMillUpgradeInventory.getStackInSlot(1).getItem();
+        return motorItem instanceof IMotorUpgrade motor ? motor.getPowerCapMultiplier() : 0.0f;
     }
 
     private IPowerProvider getPowerProvider() {
-        Item powerProvider = ballMillUpgradeInventory.getStackInSlot(2).getItem();
-        IPowerProvider emptyPowerProvider = (requestedPower, world, pos) -> 0;
-        return powerProvider instanceof IPowerProvider ? (IPowerProvider)powerProvider : emptyPowerProvider;
+        Item powerProviderItem = ballMillUpgradeInventory.getStackInSlot(2).getItem();
+        IPowerProvider emptyPowerProvider = (requestedPower, level, pos) -> 0;
+        return powerProviderItem instanceof IPowerProvider powerProvider ? powerProvider : emptyPowerProvider;
     }
 
     public void tick() {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (firstTick) {
             firstTick = false;
@@ -230,7 +224,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;
-            updateClientGui();
+            updateClientScreen();
             setChanged();
             return;
         }
@@ -272,7 +266,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
             maxPowerPerTick = 0;
         }
 
-        updateClientGui();
+        updateClientScreen();
         setChanged();
     }
 }

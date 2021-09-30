@@ -59,7 +59,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         firstTick = true;
         grinderInventory = new ItemStackHandler(2);
         grinderUpgradeInventory = new ItemStackHandler(4);
-        LOGGER.debug(LogMarkers.MACHINE, "Grinder tile entity initialized with {} inventory slots and {} upgrade inventory slots", grinderInventory.getSlots(), grinderUpgradeInventory.getSlots());
+        LOGGER.debug(LogMarkers.MACHINE, "Grinder block entity initialized with {} inventory slots and {} upgrade inventory slots", grinderInventory.getSlots(), grinderUpgradeInventory.getSlots());
     }
 
     public ItemStackHandler getInventory() {
@@ -127,14 +127,14 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         LOGGER.debug(LogMarkers.MACHINE, "Reading Grinder at ({}, {}, {}) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-        grinderInventory.deserializeNBT(nbt.getCompound("inventory"));
-        grinderUpgradeInventory.deserializeNBT(nbt.getCompound("upgradeInventory"));
-        powerRequired = nbt.getFloat("powerRequired");
-        powerRemaining = nbt.getFloat("powerRemaining");
-        maxPowerPerTick = nbt.getFloat("maxPowerPerTick");
+        grinderInventory.deserializeNBT(tag.getCompound("inventory"));
+        grinderUpgradeInventory.deserializeNBT(tag.getCompound("upgradeInventory"));
+        powerRequired = tag.getFloat("powerRequired");
+        powerRemaining = tag.getFloat("powerRemaining");
+        maxPowerPerTick = tag.getFloat("maxPowerPerTick");
         LOGGER.debug(LogMarkers.MACHINE, "Grinder Loaded!");
     }
 
@@ -156,8 +156,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     private boolean hasBothWheels() {
         Item wheel1 = grinderUpgradeInventory.getStackInSlot(0).getItem();
         Item wheel2 = grinderUpgradeInventory.getStackInSlot(1).getItem();
-        if (!(wheel1 instanceof IGrinderWheelUpgrade) || !(wheel2 instanceof IGrinderWheelUpgrade)) return false;
-        return true;
+        return (IGrinderWheelUpgrade.class.isInstance(wheel1) && IGrinderWheelUpgrade.class.isInstance(wheel2));
     }
 
     private boolean tryStartRecipe() {
@@ -189,30 +188,30 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         return true;
     }
 
-    private void updateClientGui() {
+    private void updateClientScreen() {
         MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
         PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
         LevelChunk chunk = level.getChunkAt(getBlockPos());
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update gui at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update screen at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
-        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update gui at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update screen at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
         LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
     }
 
     private float getMotorSpeed() {
-        Item motor = grinderUpgradeInventory.getStackInSlot(2).getItem();
-        return motor instanceof IMotorUpgrade ? ((IMotorUpgrade)motor).getPowerCapMultiplier() : 0.0f;
+        Item motorItem = grinderUpgradeInventory.getStackInSlot(2).getItem();
+        return motorItem instanceof IMotorUpgrade motor ? motor.getPowerCapMultiplier() : 0.0f;
     }
 
     private IPowerProvider getPowerProvider() {
-        Item powerProvider = grinderUpgradeInventory.getStackInSlot(3).getItem();
-        IPowerProvider emptyPowerProvider = (requestedPower, world, pos) -> 0;
-        return powerProvider instanceof IPowerProvider ? (IPowerProvider)powerProvider : emptyPowerProvider;
+        Item powerProviderItem = grinderUpgradeInventory.getStackInSlot(3).getItem();
+        IPowerProvider emptyPowerProvider = (requestedPower, level, pos) -> 0;
+        return powerProviderItem instanceof IPowerProvider powerProvider ? powerProvider : emptyPowerProvider;
     }
 
     public void tick() {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (firstTick) {
             firstTick = false;
@@ -234,7 +233,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;
-            updateClientGui();
+            updateClientScreen();
             setChanged();
             return;
         }
@@ -267,7 +266,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
             maxPowerPerTick = 0;
         }
 
-        updateClientGui();
+        updateClientScreen();
         setChanged();
     }
 }
