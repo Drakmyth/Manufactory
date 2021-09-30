@@ -16,11 +16,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -49,8 +49,7 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
         int remainingTime = blockEntity.getTicksRemaining();
         float progress = (totalTime - remainingTime) / (float)totalTime;
 
-        @SuppressWarnings("deprecation")
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(LATEX_TEXTURE);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LATEX_TEXTURE);
         VertexConsumer vertexBuffer = buffer.getBuffer(RenderType.solid());
 
         LOGGER.trace(LogMarkers.RENDERING, "Beginning matrix manipulation and vertex construction...");
