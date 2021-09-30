@@ -58,7 +58,7 @@ public final class ModEventSubscriber {
         final IForgeRegistry<Item> registry = event.getRegistry();
 
         ModBlocks.BLOCKS.getEntries().stream()
-            .filter(blockRegistryObject -> !(blockRegistryObject.get() instanceof LiquidBlock))
+            .filter(blockRegistryObject -> !LiquidBlock.class.isInstance(blockRegistryObject.get()))
             .forEach(blockRegistryObject -> {
                 final Item.Properties properties = ModBlocks.BLOCKITEM_PROPS.getOrDefault(blockRegistryObject, ModBlocks.defaultBlockItemProps());
                 final Block block = blockRegistryObject.get();
