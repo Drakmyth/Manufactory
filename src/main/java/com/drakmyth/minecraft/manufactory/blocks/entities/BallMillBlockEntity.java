@@ -23,6 +23,7 @@ import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.network.PowerRatePacket;
 import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.drakmyth.minecraft.manufactory.util.TierHelper;
 
 import org.apache.logging.log4j.LogManager;
@@ -94,7 +95,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
-        LOGGER.trace(LogMarkers.MACHINE, "Ball Mill at ({}, {}, {}) synced progress with powerRequired {} and powerRemaining {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), powerRequired, powerRemaining);
+        LOGGER.trace(LogMarkers.MACHINE, "Ball Mill at {} synced progress with powerRequired {} and powerRemaining {}", () -> LogHelper.blockPos(getBlockPos()), () -> powerRequired, () -> powerRemaining);
     }
 
     // Client-Side Only
@@ -103,7 +104,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = received;
         maxPowerPerTick = expected;
-        LOGGER.trace(LogMarkers.MACHINE, "Ball Mill at ({}, {}, {}) synced power rate with lastPowerReceived {} and maxPowerPerTick {}", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), lastPowerReceived, maxPowerPerTick);
+        LOGGER.trace(LogMarkers.MACHINE, "Ball Mill at {} synced power rate with lastPowerReceived {} and maxPowerPerTick {}", () -> LogHelper.blockPos(getBlockPos()), () -> lastPowerReceived, () -> maxPowerPerTick);
     }
 
     // Client-Side Only
@@ -117,7 +118,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
     @Override
     public CompoundTag save(CompoundTag compound) {
         super.save(compound);
-        LOGGER.trace(LogMarkers.MACHINE, "Writing Ball Mill at ({}, {}, {}) to NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.MACHINE, "Writing Ball Mill at {} to NBT...", () -> LogHelper.blockPos(getBlockPos()));
         compound.put("inventory", ballMillInventory.serializeNBT());
         compound.put("upgradeInventory", ballMillUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
@@ -129,7 +130,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        LOGGER.debug(LogMarkers.MACHINE, "Reading Ball Mill at ({}, {}, {}) from NBT...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.debug(LogMarkers.MACHINE, "Reading Ball Mill at {} from NBT...", () -> LogHelper.blockPos(getBlockPos()));
         ballMillInventory.deserializeNBT(tag.getCompound("inventory"));
         ballMillUpgradeInventory.deserializeNBT(tag.getCompound("upgradeInventory"));
         powerRequired = tag.getFloat("powerRequired");
@@ -175,7 +176,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
         powerRemaining = recipe.getPowerRequired();
         maxPowerPerTick = recipe.getPowerRequired() / (float)recipe.getProcessTime();
         currentRecipe = recipe;
-        LOGGER.debug(LogMarkers.MACHINE, "Recipe started: {}", maxResult.getDisplayName());
+        LOGGER.debug(LogMarkers.MACHINE, "Recipe started: {}", maxResult);
         return true;
     }
 
@@ -183,9 +184,9 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
         MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
         PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
         LevelChunk chunk = level.getChunkAt(getBlockPos());
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update screen at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update screen at {}...", () -> LogHelper.blockPos(getBlockPos()));
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
-        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update screen at ({}, {}, {})...", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update screen at {}...", () -> LogHelper.blockPos(getBlockPos()));
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
         LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
     }
@@ -208,7 +209,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
             firstTick = false;
             if (!ballMillInventory.getStackInSlot(0).isEmpty()) {
                 currentRecipe = level.getRecipeManager().getRecipeFor(BallMillRecipe.recipeType, new RecipeWrapper(ballMillInventory), level).orElse(null);
-                LOGGER.debug(LogMarkers.MACHINE, "Ball Mill input at ({}, {}, {}) not empty on first tick, initialized current recipe", getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+                LOGGER.debug(LogMarkers.MACHINE, "Ball Mill input at {} not empty on first tick, initialized current recipe", () -> LogHelper.blockPos(getBlockPos()));
             }
         }
 

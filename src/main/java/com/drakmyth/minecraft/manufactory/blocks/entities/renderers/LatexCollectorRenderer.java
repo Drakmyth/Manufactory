@@ -10,6 +10,7 @@ import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock.FillStatus;
 import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -38,7 +39,7 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
 
     @Override
     public void render(LatexCollectorBlockEntity blockEntity, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at ({}, {}, {})...", blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
+        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at {}...", () -> LogHelper.blockPos(blockEntity.getBlockPos()));
         BlockState state = blockEntity.getBlockState();
         if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {
             LOGGER.trace(LogMarkers.RENDERING, "Latex collector is empty. Nothing to render.");

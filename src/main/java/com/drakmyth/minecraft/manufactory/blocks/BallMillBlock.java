@@ -17,9 +17,11 @@ import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.network.OpenMenuWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Supplier;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -98,7 +100,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Ball Mill at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Ball Mill at {}", () -> LogHelper.blockPos(pos));
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         interactWith(state, level, pos, player, player.getItemInHand(hand), hit.getDirection());
         return InteractionResult.CONSUME;
@@ -106,7 +108,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Ball Mill placed at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Ball Mill placed at {}", () -> LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
@@ -121,7 +123,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
         MenuProvider containerProvider;
         if (ModTags.Items.UPGRADE_ACCESS_TOOL.contains(heldItem.getItem()) && face == state.getValue(HORIZONTAL_FACING).getOpposite()) {
-            LOGGER.debug(LogMarkers.INTERACTION, "Used wrench on back face. Opening upgrade gui...");
+            LOGGER.debug(LogMarkers.INTERACTION, "Used access tool on back face. Opening upgrade gui...");
             containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillUpgradeMenu::new);
         } else {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
@@ -139,7 +141,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at ({}, {}, {}) replaced.", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at {} replaced.", () -> LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         
         if (state.is(newState.getBlock())) return;

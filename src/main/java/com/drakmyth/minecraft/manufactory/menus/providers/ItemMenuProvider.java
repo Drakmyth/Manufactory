@@ -33,7 +33,7 @@ public class ItemMenuProvider implements MenuProvider {
 
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-        LOGGER.debug(LogMarkers.CONTAINER, "Creating {} gui...", displayName);
+        LOGGER.debug(LogMarkers.CONTAINER, "Creating {} menu...", displayName);
         return factory.create(windowId, new InvWrapper(playerInventory), player, stack);
     }
 

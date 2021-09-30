@@ -11,6 +11,7 @@ import java.util.List;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -161,7 +162,7 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Power Cable placed at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Power Cable placed at {}", () -> LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.trackBlock(pos, Direction.values(), getPowerBlockType());
@@ -169,7 +170,7 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Power Cable at ({}, {}, {}) replaced.", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.MACHINE, "Power Cable at {} replaced.", () -> LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 

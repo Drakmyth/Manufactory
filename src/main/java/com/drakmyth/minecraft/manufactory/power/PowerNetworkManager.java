@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,7 +83,7 @@ public class PowerNetworkManager extends SavedData {
     public float consumePower(float requested, BlockPos pos) {
         String networkId = blockCache.get(pos);
         if (networkId == null) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Machine at {} requested power, but is not part of a power network.", pos);
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Machine at {} requested power, but is not part of a power network.", () -> LogHelper.blockPos(pos));
             return 0;
         }
 
@@ -97,7 +98,7 @@ public class PowerNetworkManager extends SavedData {
     }
 
     public void trackBlock(BlockPos pos, Direction[] dirs, Type type) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to track block ({}, {}, {}) as {}", pos.getX(), pos.getY(), pos.getZ(), type);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to track block {} as {}", () -> LogHelper.blockPos(pos), () -> type);
         PowerNetworkNode node = new PowerNetworkNode(pos, dirs);
         List<String> existingNetworks = getSurroundingNetworkIds(node);
 
@@ -106,10 +107,10 @@ public class PowerNetworkManager extends SavedData {
             PowerNetwork network = new PowerNetwork();
             networks.put(network.getId(), network);
             addNodeToNetwork(node, network.getId(), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block ({}, {}, {}) added to newly created network {}", pos.getX(), pos.getY(), pos.getZ(), network.getId());
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to newly created network {}", () -> LogHelper.blockPos(pos), () -> network.getId());
         } else if (existingNetworks.size() == 1) {
             addNodeToNetwork(node, existingNetworks.get(0), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block ({}, {}, {}) added to adjacent connecting network {}", pos.getX(), pos.getY(), pos.getZ(), existingNetworks.get(0));
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to adjacent connecting network {}", () -> LogHelper.blockPos(pos), () -> existingNetworks.get(0));
         } else {
             LOGGER.debug(LogMarkers.POWERNETWORK, "Multiple adjacent connecting networks identified. Merging...");
             PowerNetwork firstNetwork = networks.get(existingNetworks.remove(0));
@@ -122,17 +123,17 @@ public class PowerNetworkManager extends SavedData {
             }
 
             addNodeToNetwork(node, firstNetwork.getId(), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block ({}, {}, {}) added to adjacent connecting network {}", pos.getX(), pos.getY(), pos.getZ(), existingNetworks.get(0));
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to adjacent connecting network {}", () -> LogHelper.blockPos(pos), () -> existingNetworks.get(0));
         }
 
         setDirty();
     }
 
     public void untrackBlock(BlockPos pos) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to untrack block ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to untrack block {}", () -> LogHelper.blockPos(pos));
         PowerNetwork currentNetwork = networks.get(blockCache.get(pos));
         if(currentNetwork == null) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Tried to untrack block ({}, {}, {}), but block wasn't being tracked", pos.getX(), pos.getY(), pos.getZ());
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Tried to untrack block {}, but block wasn't being tracked", () -> LogHelper.blockPos(pos));
             return;
         }
 
@@ -147,7 +148,7 @@ public class PowerNetworkManager extends SavedData {
             currentNetwork.removeBlock(pos);
             blockCache.remove(pos);
         } else {
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking ({}, {}, {}) requires a network split. Splitting...", pos.getX(), pos.getY(), pos.getZ());
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking {} requires a network split. Splitting...", () -> LogHelper.blockPos(pos));
             Map<BlockPos, Direction[]> allNodes = currentNetwork.getNodes();
             allNodes.remove(pos);
             List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections())

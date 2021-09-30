@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,7 +102,7 @@ public class PowerNetwork {
 
     public void addNode(PowerNetworkNode node, Type type) {
         BlockPos pos = node.getPos();
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Adding node type {} at ({}, {}, {}) to Power Network {}...", type, pos.getX(), pos.getY(), pos.getZ(), networkId);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Adding node type {} at {} to Power Network {}...", () -> type, () -> LogHelper.blockPos(pos), () -> networkId);
         nodes.put(pos, node.getDirections());
         switch(type) {
             case SOURCE:
@@ -123,7 +124,7 @@ public class PowerNetwork {
         nodes.remove(pos);
         sources.remove(pos);
         sinks.remove(pos);
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Removed ({}, {}, {}) from Power Network {}", pos.getX(), pos.getY(), pos.getZ(), networkId);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Removed {} from Power Network {}", () -> LogHelper.blockPos(pos), () -> networkId);
     }
 
     public Map<BlockPos, Direction[]> getNodes() {
@@ -161,9 +162,9 @@ public class PowerNetwork {
     }
 
     public float consumePower(float requested, BlockPos pos) {
-        LOGGER.trace(LogMarkers.POWERNETWORK, "Request to consume {} power received from ({}, {}, {}) by network {}", requested, pos.getX(), pos.getY(), pos.getZ(), networkId);
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Request to consume {} power received from {} by network {}", () -> requested, () -> LogHelper.blockPos(pos), () -> networkId);
         if (requested <= 0) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Negative power requested from network {} by ({}, {}, {}). Rejecting request...", networkId, pos.getX(), pos.getY(), pos.getZ());
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Negative power requested from network {} by {}. Rejecting request...", () -> networkId, () -> LogHelper.blockPos(pos));
             return 0;
         }
         spreading_window.add(pos);
@@ -263,7 +264,7 @@ public class PowerNetwork {
             sinkListTag.add(sinkPosTag);
         });
         compound.put("sinks", sinkListTag);
-        LOGGER.trace(LogMarkers.POWERNETWORK, "Power Network {} finished serializing sinks");
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Power Network {} finished serializing sinks", networkId);
         return compound;
     }
 }

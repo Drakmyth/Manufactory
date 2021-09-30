@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,8 +51,7 @@ public class OpenMenuWithUpgradesPacket {
             data.writeItem(upgrade);
         }
         data.writeBlockPos(pos);
-        String upgradesStr = String.join(" , ", Arrays.stream(upgrades).map(u -> u.toString()).toList());
-        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet encoded { upgrades: [ {} ], pos: ({}, {}, {}) }", upgradesStr, pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet encoded { upgrades: {}, pos: {} }", () -> LogHelper.items(upgrades), () -> LogHelper.blockPos(pos));
     }
 
     public static OpenMenuWithUpgradesPacket decode(FriendlyByteBuf data) {
@@ -62,7 +62,7 @@ public class OpenMenuWithUpgradesPacket {
         }
         BlockPos pos = data.readBlockPos();
         // TODO: Update log to print item information
-        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet decoded { upgrades: <todo>, pos: ({}, {}, {}) }", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet decoded { upgrades: {}, pos: {} }", () -> LogHelper.items(upgrades), () -> LogHelper.blockPos(pos));
         return new OpenMenuWithUpgradesPacket(upgrades.toArray(new ItemStack[]{}), pos);
     }
 
@@ -78,18 +78,17 @@ public class OpenMenuWithUpgradesPacket {
                     Minecraft minecraft = Minecraft.getInstance();
                     Level level = minecraft.level;
                     if (!level.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) is not currently loaded. Dropping packet...",  pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position {} is not currently loaded. Dropping packet...", () -> LogHelper.blockPos(pos));
                         return;
                     }
                     BlockEntity be = level.getBlockEntity(pos);
                     if (!(be instanceof IOpenMenuWithUpgradesListener)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position ({}, {}, {}) does not contain an IOpenMenuWithUpgradesListener tile entity. Dropping packet...", pos.getX(), pos.getY(), pos.getZ());
+                        LOGGER.warn(LogMarkers.NETWORK, "Position {} does not contain an IOpenMenuWithUpgradesListener tile entity. Dropping packet...", () -> LogHelper.blockPos(pos));
                         return;
                     }
                     IOpenMenuWithUpgradesListener prl = (IOpenMenuWithUpgradesListener) be;
                     prl.onContainerOpened(upgrades);
-                    // TODO: Update log to print item information
-                    LOGGER.trace(LogMarkers.NETWORK, "Upgrades synced - upgrades <todo>");
+                    LOGGER.trace(LogMarkers.NETWORK, "Upgrades synced - upgrades: {}", () -> LogHelper.items(upgrades));
                 }
             });
         });

@@ -10,6 +10,7 @@ import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEnt
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 
 import org.apache.logging.log4j.LogManager;
@@ -69,7 +70,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at {}", () -> LogHelper.blockPos(pos));
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (state.getValue(FILL_STATUS) == FillStatus.FULL) {
             int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
