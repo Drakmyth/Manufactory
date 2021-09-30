@@ -23,6 +23,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -302,7 +303,7 @@ public class ModRecipeProvider extends RecipeProvider {
             // Ore -> Ground Ore (Rough)
             ManufactoryRecipeBuilder.grinderRecipe(Ingredient.of(data.getInput()), data.getOutput())
                 .withExtraChance(0.3f, data.getExtraAmounts())
-                .withTierRequired(data.getTier().getLevel())
+                .withTierRequired(data.getTier())
                 .addCriterion(String.format("has_%s", inputName), has(data.getInput()))
                 .build(consumer);
 
@@ -315,7 +316,7 @@ public class ModRecipeProvider extends RecipeProvider {
         // Nether Gold Ore -> Ground Gold Ore (Rough)
         ManufactoryRecipeBuilder.grinderRecipe(Ingredient.of(Items.NETHER_GOLD_ORE), ModItems.GROUND_GOLD_ORE_ROUGH.get())
             .withExtraChance(0.3f, 1)
-            .withTierRequired(Tiers.WOOD.getLevel())
+            .withTierRequired(Tiers.WOOD)
             .addCriterion("has_nether_gold_ore", has(Items.NETHER_GOLD_ORE))
             .build(consumer, String.format("%s:ground_gold_ore_rough_from_nether_gold_ore", Reference.MOD_ID));
 
@@ -339,7 +340,7 @@ public class ModRecipeProvider extends RecipeProvider {
             // Ground Ore (Rough) -> Ground Ore (Fine)
             ManufactoryRecipeBuilder.ballMillRecipe(Ingredient.of(data.getInput()), data.getOutput())
                 .withExtraChance(0.54f, data.getExtraAmounts())
-                .withTierRequired(data.getTier().getLevel())
+                .withTierRequired(data.getTier())
                 .addCriterion(String.format("has_%s", inputName), has(data.getInput()))
                 .build(consumer);
 
@@ -352,16 +353,16 @@ public class ModRecipeProvider extends RecipeProvider {
 
     private static class OreProcessingRecipeData {
         private Item input;
-        private Tiers tier;
+        private Tier tier;
         private Item output;
         private Item processed;
         private int[] extraAmounts;
 
-        public OreProcessingRecipeData(Item input, Tiers tier, Item output, Item processed) {
+        public OreProcessingRecipeData(Item input, Tier tier, Item output, Item processed) {
             this(input, tier, output, processed, new int[]{1});
         }
 
-        public OreProcessingRecipeData(Item input, Tiers tier, Item output, Item processed, int[] extraAmounts) {
+        public OreProcessingRecipeData(Item input, Tier tier, Item output, Item processed, int[] extraAmounts) {
             this.input = input;
             this.tier = tier;
             this.output = output;
@@ -373,7 +374,7 @@ public class ModRecipeProvider extends RecipeProvider {
             return input;
         }
 
-        public Tiers getTier() {
+        public Tier getTier() {
             return tier;
         }
 

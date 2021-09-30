@@ -33,8 +33,8 @@ public abstract class AnimatedTextureProvider implements DataProvider {
     private final String modid;
     private final ExistingFileHelper existingFileHelper;
 
-    public AnimatedTextureProvider(DataGenerator gen, String modid, ExistingFileHelper existingFileHelper) {
-        this.gen = gen;
+    public AnimatedTextureProvider(DataGenerator generator, String modid, ExistingFileHelper existingFileHelper) {
+        this.gen = generator;
         this.modid = modid;
         this.existingFileHelper = existingFileHelper;
     }

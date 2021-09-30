@@ -12,8 +12,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ModAnimatedTextureProvider extends AnimatedTextureProvider {
 
-    public ModAnimatedTextureProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
-        super(gen, Reference.MOD_ID, exFileHelper);
+    public ModAnimatedTextureProvider(DataGenerator generator, ExistingFileHelper exFileHelper) {
+        super(generator, Reference.MOD_ID, exFileHelper);
     }
 
     @Override

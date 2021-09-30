@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMillingBallUpgrade;
@@ -21,6 +23,7 @@ import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.network.PowerRatePacket;
 import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
+import com.drakmyth.minecraft.manufactory.util.TierHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -134,23 +138,24 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
         LOGGER.debug(LogMarkers.MACHINE, "Ball Mill Loaded!");
     }
 
-    private int getTier() {
+    @Nullable
+    private Tier getTier() {
         Item millingBallItem = ballMillUpgradeInventory.getStackInSlot(0).getItem();
-        if (!(millingBallItem instanceof IMillingBallUpgrade)) return -1;
+        if (!IMillingBallUpgrade.class.isInstance(millingBallItem)) return null;
         IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallItem;
-        return millingBall.getTier().getLevel();
+        return millingBall.getTier();
     }
 
     private float getProcessChance() {
         ItemStack millingBallStack = ballMillUpgradeInventory.getStackInSlot(0);
-        if (!(millingBallStack.getItem() instanceof IMillingBallUpgrade)) return 0;
+        if (!IMillingBallUpgrade.class.isInstance(millingBallStack.getItem())) return 0;
         IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallStack.getItem();
         return millingBall.getProcessChance(millingBallStack);
     }
 
     private float getEfficiencyModifier() {
         ItemStack millingBallStack = ballMillUpgradeInventory.getStackInSlot(0);
-        if (!(millingBallStack.getItem() instanceof IMillingBallUpgrade)) return 0;
+        if (!IMillingBallUpgrade.class.isInstance(millingBallStack.getItem())) return 0;
         IMillingBallUpgrade millingBall = (IMillingBallUpgrade)millingBallStack.getItem();
         return millingBall.getEfficiency(millingBallStack);
     }
@@ -162,7 +167,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
             LOGGER.trace(LogMarkers.MACHINE, "No recipe matches input. Skipping...");
             return false;
         }
-        if (getTier() < recipe.getTierRequired()) {
+        if (TierHelper.compare(getTier(), recipe.getTierRequired()) < 0) {
             LOGGER.trace(LogMarkers.MACHINE, "Tier {} not sufficient for matching recipe. Needed {}. Skipping...", getTier(), recipe.getTierRequired());
             return false;
         }
@@ -230,7 +235,7 @@ public class BallMillBlockEntity extends BlockEntity implements IMachineProgress
             return;
         }
 
-        if (getTier() < currentRecipe.getTierRequired()) {
+        if (TierHelper.compare(getTier(), currentRecipe.getTierRequired()) < 0) {
             LOGGER.debug(LogMarkers.MACHINE, "Tier {} not sufficient for current recipe. Needed {}.", getTier(), currentRecipe.getTierRequired());
             return;
         }

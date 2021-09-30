@@ -13,8 +13,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
 public class ModLanguageProvider extends LanguageProvider {
-    public ModLanguageProvider(DataGenerator gen, String locale) {
-        super(gen, Reference.MOD_ID, locale);
+    public ModLanguageProvider(DataGenerator generator, String locale) {
+        super(generator, Reference.MOD_ID, locale);
     }
 
     @Override

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
@@ -21,6 +23,7 @@ import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.network.PowerRatePacket;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
+import com.drakmyth.minecraft.manufactory.util.TierHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -134,18 +138,19 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         LOGGER.debug(LogMarkers.MACHINE, "Grinder Loaded!");
     }
 
-    private int getTier() {
-        if (!hasBothWheels()) return -1;
+    @Nullable
+    private Tier getTier() {
+        if (!hasBothWheels()) return null;
         IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
         IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
-        return Math.max(wheel1.getTier().getLevel(), wheel2.getTier().getLevel());
+        return TierHelper.max(wheel1.getTier(), wheel2.getTier());
     }
 
     private float getEfficiencyModifier() {
         if (!hasBothWheels()) return 0;
         IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
         IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
-        return wheel1.getTier().getLevel() <= wheel2.getTier().getLevel() ? wheel1.getEfficiency() : wheel2.getEfficiency();
+        return TierHelper.compare(wheel1.getTier(), wheel2.getTier()) < 0 ? wheel1.getEfficiency() : wheel2.getEfficiency();
     }
 
     private boolean hasBothWheels() {
@@ -166,7 +171,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
             LOGGER.trace(LogMarkers.MACHINE, "Missing one or both grinder wheels. Skipping...");
             return false;
         }
-        if (getTier() < recipe.getTierRequired()) {
+        if (TierHelper.compare(getTier(), recipe.getTierRequired()) < 0) {
             LOGGER.trace(LogMarkers.MACHINE, "Tier {} not sufficient for matching recipe. Needed {}. Skipping...", getTier(), recipe.getTierRequired());
             return false;
         }
@@ -234,7 +239,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
             return;
         }
 
-        if (getTier() < currentRecipe.getTierRequired()) {
+        if (TierHelper.compare(getTier(), currentRecipe.getTierRequired()) < 0) {
             LOGGER.debug(LogMarkers.MACHINE, "Tier {} not sufficient for current recipe. Needed {}.", getTier(), currentRecipe.getTierRequired());
             return;
         }

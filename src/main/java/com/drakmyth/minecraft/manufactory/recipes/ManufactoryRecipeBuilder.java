@@ -21,6 +21,8 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -33,7 +35,7 @@ public class ManufactoryRecipeBuilder {
    private ItemStack result;
    private float extraChance;
    private int[] extraAmounts;
-   private int tierRequired;
+   private Tier tierRequired;
    private int powerRequired;
    private int processTime;
    private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
@@ -45,7 +47,7 @@ public class ManufactoryRecipeBuilder {
       this.result = result.copy();
       this.extraChance = 0;
       this.extraAmounts = new int[0];
-      this.tierRequired = 0;
+      this.tierRequired = Tiers.WOOD;
       this.powerRequired = 25;
       this.processTime = 200;
       this.recipeSerializer = serializer;
@@ -81,7 +83,7 @@ public class ManufactoryRecipeBuilder {
       return this;
    }
 
-   public ManufactoryRecipeBuilder withTierRequired(int tierRequired) {
+   public ManufactoryRecipeBuilder withTierRequired(Tier tierRequired) {
       this.tierRequired = tierRequired;
       return this;
    }
@@ -137,14 +139,14 @@ public class ManufactoryRecipeBuilder {
       private ItemStack result;
       private float extraChance;
       private int[] extraAmounts;
-      private int tierRequired;
+      private Tier tierRequired;
       private int powerRequired;
       private int processTime;
       private final Advancement.Builder advancementBuilder;
       private final ResourceLocation advancementId;
       private final RecipeSerializer<? extends Recipe<Container>> serializer;
 
-      public Result(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilder, ResourceLocation advancementId, RecipeSerializer<? extends Recipe<Container>> serializer) {
+      public Result(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilder, ResourceLocation advancementId, RecipeSerializer<? extends Recipe<Container>> serializer) {
          this.id = id;
          this.group = group;
          this.ingredient = ingredient;
@@ -174,7 +176,7 @@ public class ManufactoryRecipeBuilder {
             extraAmountsArray.add(amount);
          }
          json.add("extraAmounts", extraAmountsArray);
-         json.addProperty("tierRequired", this.tierRequired);
+         json.addProperty("tierRequired", this.tierRequired.toString());
          json.addProperty("powerRequired", this.powerRequired);
          json.addProperty("processTime", this.processTime);
       }
