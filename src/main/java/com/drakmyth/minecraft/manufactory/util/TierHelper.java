@@ -29,10 +29,7 @@ public final class TierHelper {
         int t1Index = tiers.indexOf(t1);
         int t2Index = tiers.indexOf(t2);
 
-        if (t1Index == -1 && t2Index != -1) return -1;
-        if (t1Index != -1 && t2Index == -1) return 1;
-
-        return Integer.signum(t2Index - t1Index);
+        return Integer.signum(t1Index - t2Index);
     }
 
     /**
