@@ -6,7 +6,6 @@
 package com.drakmyth.minecraft.manufactory.network;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -61,7 +60,6 @@ public class OpenMenuWithUpgradesPacket {
             upgrades.add(data.readItem());
         }
         BlockPos pos = data.readBlockPos();
-        // TODO: Update log to print item information
         LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet decoded { upgrades: {}, pos: {} }", () -> LogHelper.items(upgrades), () -> LogHelper.blockPos(pos));
         return new OpenMenuWithUpgradesPacket(upgrades.toArray(new ItemStack[]{}), pos);
     }
