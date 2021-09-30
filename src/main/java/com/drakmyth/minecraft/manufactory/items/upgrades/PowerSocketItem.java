@@ -18,8 +18,8 @@ public class PowerSocketItem extends Item implements IPowerUpgrade {
     }
 
     @Override
-    public float consumePower(float requestedPower, ServerLevel world, BlockPos pos) {
-        PowerNetworkManager pnm = PowerNetworkManager.get(world);
+    public float consumePower(float requestedPower, ServerLevel level, BlockPos pos) {
+        PowerNetworkManager pnm = PowerNetworkManager.get(level);
         return pnm.consumePower(requestedPower, pos);
     }
 

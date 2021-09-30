@@ -9,6 +9,7 @@ import java.util.Random;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
@@ -20,11 +21,11 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     private ItemStack result;
     private float extraChance;
     private int[] extraAmounts;
-    private int tierRequired;
+    private Tier tierRequired;
     private int powerRequired;
     private int processTime;
 
-    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime) {
+    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime) {
         this.recipeId = recipeId;
         this.ingredient = ingredient;
         this.result = result;
@@ -55,7 +56,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
         return extraAmounts;
     }
 
-    public int getTierRequired() {
+    public Tier getTierRequired() {
         return tierRequired;
     }
 
@@ -68,7 +69,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container inv, Level worldIn) {
+    public boolean matches(Container inv, Level level) {
         return ingredient.test(inv.getItem(0));
     }
 

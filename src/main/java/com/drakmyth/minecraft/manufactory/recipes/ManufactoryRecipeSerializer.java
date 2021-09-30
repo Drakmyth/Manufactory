@@ -11,6 +11,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,7 +44,7 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
             int element = resultArray.get(i).getAsInt();
             extraAmounts[i] = element;
         }
-        int tierRequired = GsonHelper.getAsInt(json, "tierRequired", 0);
+        Tier tierRequired = Tiers.valueOf(GsonHelper.getAsString(json, "tierRequired", "WOOD"));
         int powerRequired = GsonHelper.getAsInt(json, "powerRequired", 25);
         int processTime = GsonHelper.getAsInt(json, "processTime", 200);
         return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
@@ -59,7 +61,7 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         for (int i = 0; i < extraAmountsCount; i++) {
             extraAmounts[i] = buffer.readInt();
         }
-        int tierRequired = buffer.readInt();
+        Tier tierRequired = Tiers.valueOf(buffer.readUtf());
         int powerRequired = buffer.readInt();
         int processTime = buffer.readInt();
         return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
@@ -75,12 +77,12 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends Fo
         for (int amount : extraAmounts) {
             buffer.writeFloat(amount);
         }
-        buffer.writeInt(recipe.getTierRequired());
+        buffer.writeUtf(recipe.getTierRequired().toString());
         buffer.writeInt(recipe.getPowerRequired());
         buffer.writeInt(recipe.getProcessTime());
     }
 
     public interface IFactory<T extends ManufactoryRecipe> {
-        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime);
+        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime);
     }
 }

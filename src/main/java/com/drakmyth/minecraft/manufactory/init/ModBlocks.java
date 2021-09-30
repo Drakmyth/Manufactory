@@ -72,6 +72,6 @@ public final class ModBlocks {
     ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
     public static Item.Properties defaultBlockItemProps() {
-        return new Item.Properties().stacksTo(64).tab(ModItemGroups.MANUFACTORY_ITEM_GROUP);
+        return new Item.Properties().stacksTo(64).tab(ModCreativeTabs.MANUFACTORY);
     }
 }

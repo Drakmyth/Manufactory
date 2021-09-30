@@ -26,7 +26,7 @@ public class PNetCommand {
     {
         LOGGER.debug(LogMarkers.REGISTRATION, "Registering PNetCommand...");
         ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("pnet")
-            .requires(cs->cs.hasPermission(0)) //permission
+            .requires(cs->cs.hasPermission(Commands.LEVEL_ALL))
             .then(Commands.argument("dim", DimensionArgument.dimension())
                 .then(Commands.literal("list")
                     .executes(ctx -> listNetworksInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim")))

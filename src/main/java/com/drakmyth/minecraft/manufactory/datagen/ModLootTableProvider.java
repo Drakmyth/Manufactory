@@ -40,7 +40,7 @@ public class ModLootTableProvider extends LootTableProvider {
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext ValidationContext) {
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationContext) {
         // TODO: This seems to be here to validate that loot tables are not modified programmatically. Do we need this?
     }
 

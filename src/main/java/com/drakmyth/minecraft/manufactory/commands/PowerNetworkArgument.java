@@ -58,8 +58,8 @@ public class PowerNetworkArgument implements ArgumentType<String> {
         ResourceLocation resourcelocation = context.getArgument("dim", ResourceLocation.class);
         LOGGER.debug(LogMarkers.POWERNETWORK, "Retrieving power network ids for dimension: {}...", resourcelocation);
         ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourcelocation);
-        ServerLevel serverworld = context.getSource().getServer().getLevel(key);
-        PowerNetworkManager pnm = PowerNetworkManager.get(serverworld);
+        ServerLevel level = context.getSource().getServer().getLevel(key);
+        PowerNetworkManager pnm = PowerNetworkManager.get(level);
         String[] powerNetworkIds = pnm.getNetworkIds();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(LogMarkers.POWERNETWORK, "Power Network ids found:");

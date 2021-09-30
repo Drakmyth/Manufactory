@@ -3,15 +3,15 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-package com.drakmyth.minecraft.manufactory.containers;
+package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
-import com.drakmyth.minecraft.manufactory.tileentities.GrinderTileEntity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,24 +30,24 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class GrinderUpgradeContainer extends AbstractContainerMenu {
+public class GrinderUpgradeMenu extends AbstractContainerMenu {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public final ItemStackHandler upgradeInventory;
     private final ContainerLevelAccess posCallable;
-    private final GrinderTileEntity tileEntity;
+    private final GrinderBlockEntity blockEntity;
 
-    public GrinderUpgradeContainer(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    public GrinderUpgradeMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
     }
 
-    public GrinderUpgradeContainer(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
-        super(ModContainerTypes.GRINDER_UPGRADE.get(), windowId);
-        LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderUpgradeContainer...");
-        Level world = player.getCommandSenderWorld();
-        posCallable = ContainerLevelAccess.create(world, pos);
-        tileEntity = (GrinderTileEntity)world.getBlockEntity(pos);
-        upgradeInventory = tileEntity.getUpgradeInventory();
+    public GrinderUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
+        super(ModMenuTypes.GRINDER_UPGRADE.get(), windowId);
+        LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderUpgradeMenu...");
+        Level level = player.getCommandSenderWorld();
+        posCallable = ContainerLevelAccess.create(level, pos);
+        blockEntity = (GrinderBlockEntity)level.getBlockEntity(pos);
+        upgradeInventory = blockEntity.getUpgradeInventory();
 
         // Grinder Slots
         // Wheel Slot 1
@@ -85,7 +85,7 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
             public void setChanged() {
                 super.setChanged();
                 LOGGER.debug(LogMarkers.CONTAINER, "Power slot contents changed. Notifying neighbors...");
-                tileEntity.getBlockState().updateNeighbourShapes(world, pos, 3);
+                blockEntity.getBlockState().updateNeighbourShapes(level, pos, 3);
             }
         });
         LOGGER.debug(LogMarkers.CONTAINER, "Power slot added with index 3");
@@ -106,7 +106,7 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
 
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
@@ -134,21 +134,21 @@ public class GrinderUpgradeContainer extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(playerIn, itemstack1);
+            slot.onTake(player, itemstack1);
         }
         return itemstack;
     }
 
     public float getProgress() {
-        return tileEntity.getProgress();
+        return blockEntity.getProgress();
     }
 
     public float getPowerRate() {
-        return tileEntity.getPowerRate();
+        return blockEntity.getPowerRate();
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(posCallable, playerIn, ModBlocks.GRINDER.get());
+    public boolean stillValid(Player player) {
+        return stillValid(posCallable, player, ModBlocks.GRINDER.get());
     }
 }

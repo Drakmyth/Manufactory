@@ -9,6 +9,7 @@ import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,7 +19,7 @@ public class GrinderRecipe extends ManufactoryRecipe {
 
     public static final RecipeType<GrinderRecipe> recipeType = RecipeType.register(String.format("%s:grinder", Reference.MOD_ID));
 
-    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime) {
+    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime) {
         super(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }
 

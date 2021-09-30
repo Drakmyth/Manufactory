@@ -8,7 +8,7 @@
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
  */
-package com.drakmyth.minecraft.manufactory.containers;
+package com.drakmyth.minecraft.manufactory.menus;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

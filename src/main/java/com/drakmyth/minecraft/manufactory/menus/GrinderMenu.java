@@ -3,12 +3,12 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-package com.drakmyth.minecraft.manufactory.containers;
+package com.drakmyth.minecraft.manufactory.menus;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
-import com.drakmyth.minecraft.manufactory.init.ModContainerTypes;
-import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
+import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,31 +27,31 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public class BallMillContainer extends AbstractContainerMenu {
+public class GrinderMenu extends AbstractContainerMenu implements IPowerProgressMenu {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public final ItemStackHandler ballMillInventory;
+    public final ItemStackHandler grinderInventory;
     private final ContainerLevelAccess posCallable;
-    private final BallMillTileEntity tileEntity;
+    private final GrinderBlockEntity blockEntity;
 
-    public BallMillContainer(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    public GrinderMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
         this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readBlockPos());
     }
 
-    public BallMillContainer(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
-        super(ModContainerTypes.BALL_MILL.get(), windowId);
-        LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillContainer...");
-        Level world = player.getCommandSenderWorld();
-        posCallable = ContainerLevelAccess.create(world, pos);
-        tileEntity = (BallMillTileEntity)world.getBlockEntity(pos);
-        ballMillInventory = tileEntity.getInventory();
+    public GrinderMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
+        super(ModMenuTypes.GRINDER.get(), windowId);
+        LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderMenu...");
+        Level level = player.getCommandSenderWorld();
+        posCallable = ContainerLevelAccess.create(level, pos);
+        blockEntity = (GrinderBlockEntity)level.getBlockEntity(pos);
+        grinderInventory = blockEntity.getInventory();
 
         // Grinder Slots
         // Input Slot
-        this.addSlot(new SlotItemHandler(ballMillInventory, 0, 56, 35));
+        this.addSlot(new SlotItemHandler(grinderInventory, 0, 56, 35));
         LOGGER.debug(LogMarkers.CONTAINER, "Input slot added with index 0");
         // Output Slot
-        this.addSlot(new SlotItemHandler(ballMillInventory, 1, 116, 35) {
+        this.addSlot(new SlotItemHandler(grinderInventory, 1, 116, 35) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
@@ -75,21 +75,21 @@ public class BallMillContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
 
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < ballMillInventory.getSlots()) { // transfer from ball mill to inventory
-                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from ball mill slot {} to player inventory...", index);
-                if (!this.moveItemStackTo(itemstack1, ballMillInventory.getSlots(), this.slots.size(), false)) {
+            if (index < grinderInventory.getSlots()) { // transfer from grinder to inventory
+                LOGGER.debug(LogMarkers.CONTAINER, "Transferring stack from grinder slot {} to player inventory...", index);
+                if (!this.moveItemStackTo(itemstack1, grinderInventory.getSlots(), this.slots.size(), false)) {
                     LOGGER.debug(LogMarkers.CONTAINER, "Transfer failed because player inventory is full");
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) { // transfer from inventory to ball mill
-                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot {} to ball mill failed because ball mill input is full", index);
+            } else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) { // transfer from inventory to grinder
+                LOGGER.debug(LogMarkers.CONTAINER, "Transfer of stack from player inventory slot {} to grinder failed because grinder input is full", index);
                 return ItemStack.EMPTY;
             }
 
@@ -103,21 +103,21 @@ public class BallMillContainer extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(playerIn, itemstack1);
+            slot.onTake(player, itemstack1);
         }
         return itemstack;
     }
 
     public float getProgress() {
-        return tileEntity.getProgress();
+        return blockEntity.getProgress();
     }
 
     public float getPowerRate() {
-        return tileEntity.getPowerRate();
+        return blockEntity.getPowerRate();
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(posCallable, playerIn, ModBlocks.BALL_MILL.get());
+    public boolean stillValid(Player player) {
+        return stillValid(posCallable, player, ModBlocks.GRINDER.get());
     }
 }

@@ -6,16 +6,18 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.containers.BallMillContainerProvider;
-import com.drakmyth.minecraft.manufactory.containers.BallMillUpgradeContainerProvider;
+import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
+import com.drakmyth.minecraft.manufactory.menus.BallMillMenu;
+import com.drakmyth.minecraft.manufactory.menus.BallMillUpgradeMenu;
+import com.drakmyth.minecraft.manufactory.menus.providers.BlockMenuProvider;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
-import com.drakmyth.minecraft.manufactory.network.OpenContainerWithUpgradesPacket;
+import com.drakmyth.minecraft.manufactory.network.OpenMenuWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
-import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,29 +64,29 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        LOGGER.trace(LogMarkers.MACHINE, "Creating Ball Mill tile entity...");
-        return ModTileEntityTypes.BALL_MILL.get().create(pos, state);
+        LOGGER.trace(LogMarkers.MACHINE, "Creating Ball Mill block entity...");
+        return ModBlockEntityTypes.BALL_MILL.get().create(pos, state);
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> blockEntityType) {
-        return (l, p, s, t) -> {
-            if (t instanceof BallMillTileEntity tile) {
-                tile.tick();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return (tickerLevel, pos, tickerState, blockEntity) -> {
+            if (blockEntity instanceof BallMillBlockEntity be) {
+                be.tick();
             }
         };
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
-        BlockEntity te = world.getBlockEntity(pos);
-        if (!(te instanceof BallMillTileEntity)) return false;
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!BallMillBlockEntity.class.isInstance(be)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
 
-        BallMillTileEntity gte = (BallMillTileEntity)te;
+        BallMillBlockEntity gte = (BallMillBlockEntity)be;
         ItemStackHandler upgradeInventory = gte.getUpgradeInventory();
         Item powerUpgrade = upgradeInventory.getStackInSlot(2).getItem();
-        if (!(powerUpgrade instanceof IPowerUpgrade)) return false;
+        if (!IPowerUpgrade.class.isInstance(powerUpgrade)) return false;
 
         return ((IPowerUpgrade)powerUpgrade).rendersConnection();
     }
@@ -96,37 +98,37 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Ball Mill at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide) return InteractionResult.SUCCESS;
-        interactWith(state, world, pos, player, player.getItemInHand(hand), hit.getDirection());
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Ball Mill at {}", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        interactWith(state, level, pos, player, player.getItemInHand(hand), hit.getDirection());
         return InteractionResult.CONSUME;
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Ball Mill placed at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Ball Mill placed at {}", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
     }
 
-    private void interactWith(BlockState state, Level world, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
-        BlockEntity tileEntity = world.getBlockEntity(pos);
-        if (!(tileEntity instanceof BallMillTileEntity)) {
-            LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of BallMillTileEntity!");
+    private void interactWith(BlockState state, Level level, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!BallMillBlockEntity.class.isInstance(be)) {
+            LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of BallMillBlockEntity!");
             return;
         }
 
         MenuProvider containerProvider;
         if (ModTags.Items.UPGRADE_ACCESS_TOOL.contains(heldItem.getItem()) && face == state.getValue(HORIZONTAL_FACING).getOpposite()) {
-            LOGGER.debug(LogMarkers.INTERACTION, "Used wrench on back face. Opening upgrade gui...");
-            containerProvider = new BallMillUpgradeContainerProvider(pos);
+            LOGGER.debug(LogMarkers.INTERACTION, "Used access tool on back face. Opening upgrade gui...");
+            containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillUpgradeMenu::new);
         } else {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
-            containerProvider = new BallMillContainerProvider(pos);
+            containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillMenu::new);
         }
-        OpenContainerWithUpgradesPacket packet = new OpenContainerWithUpgradesPacket(((BallMillTileEntity)tileEntity).getInstalledUpgrades(), pos);
+        OpenMenuWithUpgradesPacket packet = new OpenMenuWithUpgradesPacket(((BallMillBlockEntity)be).getInstalledUpgrades(), pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
         NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
     }
@@ -137,34 +139,34 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at ({}, {}, {}) replaced.", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at {} replaced.", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return;
         
         if (state.is(newState.getBlock())) return;
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.untrackBlock(pos);
 
-        BlockEntity tileentity = world.getBlockEntity(pos);
-        if (!(tileentity instanceof BallMillTileEntity)) {
-            LOGGER.warn(LogMarkers.MACHINE, "Tile entity not instance of BallMillTileEntity!");
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!BallMillBlockEntity.class.isInstance(be)) {
+            LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of BallMillBlockEntity!");
             return;
         }
 
-        BallMillTileEntity ballMillTE = (BallMillTileEntity)tileentity;
-        ItemStackHandler inventory = ballMillTE.getInventory();
+        BallMillBlockEntity ballMillBE = (BallMillBlockEntity)be;
+        ItemStackHandler inventory = ballMillBE.getInventory();
         for (int i = 0; i < inventory.getSlots(); i++) {
-            LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in world...");
-            popResource(world, pos, inventory.getStackInSlot(i));
+            LOGGER.debug(LogMarkers.MACHINE, "Spawning inventory contents in level...");
+            popResource(level, pos, inventory.getStackInSlot(i));
         }
 
-        ItemStackHandler upgradeInventory = ballMillTE.getUpgradeInventory();
+        ItemStackHandler upgradeInventory = ballMillBE.getUpgradeInventory();
         for (int i = 0; i < upgradeInventory.getSlots(); i++) {
-            LOGGER.debug(LogMarkers.MACHINE, "Spawning upgrade inventory contents in world...");
-            popResource(world, pos, upgradeInventory.getStackInSlot(i));
+            LOGGER.debug(LogMarkers.MACHINE, "Spawning upgrade inventory contents in level...");
+            popResource(level, pos, upgradeInventory.getStackInSlot(i));
         }
-        world.removeBlockEntity(pos);
+        level.removeBlockEntity(pos);
     }
 
     @Override
@@ -173,7 +175,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public float getAvailablePower(BlockState state, Level world, BlockPos pos) {
+    public float getAvailablePower(BlockState state, Level level, BlockPos pos) {
         return 0;
     }
 }

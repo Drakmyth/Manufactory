@@ -7,9 +7,9 @@ package com.drakmyth.minecraft.manufactory.items;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
+import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
-import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,22 +35,22 @@ public class TappingKnifeItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         LOGGER.debug(LogMarkers.INTERACTION, "Tapping knife used");
-        Level world = context.getLevel();
-        if (world.isClientSide) return InteractionResult.SUCCESS;
-        BlockPos tePos = context.getClickedPos().relative(context.getClickedFace());
-        BlockEntity te = world.getBlockEntity(tePos);
-        if (!LatexCollectorTileEntity.class.isInstance(te)) {
-            LOGGER.debug(LogMarkers.MACHINE, "Latex Collector tile entity not found");
+        Level level = context.getLevel();
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        BlockPos bePos = context.getClickedPos().relative(context.getClickedFace());
+        BlockEntity be = level.getBlockEntity(bePos);
+        if (!LatexCollectorBlockEntity.class.isInstance(be)) {
+            LOGGER.debug(LogMarkers.MACHINE, "Latex Collector block entity not found");
             return InteractionResult.PASS;
         }
-        Direction collectorFacing = world.getBlockState(tePos).getValue(LatexCollectorBlock.HORIZONTAL_FACING);
+        Direction collectorFacing = level.getBlockState(bePos).getValue(LatexCollectorBlock.HORIZONTAL_FACING);
         if (collectorFacing.compareTo(context.getClickedFace().getOpposite()) != 0) {
             LOGGER.debug(LogMarkers.INTERACTION, "Latex Collector found, but not attached to clicked face");
             return InteractionResult.PASS;
         }
-        LatexCollectorTileEntity lcte = (LatexCollectorTileEntity)te;
+        LatexCollectorBlockEntity lcte = (LatexCollectorBlockEntity)be;
         LOGGER.debug(LogMarkers.INTERACTION, "Tapping...");
-        boolean tapped = lcte.onTap(world, tePos, world.getBlockState(tePos));
+        boolean tapped = lcte.onTap(level, bePos, level.getBlockState(bePos));
         if (tapped) {
             tryGiveAmber(context.getPlayer(), context.getHand());
         }
@@ -72,7 +72,7 @@ public class TappingKnifeItem extends Item {
             LOGGER.debug(LogMarkers.INTERACTION, "{} amber put in player's hand", configAmberSpawnCount);
         } else if (!player.addItem(amberItemStack)) {
             player.drop(amberItemStack, false);
-            LOGGER.debug(LogMarkers.INTERACTION, "Player inventory full. {} amber spawned into world", configAmberSpawnCount);
+            LOGGER.debug(LogMarkers.INTERACTION, "Player inventory full. {} amber spawned into level", configAmberSpawnCount);
         }
     }
 }

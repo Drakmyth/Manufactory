@@ -21,6 +21,8 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -33,7 +35,7 @@ public class ManufactoryRecipeBuilder {
    private ItemStack result;
    private float extraChance;
    private int[] extraAmounts;
-   private int tierRequired;
+   private Tier tierRequired;
    private int powerRequired;
    private int processTime;
    private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
@@ -45,7 +47,7 @@ public class ManufactoryRecipeBuilder {
       this.result = result.copy();
       this.extraChance = 0;
       this.extraAmounts = new int[0];
-      this.tierRequired = 0;
+      this.tierRequired = Tiers.WOOD;
       this.powerRequired = 25;
       this.processTime = 200;
       this.recipeSerializer = serializer;
@@ -81,7 +83,7 @@ public class ManufactoryRecipeBuilder {
       return this;
    }
 
-   public ManufactoryRecipeBuilder withTierRequired(int tierRequired) {
+   public ManufactoryRecipeBuilder withTierRequired(Tier tierRequired) {
       this.tierRequired = tierRequired;
       return this;
    }
@@ -96,29 +98,29 @@ public class ManufactoryRecipeBuilder {
       return this;
    }
 
-   public ManufactoryRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
-      this.advancementBuilder.addCriterion(name, criterionIn);
+   public ManufactoryRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterion) {
+      this.advancementBuilder.addCriterion(name, criterion);
       return this;
    }
 
-   public void build(Consumer<FinishedRecipe> consumerIn) {
-      this.build(consumerIn, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
+   public void build(Consumer<FinishedRecipe> consumer) {
+      this.build(consumer, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
    }
 
-   public void build(Consumer<FinishedRecipe> consumerIn, String save) {
+   public void build(Consumer<FinishedRecipe> consumer, String save) {
       ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result.getItem());
       ResourceLocation resourcelocation1 = new ResourceLocation(save);
       if (resourcelocation1.equals(resourcelocation)) {
          throw new IllegalStateException("Recipe " + resourcelocation1 + " should remove its 'save' argument");
       } else {
-         this.build(consumerIn, resourcelocation1);
+         this.build(consumer, resourcelocation1);
       }
    }
 
-   public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
+   public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
       this.validate(id);
       this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-      consumerIn.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + id.getPath()), this.recipeSerializer));
+      consumer.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + id.getPath()), this.recipeSerializer));
    }
 
    /**
@@ -137,16 +139,16 @@ public class ManufactoryRecipeBuilder {
       private ItemStack result;
       private float extraChance;
       private int[] extraAmounts;
-      private int tierRequired;
+      private Tier tierRequired;
       private int powerRequired;
       private int processTime;
       private final Advancement.Builder advancementBuilder;
       private final ResourceLocation advancementId;
       private final RecipeSerializer<? extends Recipe<Container>> serializer;
 
-      public Result(ResourceLocation idIn, String groupIn, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, int tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, RecipeSerializer<? extends Recipe<Container>> serializerIn) {
-         this.id = idIn;
-         this.group = groupIn;
+      public Result(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilder, ResourceLocation advancementId, RecipeSerializer<? extends Recipe<Container>> serializer) {
+         this.id = id;
+         this.group = group;
          this.ingredient = ingredient;
          this.result = result;
          this.extraChance = extraChance;
@@ -154,9 +156,9 @@ public class ManufactoryRecipeBuilder {
          this.tierRequired = tierRequired;
          this.powerRequired = powerRequired;
          this.processTime = processTime;
-         this.advancementBuilder = advancementBuilderIn;
-         this.advancementId = advancementIdIn;
-         this.serializer = serializerIn;
+         this.advancementBuilder = advancementBuilder;
+         this.advancementId = advancementId;
+         this.serializer = serializer;
       }
 
       @Override
@@ -174,7 +176,7 @@ public class ManufactoryRecipeBuilder {
             extraAmountsArray.add(amount);
          }
          json.add("extraAmounts", extraAmountsArray);
-         json.addProperty("tierRequired", this.tierRequired);
+         json.addProperty("tierRequired", this.tierRequired.toString());
          json.addProperty("powerRequired", this.powerRequired);
          json.addProperty("processTime", this.processTime);
       }

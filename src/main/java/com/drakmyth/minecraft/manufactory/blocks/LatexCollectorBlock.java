@@ -6,11 +6,12 @@
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
+import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
-import com.drakmyth.minecraft.manufactory.init.ModTileEntityTypes;
-import com.drakmyth.minecraft.manufactory.tileentities.LatexCollectorTileEntity;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
+import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,15 +69,15 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide) return InteractionResult.SUCCESS;
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at {}", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (state.getValue(FILL_STATUS) == FillStatus.FULL) {
             int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
             ItemStack latexItemStack = new ItemStack(ModItems.COAGULATED_LATEX.get(), configLatexSpawnCount);
             LOGGER.debug(LogMarkers.MACHINE, "Spawning coagulated latex and setting collector to EMPTY...");
-            popResource(world, pos, latexItemStack);
-            world.setBlockAndUpdate(pos, state.setValue(FILL_STATUS, FillStatus.EMPTY));
+            popResource(level, pos, latexItemStack);
+            level.setBlockAndUpdate(pos, state.setValue(FILL_STATUS, FillStatus.EMPTY));
         }
         return InteractionResult.CONSUME;
     }
@@ -89,20 +90,20 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         LOGGER.trace(LogMarkers.MACHINE, "Creating Latex Collector tile entity...");
-        return ModTileEntityTypes.LATEX_COLLECTOR.get().create(pos, state);
+        return ModBlockEntityTypes.LATEX_COLLECTOR.get().create(pos, state);
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState s, BlockEntityType<T> blockEntityType) {
-        return (level, pos, state, tile) -> {
-            if (tile instanceof LatexCollectorTileEntity t) {
-                t.tick(level, pos, state);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return (tickerLevel, pos, tickerState, blockEntity) -> {
+            if (blockEntity instanceof LatexCollectorBlockEntity be) {
+                be.tick(tickerLevel, pos, tickerState);
             }
         };
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction direction = state.getValue(HORIZONTAL_FACING);
         switch (direction) {
             case EAST:
@@ -125,9 +126,9 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
             return null;
         }
 
-        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+        FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
         return this.defaultBlockState().setValue(HORIZONTAL_FACING, face.getOpposite())
-                                       .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
+                                       .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
     @Override
@@ -136,22 +137,22 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (stateIn.getValue(WATERLOGGED)) {
-            worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        if (state.getValue(WATERLOGGED)) {
+            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return stateIn;
+        return state;
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block neighbor, BlockPos neighborPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighbor, BlockPos neighborPos, boolean isMoving) {
         Direction facing = state.getValue(HORIZONTAL_FACING);
         // Only pay attention to the neighbor we're attached to
         if (!pos.relative(facing).equals(neighborPos)) return;
 
-        if (!blockHasLatex(world, neighborPos)) {
+        if (!blockHasLatex(level, neighborPos)) {
             LOGGER.debug(LogMarkers.MACHINE, "Block destroyed. Destroying attached latex collector...");
-            world.destroyBlock(pos, true);
+            level.destroyBlock(pos, true);
         }
     }
 
@@ -159,8 +160,8 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         return Plane.HORIZONTAL.test(direction);
     }
 
-    private boolean blockHasLatex(LevelReader world, BlockPos pos) {
-        return world.getBlockState(pos).is(ModTags.Blocks.BLOCKS_WITH_LATEX);
+    private boolean blockHasLatex(LevelReader level, BlockPos pos) {
+        return level.getBlockState(pos).is(ModTags.Blocks.BLOCKS_WITH_LATEX);
     }
 
     @Override

@@ -10,8 +10,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
-import com.drakmyth.minecraft.manufactory.containers.ItemInventory;
-import com.drakmyth.minecraft.manufactory.containers.RockDrillUpgradeContainerProvider;
+import com.drakmyth.minecraft.manufactory.menus.ItemInventory;
+import com.drakmyth.minecraft.manufactory.menus.RockDrillUpgradeMenu;
+import com.drakmyth.minecraft.manufactory.menus.providers.ItemMenuProvider;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
@@ -92,14 +93,14 @@ public class RockDrillItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
-        if (!(stack.getItem() instanceof RockDrillItem)) {
+        if (!RockDrillItem.class.isInstance(stack.getItem())) {
             LOGGER.warn(LogMarkers.MACHINE, "Stack not instance of RockDrillItem!");
             return InteractionResultHolder.fail(stack);
         }
 
         if (!level.isClientSide()) {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening upgrade gui...");
-            MenuProvider containerProvider = new RockDrillUpgradeContainerProvider(stack);
+            MenuProvider containerProvider = new ItemMenuProvider("Rock Drill", stack, RockDrillUpgradeMenu::new);
             NetworkHooks.openGui((ServerPlayer)player, containerProvider, buf -> {
                 buf.writeItem(stack);
             });

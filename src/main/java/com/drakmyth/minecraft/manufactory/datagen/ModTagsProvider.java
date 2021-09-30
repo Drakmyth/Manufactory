@@ -21,8 +21,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ModTagsProvider {
     public static class Blocks extends BlockTagsProvider {
-        public Blocks(DataGenerator generatorIn, ExistingFileHelper existingFileHelper) {
-            super(generatorIn, Reference.MOD_ID, existingFileHelper);
+        public Blocks(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+            super(generator, Reference.MOD_ID, existingFileHelper);
         }
 
         @Override
@@ -67,8 +67,8 @@ public class ModTagsProvider {
     }
 
     public static class Items extends ItemTagsProvider {
-        public Items(DataGenerator generatorIn, BlockTagsProvider blockTagsProvider, ExistingFileHelper existingFileHelper) {
-            super(generatorIn, blockTagsProvider, Reference.MOD_ID, existingFileHelper);
+        public Items(DataGenerator generator, BlockTagsProvider blockTagsProvider, ExistingFileHelper existingFileHelper) {
+            super(generator, blockTagsProvider, Reference.MOD_ID, existingFileHelper);
         }
 
         @Override
@@ -78,8 +78,8 @@ public class ModTagsProvider {
     }
 
     public static class Fluids extends FluidTagsProvider {
-        public Fluids(DataGenerator generatorIn, ExistingFileHelper existingFileHelper) {
-            super(generatorIn, Reference.MOD_ID, existingFileHelper);
+        public Fluids(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+            super(generator, Reference.MOD_ID, existingFileHelper);
         }
 
         @Override

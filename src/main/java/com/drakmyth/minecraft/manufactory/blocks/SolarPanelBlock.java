@@ -9,6 +9,7 @@ import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +53,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
         return dir == state.getValue(HORIZONTAL_FACING).getOpposite();
     }
 
@@ -70,28 +71,28 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (stateIn.getValue(WATERLOGGED)) {
-            worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        if (state.getValue(WATERLOGGED)) {
+            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return stateIn;
+        return state;
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Solar Panel placed at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Solar Panel placed at {}", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Solar Panel at ({}, {}, {}) replaced.", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        LOGGER.debug(LogMarkers.MACHINE, "Solar Panel at {} replaced.", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.untrackBlock(pos);
     }
 
@@ -106,18 +107,18 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public float getAvailablePower(BlockState state, Level world, BlockPos pos) {
-        if (!world.dimensionType().hasSkyLight()) return 0;
+    public float getAvailablePower(BlockState state, Level level, BlockPos pos) {
+        if (!level.dimensionType().hasSkyLight()) return 0;
 
-        float celestialAngle = world.getSunAngle(1.0F);
+        float celestialAngle = level.getSunAngle(1.0F);
         if (celestialAngle >= Math.PI / 2 && celestialAngle <= 3 * Math.PI / 2) return 0;
         float timeFactor = (float)Math.cos(celestialAngle);
 
         // TODO: change pos.above() to pos once solar panel is no longer a full block size
-        float lightAndWeatherFactor = world.getMaxLocalRawBrightness(pos.above()) / 15f;
+        float lightAndWeatherFactor = level.getMaxLocalRawBrightness(pos.above()) / 15f;
         float peakPowerGen = ConfigData.SERVER.SolarPanelPeakPowerGeneration.get().floatValue();
         float availablePower = peakPowerGen * timeFactor * lightAndWeatherFactor;
-        LOGGER.trace(LogMarkers.POWERNETWORK, "Solar Panel at ({}, {}, {}) made {} power available", pos.getX(), pos.getY(), pos.getZ(), availablePower);
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Solar Panel at {} made {} power available", () -> LogHelper.blockPos(pos), () -> availablePower);
         return availablePower;
     }
 }

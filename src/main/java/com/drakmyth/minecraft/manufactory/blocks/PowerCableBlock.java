@@ -11,6 +11,7 @@ import java.util.List;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
+import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +75,7 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         List<VoxelShape> shapes = new ArrayList<>();
         if (state.getValue(NORTH)) {
             shapes.add(AABB_NORTH);
@@ -97,20 +98,20 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
         return Shapes.or(AABB_CENTER, shapes.toArray(new VoxelShape[0]));
     }
 
-    private boolean canConnect(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
+    private boolean canConnect(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
         Block block = state.getBlock();
         if (!(block instanceof IPowerBlock)) return false;
-        return ((IPowerBlock)block).canConnectToFace(state, pos, world, dir);
+        return ((IPowerBlock)block).canConnectToFace(state, pos, level, dir);
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor world, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
         return true;
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Level world = context.getLevel();
+        Level level = context.getLevel();
         BlockPos northPos = context.getClickedPos().north();
         BlockPos eastPos = context.getClickedPos().east();
         BlockPos southPos = context.getClickedPos().south();
@@ -119,12 +120,12 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
         BlockPos downPos = context.getClickedPos().below();
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
         return this.defaultBlockState()
-            .setValue(NORTH, canConnect(world.getBlockState(northPos), northPos, world, Direction.SOUTH))
-            .setValue(EAST, canConnect(world.getBlockState(eastPos), eastPos, world, Direction.WEST))
-            .setValue(SOUTH, canConnect(world.getBlockState(southPos), southPos, world, Direction.NORTH))
-            .setValue(WEST, canConnect(world.getBlockState(westPos), westPos, world, Direction.EAST))
-            .setValue(UP, canConnect(world.getBlockState(upPos), upPos, world, Direction.DOWN))
-            .setValue(DOWN, canConnect(world.getBlockState(downPos), downPos, world, Direction.UP))
+            .setValue(NORTH, canConnect(level.getBlockState(northPos), northPos, level, Direction.SOUTH))
+            .setValue(EAST, canConnect(level.getBlockState(eastPos), eastPos, level, Direction.WEST))
+            .setValue(SOUTH, canConnect(level.getBlockState(southPos), southPos, level, Direction.NORTH))
+            .setValue(WEST, canConnect(level.getBlockState(westPos), westPos, level, Direction.EAST))
+            .setValue(UP, canConnect(level.getBlockState(upPos), upPos, level, Direction.DOWN))
+            .setValue(DOWN, canConnect(level.getBlockState(downPos), downPos, level, Direction.UP))
             .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
@@ -134,46 +135,46 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
-        if (stateIn.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        if (state.getValue(WATERLOGGED)) {
+            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         Direction oppositeFacing = facing.getOpposite();
-        boolean canConnect = canConnect(facingState, facingPos, world, oppositeFacing);
+        boolean canConnect = canConnect(facingState, facingPos, level, oppositeFacing);
         switch(facing) {
             case NORTH:
-                return stateIn.setValue(NORTH, canConnect);
+                return state.setValue(NORTH, canConnect);
             case EAST:
-                return stateIn.setValue(EAST, canConnect);
+                return state.setValue(EAST, canConnect);
             case SOUTH:
-                return stateIn.setValue(SOUTH, canConnect);
+                return state.setValue(SOUTH, canConnect);
             case WEST:
-                return stateIn.setValue(WEST, canConnect);
+                return state.setValue(WEST, canConnect);
             case UP:
-                return stateIn.setValue(UP, canConnect);
+                return state.setValue(UP, canConnect);
             case DOWN:
-                return stateIn.setValue(DOWN, canConnect);
+                return state.setValue(DOWN, canConnect);
             default:
-                return stateIn;
+                return state;
         }
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Power Cable placed at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Power Cable placed at {}", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return;
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.trackBlock(pos, Direction.values(), getPowerBlockType());
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Power Cable at ({}, {}, {}) replaced.", pos.getX(), pos.getY(), pos.getZ());
-        if (world.isClientSide()) return;
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        LOGGER.debug(LogMarkers.MACHINE, "Power Cable at {} replaced.", () -> LogHelper.blockPos(pos));
+        if (level.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)world);
+        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.untrackBlock(pos);
     }
 
@@ -188,7 +189,7 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public float getAvailablePower(BlockState state, Level world, BlockPos pos) {
+    public float getAvailablePower(BlockState state, Level level, BlockPos pos) {
         return 0;
     }
 }

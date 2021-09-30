@@ -92,6 +92,6 @@ public final class ModItems {
     }
 
     private static Item.Properties defaultItemProperties() {
-        return new Item.Properties().stacksTo(64).tab(ModItemGroups.MANUFACTORY_ITEM_GROUP);
+        return new Item.Properties().stacksTo(64).tab(ModCreativeTabs.MANUFACTORY);
     }
 }
