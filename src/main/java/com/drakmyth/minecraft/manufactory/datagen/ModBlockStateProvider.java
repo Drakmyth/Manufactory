@@ -38,6 +38,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerFluidBlock(ModBlocks.SLURRIED_EMERALD_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_GOLD_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_IRON_ORE.get());
+        registerFluidBlock(ModBlocks.SLURRIED_COPPER_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_LAPIS_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_REDSTONE_ORE.get());

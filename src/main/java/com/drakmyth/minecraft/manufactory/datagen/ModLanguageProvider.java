@@ -52,6 +52,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.GROUND_EMERALD_ORE_ROUGH, "Ground Emerald Ore (Rough)");
         addItem(ModItems.GROUND_GOLD_ORE_ROUGH, "Ground Gold Ore (Rough)");
         addItem(ModItems.GROUND_IRON_ORE_ROUGH, "Ground Iron Ore (Rough)");
+        addItem(ModItems.GROUND_COPPER_ORE_ROUGH, "Ground Copper Ore (Rough)");
         addItem(ModItems.GROUND_LAPIS_ORE_ROUGH, "Ground Lapis Lazuli Ore (Rough)");
         addItem(ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH, "Ground Nether Quartz Ore (Rough)");
         addItem(ModItems.GROUND_REDSTONE_ORE_ROUGH, "Ground Redstone Ore (Rough)");
@@ -61,6 +62,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.GROUND_EMERALD_ORE_FINE, "Ground Emerald Ore (Fine)");
         addItem(ModItems.GROUND_GOLD_ORE_FINE, "Ground Gold Ore (Fine)");
         addItem(ModItems.GROUND_IRON_ORE_FINE, "Ground Iron Ore (Fine)");
+        addItem(ModItems.GROUND_COPPER_ORE_FINE, "Ground Copper Ore (Fine)");
         addItem(ModItems.GROUND_LAPIS_ORE_FINE, "Ground Lapis Lazuli Ore (Fine)");
         addItem(ModItems.GROUND_NETHER_QUARTZ_ORE_FINE, "Ground Nether Quartz Ore (Fine)");
         addItem(ModItems.GROUND_REDSTONE_ORE_FINE, "Ground Redstone Ore (Fine)");
@@ -72,6 +74,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addItem(ModItems.SLURRIED_EMERALD_ORE_BUCKET, "Slurried Emerald Ore Bucket");
         addItem(ModItems.SLURRIED_GOLD_ORE_BUCKET, "Slurried Gold Ore Bucket");
         addItem(ModItems.SLURRIED_IRON_ORE_BUCKET, "Slurried Iron Ore Bucket");
+        addItem(ModItems.SLURRIED_COPPER_ORE_BUCKET, "Slurried Copper Ore Bucket");
         addItem(ModItems.SLURRIED_LAPIS_ORE_BUCKET, "Slurried Lapis Lazuli Ore Bucket");
         addItem(ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET, "Slurried Nether Quartz Ore Bucket");
         addItem(ModItems.SLURRIED_REDSTONE_ORE_BUCKET, "Slurried Redstone Ore Bucket");

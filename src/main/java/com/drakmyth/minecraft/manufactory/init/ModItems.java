@@ -52,6 +52,7 @@ public final class ModItems {
     public static final RegistryObject<Item> GROUND_EMERALD_ORE_ROUGH = ITEMS.register("ground_emerald_ore_rough", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_GOLD_ORE_ROUGH = ITEMS.register("ground_gold_ore_rough", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_IRON_ORE_ROUGH = ITEMS.register("ground_iron_ore_rough", () -> new Item(defaultItemProperties()));
+    public static final RegistryObject<Item> GROUND_COPPER_ORE_ROUGH = ITEMS.register("ground_copper_ore_rough", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_LAPIS_ORE_ROUGH = ITEMS.register("ground_lapis_ore_rough", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_NETHER_QUARTZ_ORE_ROUGH = ITEMS.register("ground_nether_quartz_ore_rough", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_REDSTONE_ORE_ROUGH = ITEMS.register("ground_redstone_ore_rough", () -> new Item(defaultItemProperties()));
@@ -61,6 +62,7 @@ public final class ModItems {
     public static final RegistryObject<Item> GROUND_EMERALD_ORE_FINE = ITEMS.register("ground_emerald_ore_fine", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_GOLD_ORE_FINE = ITEMS.register("ground_gold_ore_fine", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_IRON_ORE_FINE = ITEMS.register("ground_iron_ore_fine", () -> new Item(defaultItemProperties()));
+    public static final RegistryObject<Item> GROUND_COPPER_ORE_FINE = ITEMS.register("ground_copper_ore_fine", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_LAPIS_ORE_FINE = ITEMS.register("ground_lapis_ore_fine", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_NETHER_QUARTZ_ORE_FINE = ITEMS.register("ground_nether_quartz_ore_fine", () -> new Item(defaultItemProperties()));
     public static final RegistryObject<Item> GROUND_REDSTONE_ORE_FINE = ITEMS.register("ground_redstone_ore_fine", () -> new Item(defaultItemProperties()));
@@ -72,6 +74,7 @@ public final class ModItems {
     public static final RegistryObject<Item> SLURRIED_EMERALD_ORE_BUCKET = ITEMS.register("slurried_emerald_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_EMERALD_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_GOLD_ORE_BUCKET = ITEMS.register("slurried_gold_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_GOLD_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_IRON_ORE_BUCKET = ITEMS.register("slurried_iron_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_IRON_ORE.get(), singleItemProperties()));
+    public static final RegistryObject<Item> SLURRIED_COPPER_ORE_BUCKET = ITEMS.register("slurried_copper_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_COPPER_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_LAPIS_ORE_BUCKET = ITEMS.register("slurried_lapis_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_LAPIS_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_NETHER_QUARTZ_ORE_BUCKET = ITEMS.register("slurried_nether_quartz_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), singleItemProperties()));
     public static final RegistryObject<Item> SLURRIED_REDSTONE_ORE_BUCKET = ITEMS.register("slurried_redstone_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), singleItemProperties()));

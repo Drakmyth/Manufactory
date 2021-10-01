@@ -94,6 +94,8 @@ public class ModTagsProvider {
                                 .add(ModFluids.SLURRIED_GOLD_ORE_FLOWING.get())
                                 .add(ModFluids.SLURRIED_IRON_ORE.get())
                                 .add(ModFluids.SLURRIED_IRON_ORE_FLOWING.get())
+                                .add(ModFluids.SLURRIED_COPPER_ORE.get())
+                                .add(ModFluids.SLURRIED_COPPER_ORE_FLOWING.get())
                                 .add(ModFluids.SLURRIED_LAPIS_ORE.get())
                                 .add(ModFluids.SLURRIED_LAPIS_ORE_FLOWING.get())
                                 .add(ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get())

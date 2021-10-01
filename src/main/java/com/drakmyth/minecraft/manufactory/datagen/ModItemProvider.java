@@ -42,6 +42,7 @@ public class ModItemProvider extends ItemModelProvider {
             "emerald_ore",
             "gold_ore",
             "iron_ore",
+            "copper_ore",
             "lapis_ore",
             "nether_quartz_ore",
             "redstone_ore",

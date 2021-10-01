@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:ground_copper_ore_fine"
+    ]
+  },
+  "criteria": {
+    "has_ground_copper_ore_rough": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "manufactory:ground_copper_ore_rough"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:ground_copper_ore_fine"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ground_copper_ore_rough",
+      "has_the_recipe"
+    ]
+  ]
+}
