@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.blocks.BallMillBlock;
+import com.drakmyth.minecraft.manufactory.blocks.FixedLiquidBlock;
 import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
@@ -37,15 +38,16 @@ public final class ModBlocks {
     public static final RegistryObject<Block> POWER_CABLE = BLOCKS.register("power_cable", () -> new PowerCableBlock(Block.Properties.of(Material.DECORATION).strength(0.7f).sound(SoundType.METAL)));
     public static final RegistryObject<Block> SOLAR_PANEL = BLOCKS.register("solar_panel", () -> new SolarPanelBlock(defaultMachineProperties()));
 
-    public static final RegistryObject<LiquidBlock> SLURRIED_COAL_ORE = BLOCKS.register("slurried_coal_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_COAL_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_DIAMOND_ORE = BLOCKS.register("slurried_diamond_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_DIAMOND_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_EMERALD_ORE = BLOCKS.register("slurried_emerald_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_EMERALD_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_GOLD_ORE = BLOCKS.register("slurried_gold_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_GOLD_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_IRON_ORE = BLOCKS.register("slurried_iron_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_IRON_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_LAPIS_ORE = BLOCKS.register("slurried_lapis_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_LAPIS_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_NETHER_QUARTZ_ORE = BLOCKS.register("slurried_nether_quartz_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_REDSTONE_ORE = BLOCKS.register("slurried_redstone_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), defaultFluidProperties()));
-    public static final RegistryObject<LiquidBlock> SLURRIED_ANCIENT_DEBRIS = BLOCKS.register("slurried_ancient_debris", () -> new LiquidBlock(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_COAL_ORE = BLOCKS.register("slurried_coal_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_COAL_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_DIAMOND_ORE = BLOCKS.register("slurried_diamond_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_DIAMOND_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_EMERALD_ORE = BLOCKS.register("slurried_emerald_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_EMERALD_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_GOLD_ORE = BLOCKS.register("slurried_gold_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_GOLD_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_IRON_ORE = BLOCKS.register("slurried_iron_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_IRON_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_COPPER_ORE = BLOCKS.register("slurried_copper_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_COPPER_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_LAPIS_ORE = BLOCKS.register("slurried_lapis_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_LAPIS_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_NETHER_QUARTZ_ORE = BLOCKS.register("slurried_nether_quartz_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_REDSTONE_ORE = BLOCKS.register("slurried_redstone_ore", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), defaultFluidProperties()));
+    public static final RegistryObject<LiquidBlock> SLURRIED_ANCIENT_DEBRIS = BLOCKS.register("slurried_ancient_debris", () -> new FixedLiquidBlock(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), defaultFluidProperties()));
 
     private static Block.Properties defaultDecorProperties(MaterialColor color) {
         return Block.Properties.of(Material.METAL, color)

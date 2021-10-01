@@ -23,6 +23,7 @@ public class ModAnimatedTextureProvider extends AnimatedTextureProvider {
         registerOreFluid("slurried_emerald_ore");
         registerOreFluid("slurried_gold_ore");
         registerOreFluid("slurried_iron_ore");
+        registerOreFluid("slurried_copper_ore");
         registerOreFluid("slurried_lapis_ore");
         registerOreFluid("slurried_nether_quartz_ore");
         registerOreFluid("slurried_redstone_ore");
