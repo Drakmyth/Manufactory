@@ -27,6 +27,7 @@ public final class MachineUpgradeRecipes extends RecipeProvider {
         buildMotorRecipes(consumer);
         buildMillingBallRecipes(consumer);
         buildPowerUpgradeRecipes(consumer);
+        buildDrillHeadRecipes(consumer);
     }
 
     private static void buildGrinderWheelRecipes(Consumer<FinishedRecipe> consumer) {
@@ -174,6 +175,45 @@ public final class MachineUpgradeRecipes extends RecipeProvider {
             .define('w', ModItems.REDSTONE_WIRE.get())
             .define('l', ModItems.COAGULATED_LATEX.get())
             .unlockedBy("has_redstone_wire", has(ModItems.REDSTONE_WIRE.get()))
+            .save(consumer);
+    }
+
+    private static void buildDrillHeadRecipes(Consumer<FinishedRecipe> consumer) {
+        // Drill Head Tier 0 = 5 Iron Ingot
+        ShapedRecipeBuilder.shaped(ModItems.DRILL_HEAD_TIER0.get())
+            .pattern("i  ")
+            .pattern("iii")
+            .pattern("i  ")
+            .define('i', Items.IRON_INGOT)
+            .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+            .save(consumer);
+
+        // Drill Head Tier 1 = Drill Head Tier 0 + Cobblestone
+        ShapelessRecipeBuilder.shapeless(ModItems.DRILL_HEAD_TIER1.get())
+            .requires(ModItems.DRILL_HEAD_TIER0.get())
+            .requires(Items.COBBLESTONE)
+            .unlockedBy("has_drill_head_tier0", has(ModItems.DRILL_HEAD_TIER0.get()))
+            .save(consumer);
+        
+        // Drill Head Tier 2 = Drill Head Tier 1 + Iron Ingot
+        ShapelessRecipeBuilder.shapeless(ModItems.DRILL_HEAD_TIER2.get())
+            .requires(ModItems.DRILL_HEAD_TIER1.get())
+            .requires(Items.IRON_INGOT)
+            .unlockedBy("has_drill_head_tier0", has(ModItems.DRILL_HEAD_TIER1.get()))
+            .save(consumer);
+
+        // Drill Head Tier 3 = Drill Head Tier 2 + Diamond
+        ShapelessRecipeBuilder.shapeless(ModItems.DRILL_HEAD_TIER3.get())
+            .requires(ModItems.DRILL_HEAD_TIER2.get())
+            .requires(Items.DIAMOND)
+            .unlockedBy("has_drill_head_tier0", has(ModItems.DRILL_HEAD_TIER2.get()))
+            .save(consumer);
+
+        // Drill Head Tier 4 = Drill Head Tier 3 + Netherite Ingot
+        ShapelessRecipeBuilder.shapeless(ModItems.DRILL_HEAD_TIER4.get())
+            .requires(ModItems.DRILL_HEAD_TIER3.get())
+            .requires(Items.NETHERITE_INGOT)
+            .unlockedBy("has_drill_head_tier0", has(ModItems.DRILL_HEAD_TIER3.get()))
             .save(consumer);
     }
 }

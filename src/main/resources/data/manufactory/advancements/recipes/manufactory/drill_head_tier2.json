@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:drill_head_tier2"
+    ]
+  },
+  "criteria": {
+    "has_drill_head_tier0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "manufactory:drill_head_tier1"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:drill_head_tier2"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_drill_head_tier0",
+      "has_the_recipe"
+    ]
+  ]
+}
