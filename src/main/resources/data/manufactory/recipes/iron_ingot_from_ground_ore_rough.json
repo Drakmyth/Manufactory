@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "group": "iron_ingot",
   "ingredient": {
     "item": "manufactory:ground_iron_ore_rough"
   },

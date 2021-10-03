@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "group": "copper_ingot",
   "ingredient": {
     "item": "manufactory:ground_copper_ore_fine"
   },

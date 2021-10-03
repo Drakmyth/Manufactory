@@ -79,12 +79,12 @@ public final class OreRecipes extends RecipeProvider {
 
             // Ground Ore (Rough) -> Ingot
             SimpleCookingRecipeBuilder.smelting(Ingredient.of(grinderOutput), finalOutput, 0.2f, 200)
-                .unlockedBy(String.format("has_%s", grinderOutputName), has(grinderOutput))
+                .unlockedBy(String.format("has_%s", grinderOutputName), has(grinderOutput)).group(finalOutputName)
                 .save(consumer, String.format("%s:%s_from_ground_ore_rough", Reference.MOD_ID, finalOutputName));
 
             // Ground Ore (Fine) -> Ingot
             SimpleCookingRecipeBuilder.smelting(Ingredient.of(ballMillOutput), finalOutput, 0.2f, 200)
-                .unlockedBy(String.format("has_%s", ballMillOutputName), has(ballMillOutput))
+                .unlockedBy(String.format("has_%s", ballMillOutputName), has(ballMillOutput)).group(finalOutputName)
                 .save(consumer, String.format("%s:%s_from_ground_ore_fine", Reference.MOD_ID, finalOutputName));
         });
 
