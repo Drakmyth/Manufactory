@@ -1,10 +1,10 @@
 {
   "type": "minecraft:smelting",
-  "group": "copper_ingot",
+  "group": "raw_copper",
   "ingredient": {
     "item": "manufactory:ground_copper_ore_rough"
   },
-  "result": "minecraft:copper_ingot",
+  "result": "minecraft:raw_copper",
   "experience": 0.2,
   "cookingtime": 200
 }
