@@ -38,7 +38,7 @@ public final class OreRecipes extends RecipeProvider {
 
         List<OreProcessingRecipeData> ores = Arrays.asList(
             new OreProcessingRecipeData(Items.COAL_ORE, ModItems.GROUND_COAL_ORE_ROUGH, ModItems.GROUND_COAL_ORE_FINE, ModFluids.SLURRIED_COAL_ORE, Items.COAL, Tiers.WOOD),
-            new OreProcessingRecipeData(Items.DIAMOND_ORE, ModItems.GROUND_DIAMOND_ORE_ROUGH, ModItems.GROUND_DIAMOND_ORE_FINE, ModFluids.SLURRIED_DIAMOND_ORE, Items.DIAMOND, Tiers.WOOD),
+            new OreProcessingRecipeData(Items.DIAMOND_ORE, ModItems.GROUND_DIAMOND_ORE_ROUGH, ModItems.GROUND_DIAMOND_ORE_FINE, ModFluids.SLURRIED_DIAMOND_ORE, Items.DIAMOND, Tiers.IRON),
             new OreProcessingRecipeData(Items.EMERALD_ORE, ModItems.GROUND_EMERALD_ORE_ROUGH, ModItems.GROUND_EMERALD_ORE_FINE, ModFluids.SLURRIED_EMERALD_ORE, Items.EMERALD, Tiers.IRON),
             new OreProcessingRecipeData(Items.GOLD_ORE, ModItems.GROUND_GOLD_ORE_ROUGH, ModItems.GROUND_GOLD_ORE_FINE, ModFluids.SLURRIED_GOLD_ORE, Items.GOLD_INGOT, Tiers.IRON),
             new OreProcessingRecipeData(Items.IRON_ORE, ModItems.GROUND_IRON_ORE_ROUGH, ModItems.GROUND_IRON_ORE_FINE, ModFluids.SLURRIED_IRON_ORE, Items.IRON_INGOT, Tiers.STONE),
