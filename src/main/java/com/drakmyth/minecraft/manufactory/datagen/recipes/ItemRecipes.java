@@ -46,22 +46,6 @@ public final class ItemRecipes extends RecipeProvider {
             .unlockedBy("has_coagulated_latex", has(ModItems.COAGULATED_LATEX.get()))
             .save(consumer);
 
-        // Latex Collector = String + Bowl
-        ShapelessRecipeBuilder.shapeless(ModBlocks.LATEX_COLLECTOR.get())
-            .requires(Items.STRING)
-            .requires(Items.BOWL)
-            .unlockedBy("has_bowl", has(Items.BOWL))
-            .save(consumer);
-
-        // 3 Power Cable = 3 Rubber + 3 Redstone Wire
-        ShapedRecipeBuilder.shaped(ModBlocks.POWER_CABLE.get(), 3)
-            .pattern("rrr")
-            .pattern("www")
-            .define('r', ModItems.RUBBER.get())
-            .define('w', ModItems.REDSTONE_WIRE.get())
-            .unlockedBy("has_rubber", has(ModItems.RUBBER.get()))
-            .save(consumer);
-
         // 3 Redstone Wire = 3 String + Redstone Dust
         ShapelessRecipeBuilder.shapeless(ModItems.REDSTONE_WIRE.get(), 3)
             .requires(Items.REDSTONE)

@@ -14,6 +14,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.tags.ItemTags;
 
@@ -32,6 +33,22 @@ public final class BlockRecipes extends RecipeProvider {
             .pattern("aaa")
             .define('a', ModItems.AMBER.get())
             .unlockedBy("has_amber", has(ModItems.AMBER.get()))
+            .save(consumer);
+
+        // Latex Collector = String + Bowl
+        ShapelessRecipeBuilder.shapeless(ModBlocks.LATEX_COLLECTOR.get())
+            .requires(Items.STRING)
+            .requires(Items.BOWL)
+            .unlockedBy("has_bowl", has(Items.BOWL))
+            .save(consumer);
+
+        // 3 Power Cable = 3 Rubber + 3 Redstone Wire
+        ShapedRecipeBuilder.shaped(ModBlocks.POWER_CABLE.get(), 3)
+            .pattern("rrr")
+            .pattern("www")
+            .define('r', ModItems.RUBBER.get())
+            .define('w', ModItems.REDSTONE_WIRE.get())
+            .unlockedBy("has_rubber", has(ModItems.RUBBER.get()))
             .save(consumer);
 
         // Solar Panel = 3 Daylight Detector + 2 Nether Quartz + Redstone Dust + 2 Wooden Slab
