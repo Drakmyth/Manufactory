@@ -86,12 +86,12 @@ public final class MachineUpgradeRecipes extends RecipeProvider {
         // Motor Tier 0 = Coupling + Redstone Dust + 3 Iron Ingot
         ShapedRecipeBuilder.shaped(ModItems.MOTOR_TIER0.get())
             .pattern(" i ")
-            .pattern("cri")
+            .pattern("cwi")
             .pattern(" i ")
             .define('i', Items.IRON_INGOT)
             .define('c', ModItems.COUPLING.get())
-            .define('r', Items.REDSTONE)
-            .unlockedBy("has_redstone", has(Items.REDSTONE))
+            .define('w', ModItems.REDSTONE_WIRE.get())
+            .unlockedBy("has_redstone", has(ModItems.REDSTONE_WIRE.get()))
             .save(consumer);
 
         // Motor Tier 1 = Motor Tier 0 + Gold Ingot
@@ -156,14 +156,14 @@ public final class MachineUpgradeRecipes extends RecipeProvider {
     }
 
     private static void buildPowerUpgradeRecipes(Consumer<FinishedRecipe> consumer) {
-        // Battery = Redstone Wire + Nether Quartz + Redstone Dust
+        // Battery = Nether Quartz + Redstone Wire + Copper Ingot
         ShapedRecipeBuilder.shaped(ModItems.BATTERY.get())
-            .pattern("w")
             .pattern("n")
-            .pattern("r")
-            .define('w', ModItems.REDSTONE_WIRE.get())
+            .pattern("w")
+            .pattern("c")
             .define('n', Items.QUARTZ)
-            .define('r', Items.REDSTONE)
+            .define('w', ModItems.REDSTONE_WIRE.get())
+            .define('c', Items.COPPER_INGOT)
             .unlockedBy("has_nether_quartz", has(Items.QUARTZ))
             .save(consumer);
 
@@ -181,11 +181,11 @@ public final class MachineUpgradeRecipes extends RecipeProvider {
     private static void buildDrillHeadRecipes(Consumer<FinishedRecipe> consumer) {
         // Drill Head Tier 0 = 5 Iron Ingot
         ShapedRecipeBuilder.shaped(ModItems.DRILL_HEAD_TIER0.get())
-            .pattern("i  ")
-            .pattern("iii")
-            .pattern("i  ")
-            .define('i', Items.IRON_INGOT)
-            .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+            .pattern("p  ")
+            .pattern("ppp")
+            .pattern("p  ")
+            .define('p', ItemTags.PLANKS)
+            .unlockedBy("has_planks", has(ItemTags.PLANKS))
             .save(consumer);
 
         // Drill Head Tier 1 = Drill Head Tier 0 + Cobblestone
