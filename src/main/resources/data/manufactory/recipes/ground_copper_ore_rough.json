@@ -1,7 +1,7 @@
 {
   "type": "manufactory:grinder",
   "ingredient": {
-    "item": "minecraft:copper_ore"
+    "tag": "minecraft:copper_ores"
   },
   "result": {
     "item": "manufactory:ground_copper_ore_rough",

@@ -15,6 +15,9 @@ import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeBuilder;
 
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -37,26 +40,24 @@ public final class OreRecipes extends RecipeProvider {
     public static void build(Consumer<FinishedRecipe> consumer) {
 
         List<OreProcessingRecipeData> ores = Arrays.asList(
-            new OreProcessingRecipeData(Items.COAL_ORE, ModItems.GROUND_COAL_ORE_ROUGH, ModItems.GROUND_COAL_ORE_FINE, ModFluids.SLURRIED_COAL_ORE, Items.COAL, Tiers.WOOD),
-            new OreProcessingRecipeData(Items.DIAMOND_ORE, ModItems.GROUND_DIAMOND_ORE_ROUGH, ModItems.GROUND_DIAMOND_ORE_FINE, ModFluids.SLURRIED_DIAMOND_ORE, Items.DIAMOND, Tiers.IRON),
-            new OreProcessingRecipeData(Items.EMERALD_ORE, ModItems.GROUND_EMERALD_ORE_ROUGH, ModItems.GROUND_EMERALD_ORE_FINE, ModFluids.SLURRIED_EMERALD_ORE, Items.EMERALD, Tiers.IRON),
-            new OreProcessingRecipeData(Items.GOLD_ORE, ModItems.GROUND_GOLD_ORE_ROUGH, ModItems.GROUND_GOLD_ORE_FINE, ModFluids.SLURRIED_GOLD_ORE, Items.RAW_GOLD, Tiers.IRON),
-            new OreProcessingRecipeData(Items.IRON_ORE, ModItems.GROUND_IRON_ORE_ROUGH, ModItems.GROUND_IRON_ORE_FINE, ModFluids.SLURRIED_IRON_ORE, Items.RAW_IRON, Tiers.STONE),
-            new OreProcessingRecipeData(Items.COPPER_ORE, ModItems.GROUND_COPPER_ORE_ROUGH, ModItems.GROUND_COPPER_ORE_FINE, ModFluids.SLURRIED_COPPER_ORE, Items.RAW_COPPER, Tiers.STONE),
-            new OreProcessingRecipeData(Items.LAPIS_ORE, ModItems.GROUND_LAPIS_ORE_ROUGH, ModItems.GROUND_LAPIS_ORE_FINE, ModFluids.SLURRIED_LAPIS_ORE, Items.LAPIS_LAZULI, Tiers.STONE),
+            new OreProcessingRecipeData(ItemTags.COAL_ORES, ModItems.GROUND_COAL_ORE_ROUGH, ModItems.GROUND_COAL_ORE_FINE, ModFluids.SLURRIED_COAL_ORE, Items.COAL, Tiers.WOOD),
+            new OreProcessingRecipeData(ItemTags.DIAMOND_ORES, ModItems.GROUND_DIAMOND_ORE_ROUGH, ModItems.GROUND_DIAMOND_ORE_FINE, ModFluids.SLURRIED_DIAMOND_ORE, Items.DIAMOND, Tiers.IRON),
+            new OreProcessingRecipeData(ItemTags.EMERALD_ORES, ModItems.GROUND_EMERALD_ORE_ROUGH, ModItems.GROUND_EMERALD_ORE_FINE, ModFluids.SLURRIED_EMERALD_ORE, Items.EMERALD, Tiers.IRON),
+            new OreProcessingRecipeData(ItemTags.GOLD_ORES, ModItems.GROUND_GOLD_ORE_ROUGH, ModItems.GROUND_GOLD_ORE_FINE, ModFluids.SLURRIED_GOLD_ORE, Items.RAW_GOLD, Tiers.IRON),
+            new OreProcessingRecipeData(ItemTags.IRON_ORES, ModItems.GROUND_IRON_ORE_ROUGH, ModItems.GROUND_IRON_ORE_FINE, ModFluids.SLURRIED_IRON_ORE, Items.RAW_IRON, Tiers.STONE),
+            new OreProcessingRecipeData(ItemTags.COPPER_ORES, ModItems.GROUND_COPPER_ORE_ROUGH, ModItems.GROUND_COPPER_ORE_FINE, ModFluids.SLURRIED_COPPER_ORE, Items.RAW_COPPER, Tiers.STONE),
+            new OreProcessingRecipeData(ItemTags.LAPIS_ORES, ModItems.GROUND_LAPIS_ORE_ROUGH, ModItems.GROUND_LAPIS_ORE_FINE, ModFluids.SLURRIED_LAPIS_ORE, Items.LAPIS_LAZULI, Tiers.STONE),
             new OreProcessingRecipeData(Items.NETHER_QUARTZ_ORE, ModItems.GROUND_NETHER_QUARTZ_ORE_ROUGH, ModItems.GROUND_NETHER_QUARTZ_ORE_FINE, ModFluids.SLURRIED_NETHER_QUARTZ_ORE, Items.QUARTZ, Tiers.WOOD),
-            new OreProcessingRecipeData(Items.REDSTONE_ORE, ModItems.GROUND_REDSTONE_ORE_ROUGH, ModItems.GROUND_REDSTONE_ORE_FINE, ModFluids.SLURRIED_REDSTONE_ORE, Items.REDSTONE, Tiers.IRON),
+            new OreProcessingRecipeData(ItemTags.REDSTONE_ORES, ModItems.GROUND_REDSTONE_ORE_ROUGH, ModItems.GROUND_REDSTONE_ORE_FINE, ModFluids.SLURRIED_REDSTONE_ORE, Items.REDSTONE, Tiers.IRON),
             new OreProcessingRecipeData(Items.ANCIENT_DEBRIS, ModItems.GROUND_ANCIENT_DEBRIS_ROUGH, ModItems.GROUND_ANCIENT_DEBRIS_FINE, ModFluids.SLURRIED_ANCIENT_DEBRIS, Items.NETHERITE_SCRAP, Tiers.DIAMOND)
         );
 
         ores.stream().forEach(data -> {
-            Item ore = data.getOre();
             Item grinderOutput = data.getGrinderOutput();
             Item ballMillOutput = data.getBallMillOutput();
             // Fluid spiralClassifierOutput = data.getSpiralClassifierOutput();
             // Item floatationSeparatorOutput = data.getFloatationSeparatorOutput();
             Item finalOutput = data.getConcentratingDryerOutput();
-            String oreName = ForgeRegistries.ITEMS.getKey(ore).getPath();
             String grinderOutputName = ForgeRegistries.ITEMS.getKey(grinderOutput).getPath();
             String ballMillOutputName = ForgeRegistries.ITEMS.getKey(ballMillOutput).getPath();
             // String spiralClassifierOutputName = ForgeRegistries.FLUIDS.getKey(spiralClassifierOutput).getPath();
@@ -64,10 +65,10 @@ public final class OreRecipes extends RecipeProvider {
             String finalOutputName = ForgeRegistries.ITEMS.getKey(finalOutput).getPath();
 
             // Ore -> Ground Ore (Rough)
-            ManufactoryRecipeBuilder.grinderRecipe(Ingredient.of(ore), data.getGrinderOutput())
+            ManufactoryRecipeBuilder.grinderRecipe(data.getOreIngredient(), data.getGrinderOutput())
                 .withExtraChance(0.3f, data.getExtraAmounts())
                 .withTierRequired(data.getTier())
-                .addCriterion(String.format("has_%s", oreName), has(ore))
+                .addCriterion(String.format("has_%s", data.getOreName()), data.getOreInventoryChangeTriggerInstance())
                 .build(consumer);
 
             // Ground Ore (Rough) -> Ground Ore (Fine)
@@ -98,6 +99,7 @@ public final class OreRecipes extends RecipeProvider {
 
     private static class OreProcessingRecipeData {
         private final Item ore;
+        private final Tag.Named<Item> oreTag;
         private final Item stage1;
         private final Item stage2;
         // private final Fluid stage3;
@@ -105,9 +107,10 @@ public final class OreRecipes extends RecipeProvider {
         private final Item stage5;
         private final Tier tier;
         private final int[] extraAmounts;
-
-        public OreProcessingRecipeData(Item ore, Item stage1, Item stage2, Fluid stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
+        
+        private OreProcessingRecipeData(Item ore, Tag.Named<Item> oreTag, Item stage1, Item stage2, Fluid stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
             this.ore = ore;
+            this.oreTag = oreTag;
             this.stage1 = stage1;
             this.stage2 = stage2;
             // this.stage3 = stage3;
@@ -116,17 +119,33 @@ public final class OreRecipes extends RecipeProvider {
             this.tier = tier;
             this.extraAmounts = extraAmounts;
         }
+        
+        public OreProcessingRecipeData(Tag.Named<Item> oreTag, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
+            this(null, oreTag, stage1.get(), stage2.get(), stage3.get(), /*stage4,*/ stage5, tier, extraAmounts);
+        }
+
+        public OreProcessingRecipeData(Tag.Named<Item> oreTag, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier) {
+            this(oreTag, stage1, stage2, stage3, /*stage4,*/ stage5, tier, new int[]{1});
+        }
+        
+        public OreProcessingRecipeData(Item ore, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
+            this(ore, null, stage1.get(), stage2.get(), stage3.get(), /*stage4,*/ stage5, tier, extraAmounts);
+        }
 
         public OreProcessingRecipeData(Item ore, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier) {
             this(ore, stage1, stage2, stage3, /*stage4,*/ stage5, tier, new int[]{1});
         }
 
-        public OreProcessingRecipeData(Item ore, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
-            this(ore, stage1.get(), stage2.get(), stage3.get(), /*stage4,*/ stage5, tier, extraAmounts);
+        public Ingredient getOreIngredient() {
+            return ore == null ? Ingredient.of(oreTag) : Ingredient.of(ore);
         }
 
-        public Item getOre() {
-            return ore;
+        public String getOreName() {
+            return ore == null ? oreTag.getName().getPath() : ForgeRegistries.ITEMS.getKey(ore).getPath();
+        }
+
+        public InventoryChangeTrigger.TriggerInstance getOreInventoryChangeTriggerInstance() {
+            return ore == null ? has(oreTag) : has(ore);
         }
 
         public Item getGrinderOutput() {
