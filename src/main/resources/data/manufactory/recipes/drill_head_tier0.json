@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "p  ",
+    "ppp",
+    "p  "
+  ],
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "manufactory:drill_head_tier0"
+  }
+}

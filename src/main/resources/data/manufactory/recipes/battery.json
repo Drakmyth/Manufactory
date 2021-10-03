@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "w",
     "n",
-    "r"
+    "w",
+    "c"
   ],
   "key": {
-    "w": {
-      "item": "manufactory:redstone_wire"
-    },
     "n": {
       "item": "minecraft:quartz"
     },
-    "r": {
-      "item": "minecraft:redstone"
+    "w": {
+      "item": "manufactory:redstone_wire"
+    },
+    "c": {
+      "item": "minecraft:copper_ingot"
     }
   },
   "result": {

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "group": "redstone",
   "ingredient": {
     "item": "manufactory:ground_redstone_ore_rough"
   },

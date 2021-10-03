@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "group": "lapis_lazuli",
   "ingredient": {
     "item": "manufactory:ground_lapis_ore_rough"
   },

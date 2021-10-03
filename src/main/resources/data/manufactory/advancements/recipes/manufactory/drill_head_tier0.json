@@ -2,18 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:motor_tier0"
+      "manufactory:drill_head_tier0"
     ]
   },
   "criteria": {
-    "has_redstone": {
+    "has_planks": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": [
-              "manufactory:redstone_wire"
-            ]
+            "tag": "minecraft:planks"
           }
         ]
       }
@@ -21,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:motor_tier0"
+        "recipe": "manufactory:drill_head_tier0"
       }
     }
   },
   "requirements": [
     [
-      "has_redstone",
+      "has_planks",
       "has_the_recipe"
     ]
   ]

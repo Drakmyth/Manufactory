@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "group": "diamond",
   "ingredient": {
     "item": "manufactory:ground_diamond_ore_fine"
   },
