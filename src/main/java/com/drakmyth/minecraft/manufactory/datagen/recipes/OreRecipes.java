@@ -91,10 +91,17 @@ public final class OreRecipes extends RecipeProvider {
 
         // Nether Gold Ore -> Ground Gold Ore (Rough)
         ManufactoryRecipeBuilder.grinderRecipe(Ingredient.of(Items.NETHER_GOLD_ORE), ModItems.GROUND_GOLD_ORE_ROUGH.get())
-            .withExtraChance(0.3f, 1)
+            .withExtraChance(0.7f, -1) // 70% nothing, 30% rough ore
             .withTierRequired(Tiers.WOOD)
             .addCriterion("has_nether_gold_ore", has(Items.NETHER_GOLD_ORE))
             .build(consumer, String.format("%s:ground_gold_ore_rough_from_nether_gold_ore", Reference.MOD_ID));
+
+        // Gilded Blackstone -> Ground Gold Ore (Rough)
+        ManufactoryRecipeBuilder.grinderRecipe(Ingredient.of(Items.GILDED_BLACKSTONE), ModItems.GROUND_GOLD_ORE_ROUGH.get())
+            .withExtraChance(0.7f, -1) // 70% nothing, 30% rough ore
+            .withTierRequired(Tiers.WOOD)
+            .addCriterion("has_gilded_blackstone", has(Items.GILDED_BLACKSTONE))
+            .build(consumer, String.format("%s:ground_gold_ore_rough_from_gilded_blackstone", Reference.MOD_ID));
     }
 
     private static class OreProcessingRecipeData {

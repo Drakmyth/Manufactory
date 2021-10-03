@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "manufactory:ground_gold_ore_rough_from_gilded_blackstone"
+    ]
+  },
+  "criteria": {
+    "has_gilded_blackstone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:gilded_blackstone"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "manufactory:ground_gold_ore_rough_from_gilded_blackstone"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_gilded_blackstone",
+      "has_the_recipe"
+    ]
+  ]
+}
