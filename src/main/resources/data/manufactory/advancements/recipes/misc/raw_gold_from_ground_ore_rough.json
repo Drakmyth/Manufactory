@@ -2,17 +2,17 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:copper_ingot_from_ground_ore_fine"
+      "manufactory:raw_gold_from_ground_ore_rough"
     ]
   },
   "criteria": {
-    "has_ground_copper_ore_fine": {
+    "has_ground_gold_ore_rough": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "manufactory:ground_copper_ore_fine"
+              "manufactory:ground_gold_ore_rough"
             ]
           }
         ]
@@ -21,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:copper_ingot_from_ground_ore_fine"
+        "recipe": "manufactory:raw_gold_from_ground_ore_rough"
       }
     }
   },
   "requirements": [
     [
-      "has_ground_copper_ore_fine",
+      "has_ground_gold_ore_rough",
       "has_the_recipe"
     ]
   ]

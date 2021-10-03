@@ -7,9 +7,9 @@
     "item": "manufactory:ground_gold_ore_rough",
     "count": 1
   },
-  "extraChance": 0.3,
+  "extraChance": 0.7,
   "extraAmounts": [
-    1
+    -1
   ],
   "tierRequired": "WOOD",
   "powerRequired": 25,

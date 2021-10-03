@@ -2,17 +2,17 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:iron_ingot_from_ground_ore_rough"
+      "manufactory:ground_gold_ore_rough_from_gilded_blackstone"
     ]
   },
   "criteria": {
-    "has_ground_iron_ore_rough": {
+    "has_gilded_blackstone": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "manufactory:ground_iron_ore_rough"
+              "minecraft:gilded_blackstone"
             ]
           }
         ]
@@ -21,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:iron_ingot_from_ground_ore_rough"
+        "recipe": "manufactory:ground_gold_ore_rough_from_gilded_blackstone"
       }
     }
   },
   "requirements": [
     [
-      "has_ground_iron_ore_rough",
+      "has_gilded_blackstone",
       "has_the_recipe"
     ]
   ]

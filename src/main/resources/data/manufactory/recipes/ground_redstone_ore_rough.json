@@ -1,7 +1,7 @@
 {
   "type": "manufactory:grinder",
   "ingredient": {
-    "item": "minecraft:redstone_ore"
+    "tag": "minecraft:redstone_ores"
   },
   "result": {
     "item": "manufactory:ground_redstone_ore_rough",

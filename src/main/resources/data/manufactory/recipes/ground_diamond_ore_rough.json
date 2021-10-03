@@ -1,7 +1,7 @@
 {
   "type": "manufactory:grinder",
   "ingredient": {
-    "item": "minecraft:diamond_ore"
+    "tag": "minecraft:diamond_ores"
   },
   "result": {
     "item": "manufactory:ground_diamond_ore_rough",

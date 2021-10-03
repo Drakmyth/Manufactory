@@ -6,14 +6,12 @@
     ]
   },
   "criteria": {
-    "has_copper_ore": {
+    "has_copper_ores": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:copper_ore"
-            ]
+            "tag": "minecraft:copper_ores"
           }
         ]
       }
@@ -27,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_copper_ore",
+      "has_copper_ores",
       "has_the_recipe"
     ]
   ]

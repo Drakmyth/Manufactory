@@ -1,7 +1,7 @@
 {
   "type": "manufactory:grinder",
   "ingredient": {
-    "item": "minecraft:gold_ore"
+    "tag": "minecraft:gold_ores"
   },
   "result": {
     "item": "manufactory:ground_gold_ore_rough",

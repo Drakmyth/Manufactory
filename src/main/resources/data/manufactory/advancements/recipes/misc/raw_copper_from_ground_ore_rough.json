@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:copper_ingot_from_ground_ore_rough"
+      "manufactory:raw_copper_from_ground_ore_rough"
     ]
   },
   "criteria": {
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:copper_ingot_from_ground_ore_rough"
+        "recipe": "manufactory:raw_copper_from_ground_ore_rough"
       }
     }
   },

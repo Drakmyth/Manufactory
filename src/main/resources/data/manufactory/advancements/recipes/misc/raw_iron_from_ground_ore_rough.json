@@ -2,16 +2,18 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "manufactory:ground_iron_ore_rough"
+      "manufactory:raw_iron_from_ground_ore_rough"
     ]
   },
   "criteria": {
-    "has_iron_ores": {
+    "has_ground_iron_ore_rough": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "minecraft:iron_ores"
+            "items": [
+              "manufactory:ground_iron_ore_rough"
+            ]
           }
         ]
       }
@@ -19,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "manufactory:ground_iron_ore_rough"
+        "recipe": "manufactory:raw_iron_from_ground_ore_rough"
       }
     }
   },
   "requirements": [
     [
-      "has_iron_ores",
+      "has_ground_iron_ore_rough",
       "has_the_recipe"
     ]
   ]

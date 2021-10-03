@@ -1,10 +1,10 @@
 {
   "type": "minecraft:smelting",
-  "group": "gold_ingot",
+  "group": "raw_gold",
   "ingredient": {
     "item": "manufactory:ground_gold_ore_rough"
   },
-  "result": "minecraft:gold_ingot",
+  "result": "minecraft:raw_gold",
   "experience": 0.2,
   "cookingtime": 200
 }

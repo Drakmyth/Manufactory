@@ -1,15 +1,15 @@
 {
   "type": "manufactory:grinder",
   "ingredient": {
-    "tag": "minecraft:coal_ores"
+    "item": "minecraft:gilded_blackstone"
   },
   "result": {
-    "item": "manufactory:ground_coal_ore_rough",
+    "item": "manufactory:ground_gold_ore_rough",
     "count": 1
   },
-  "extraChance": 0.3,
+  "extraChance": 0.7,
   "extraAmounts": [
-    1
+    -1
   ],
   "tierRequired": "WOOD",
   "powerRequired": 25,
