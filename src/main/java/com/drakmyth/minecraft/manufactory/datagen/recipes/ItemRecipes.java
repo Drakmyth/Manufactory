@@ -86,5 +86,13 @@ public final class ItemRecipes extends RecipeProvider {
             .define('i', Items.IRON_INGOT)
             .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
             .save(consumer);
+        
+        // Rock Drill = 2 Coupling + Stone Pickaxe
+        ShapedRecipeBuilder.shaped(ModItems.ROCK_DRILL.get())
+            .pattern("cpc")
+            .define('c', ModItems.COUPLING.get())
+            .define('p', Items.STONE_PICKAXE)
+            .unlockedBy("has_coupling", has(ModItems.COUPLING.get()))
+            .save(consumer);
     }
 }
