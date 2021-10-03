@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " i ",
-    "cri",
+    "cwi",
     " i "
   ],
   "key": {
@@ -12,8 +12,8 @@
     "c": {
       "item": "manufactory:coupling"
     },
-    "r": {
-      "item": "minecraft:redstone"
+    "w": {
+      "item": "manufactory:redstone_wire"
     }
   },
   "result": {
