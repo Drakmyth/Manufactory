@@ -3,64 +3,54 @@
  *  Copyright (c) 2020 Drakmyth. All rights reserved.
  */
 
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org' }
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath group: 'org.parchmentmc', name: 'librarian', version: '1.+'
-    }
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-// apply plugin: 'jacoco'
+version = "${project.minecraftversion}-${project.modversion}"
+group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).replace('/', '.')
+archivesBaseName = project.modid
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(project.javaversion)
 
-group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).replace('/', '.')
-archivesBaseName = project.modid
-version = "${project.minecraftversion}-${project.modversion}"
-
-// repositories {
-//     maven { url = 'https://jitpack.io' }
-// }
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraftversion}-${project.forgeversion}"
-    // testImplementation fg.deobf("com.github.alcatrazEscapee:mcjunitlib:${project.mcjunitlibversion}-${project.minecraftversion}") {
-    //     transitive = false
-    // }
-}
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 
 minecraft {
     // mappings channel: 'official', version: project.mappingsversion
     mappings channel: 'parchment', version: "${project.parchmentversion}-${project.mappingsversion}"
+
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     runs {
         client {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,NETWORK,CONFIG'
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            property 'forge.logging.markers', 'REGISTRIES'
 
             // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', project.modid
+
             // Enable colors in terminal log
-            property 'log4j.skipJansi', 'false'
+            // property 'log4j.skipJansi', 'false'
 
             // Use custom log4j2 configuration
-            property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
+            // property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
 
             // Stop forge from killing the Gradle daemon on exit
-            forceExit false
+            // forceExit false
 
             mods {
                 manufactory {
@@ -72,20 +62,39 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,NETWORK,CONFIG'
+            property 'forge.logging.markers', 'REGISTRIES'
 
-            // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
+            property 'forge.enabledGameTestNamespaces', project.modid
+
             // Enable colors in terminal log
-            property 'log4j.skipJansi', 'false'
+            // property 'log4j.skipJansi', 'false'
 
             // Use custom log4j2 configuration
-            property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
+            // property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
 
             // Stop forge from killing the Gradle daemon on exit
-            forceExit false
+            // forceExit false
+
+            mods {
+                manufactory {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', project.modid
 
             mods {
                 manufactory {
@@ -97,22 +106,21 @@ minecraft {
         data {
             workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,NETWORK,CONFIG'
+            property 'forge.logging.markers', 'REGISTRIES'
 
-            // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
             
             // Enable colors in terminal log
-            property 'log4j.skipJansi', 'false'
+            // property 'log4j.skipJansi', 'false'
 
             // Use custom log4j2 configuration
-            property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
+            // property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
 
             // Stop forge from killing the Gradle daemon on exit
-            forceExit false
+            // forceExit false
 
-            args '--mod', project.modid, '--all', '--existing', file('src/main/resources/'), '--output', file('src/generated/resources/')
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', project.modid, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 manufactory {
@@ -120,28 +128,140 @@ minecraft {
                 }
             }
         }
-
-        // serverTest {
-        //     parent server
-        //     workingDirectory project.file('run')
-        //     main 'com.alcatrazescapee.mcjunitlib.DedicatedTestServerLauncher'
-        //     property 'forge.logging.console.level', 'unittest'
-        //     environment 'MOD_CLASSES', String.join(File.pathSeparator,
-        //         "${project.modid}%%${sourceSets.main.output.resourcesDir}",
-        //         "${project.modid}%%${sourceSets.main.output.classesDir}",
-        //         "${project.modid}%%${sourceSets.test.output.resourcesDir}",
-        //         "${project.modid}%%${sourceSets.test.output.classesDir}",
-        //     )
-        //     environment 'target', 'fmltestserver'
-        //     forceExit false
-        //     mods {
-        //         manufactory {
-        //             sources sourceSets.test
-        //         }
-        //     }
-        // }
     }
 }
+
+// Include resources generated by data generators.
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    // Put repositories for dependencies here
+    // ForgeGradle automatically adds the Forge maven and Maven Central for you
+
+    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
+    // flatDir {
+    //     dir 'libs'
+    // }
+}
+
+dependencies {
+    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    minecraft "net.minecraftforge:forge:${project.minecraftversion}-${project.forgeversion}"
+
+    // Real mod deobf dependency examples - these get remapped to your current mappings
+    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
+    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
+    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
+
+    // Examples using mod jars from ./libs
+    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
+
+    // For more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+}
+
+jar {
+    manifest {
+        attributes([
+            'Specification-Title': project.modname,
+            'Specification-Vendor': project.author,
+            'Specification-Version': project.modversion.substring(0, project.modversion.lastIndexOf('.')),
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.modversion,
+            'Implementation-Vendor': project.author,
+            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+// publish.dependsOn('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+ext {
+    replacements = [
+        FORGE_VERSION: project.forgeversion,
+        FML_VERSION: project.fmlversion,
+        JAVA_VERSION: project.javaversion,
+        MC_VERSION: project.minecraftversion,
+        MC_VERSION_NEXT: project.minecraftversionnext,
+        MAPPINGS_VERSION: project.mappingsversion,
+        MOD_VERSION: project.modversion,
+        MOD_ID: project.modid,
+        MOD_NAME: project.modname,
+        MAIN_PACKAGE: project.mainpackage,
+        AUTHOR: project.author,
+        CREDITS: project.credits,
+        HOMEPAGE: project.homepage,
+        LOGO_FILE: project.logofile,
+        ISSUE_TRACKER: project.issuetracker,
+        UPDATEJSON: project.updatejson
+    ]
+
+    sourceTokenFiles = ["${project.mainpackage}/Reference.java".toString()]
+    resourceTokenFiles = ['pack.mcmeta', 'META-INF/mods.toml']
+}
+
+task replaceSourceTokens(type: Sync) {
+    inputs.property('replacements', project.replacements)
+
+    from (sourceSets.main.java) {
+        filesMatching(project.sourceTokenFiles) {
+            expand(project.replacements)
+        }
+    }
+    into "$buildDir/src"
+}
+
+compileJava {
+    dependsOn replaceSourceTokens
+    source = replaceSourceTokens.outputs
+}
+
+processResources {
+    inputs.property('replacements', project.replacements)
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    filesMatching(project.resourceTokenFiles) {
+        expand(project.replacements)
+    }
+}
+
+// task refreshGeneratedAssets {
+//     doFirst {
+//         delete 'src/main/resources/data'
+//     }
+
+//     doLast {
+//         copy {
+//             from 'src/generated/resources'
+//             into 'src/main/resources'
+//             exclude '**/.cache'
+//         }
+//     }
+// }
 
 // tasks.whenTaskAdded { task ->
 //     if (task.name.equals('runServerTest')) {
@@ -195,94 +315,3 @@ minecraft {
 //         }
 //     }
 // }
-
-ext {
-    replacements = [
-        FORGE_VERSION: project.forgeversion,
-        FML_VERSION: project.fmlversion,
-        JAVA_VERSION: project.javaversion,
-        MC_VERSION: project.minecraftversion,
-        MAPPINGS_VERSION: project.mappingsversion,
-        MOD_VERSION: project.modversion,
-        MOD_ID: project.modid,
-        MOD_NAME: project.modname,
-        MAIN_PACKAGE: project.mainpackage,
-        AUTHOR: project.author,
-        CREDITS: project.credits,
-        HOMEPAGE: project.homepage,
-        LOGO_FILE: project.logofile,
-        ISSUE_TRACKER: project.issuetracker,
-        UPDATEJSON: project.updatejson
-    ]
-
-    sourceTokenFiles = ["${project.mainpackage}/Reference.java".toString()]
-    resourceTokenFiles = ['pack.mcmeta', 'META-INF/mods.toml']
-}
-
-task replaceSourceTokens(type: Sync) {
-    inputs.property('replacements', project.replacements)
-
-    from (sourceSets.main.java) {
-        filesMatching(project.sourceTokenFiles) {
-            expand(project.replacements)
-        }
-    }
-    into "$buildDir/src"
-}
-
-compileJava {
-    dependsOn replaceSourceTokens
-    source = replaceSourceTokens.outputs
-}
-
-processResources {
-    inputs.property('replacements', project.replacements)
-
-    filesMatching(project.resourceTokenFiles) {
-        expand(project.replacements)
-    }
-}
-
-jar {
-    manifest {
-        attributes([
-            'Specification-Title': project.modname,
-            'Specification-Vendor': project.author,
-            'Specification-Version': project.modversion.substring(0, project.modversion.lastIndexOf('.')),
-            'Implementation-Title': project.name,
-            'Implementation-Version': project.modversion,
-            'Implementation-Vendor': project.author,
-            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-jar.finalizedBy('reobfJar')
-
-task refreshGeneratedAssets {
-    doFirst {
-        delete 'src/main/resources/data'
-        delete 'src/main/resources/assets'
-    }
-
-    doLast {
-        copy {
-            from 'src/generated/resources'
-            into 'src/main/resources'
-            exclude '**/.cache'
-        }
-        // TODO: genericize this so we don't need a separate copy block for each psd
-        copy {
-            from 'psd/spritesheet-assets'
-            into 'src/main/resources/assets/manufactory/textures'
-        }
-        copy {
-            from 'psd/guis-assets'
-            into 'src/main/resources/assets/manufactory/textures'
-        }
-        copy {
-            from 'psd/fluids-assets'
-            into 'src/main/resources/assets/manufactory/textures'
-        }
-    }
-}
