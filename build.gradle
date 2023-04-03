@@ -249,20 +249,7 @@ processResources {
     }
 }
 
-// task refreshGeneratedAssets {
-//     doFirst {
-//         delete 'src/main/resources/data'
-//     }
-
-//     doLast {
-//         copy {
-//             from 'src/generated/resources'
-//             into 'src/main/resources'
-//             exclude '**/.cache'
-//         }
-//     }
-// }
-
+// TODO: Replace using the Mojang GameTest system
 // tasks.whenTaskAdded { task ->
 //     if (task.name.equals('runServerTest')) {
 
