@@ -13,11 +13,11 @@ If you come across something that seems like a bug, please report it here. Make 
 * Make sure you are using the latest Release version of Manufactory. Old versions of this mod are unsupported. Features and fixes will not be backported to old versions unless critical to the stability of the game client.
 * Search to see if someone else has already reported the bug. Duplicate reports just slow down getting things fixed.
 * Include steps to reproduce the issue in your report. Screenshots or videos may also prove helpful.
-* If you have a crash report, please include that too by copying it into a [Gist](https://gist.github.com) and including the link. Just dumping a crash report directly into your report will cause your report to be closed without review.
+* If you have a crash report, please include that too by copying it into a [Gist](https://gist.github.com) and including the link. Just dumping a crash report directly into your issue will cause it to be closed without review.
 
 Feature Requests
 ----------------
-Have an idea for something that would fit well in this app? Awesome! File an issue and detail your idea. Keep it succinct and on-point, and only one feature per request, or it will be closed as "Invalid". Then we'll discuss your idea some and decide whether to implement it or not.
+Have an idea for something that would fit well in this mod? Awesome! File an issue and detail your idea. Keep it succinct and on-point, and only one feature per request or it will be closed as "Invalid". Then we'll discuss your idea some and decide whether to implement it or not.
 
 Contributions
 -------------
