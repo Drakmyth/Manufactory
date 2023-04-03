@@ -10,17 +10,17 @@ import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 public class PNetCommand {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     static ArgumentBuilder<CommandSourceStack, ?> register()
     {
@@ -53,7 +53,7 @@ public class PNetCommand {
             int blockCount = pnm.getBlockCount(networkId);
             int sourceCount = pnm.getSourceCount(networkId);
             int sinkCount = pnm.getSinkCount(networkId);
-            cs.sendSuccess(new TextComponent(String.format("%s Size:%d, In:%d, Out:%d", networkId, blockCount, sourceCount, sinkCount)), false);
+            cs.sendSuccess(Component.literal(String.format("%s Size:%d, In:%d, Out:%d", networkId, blockCount, sourceCount, sinkCount)), false);
         }
 
         return 1;
@@ -62,7 +62,7 @@ public class PNetCommand {
     private static int deleteNetworkInDimension(CommandSourceStack cs, ServerLevel dim, String networkId) throws CommandSyntaxException {
         PowerNetworkManager pnm = PowerNetworkManager.get(dim);
         pnm.deleteNetwork(networkId);
-        cs.sendSuccess(new TextComponent(String.format("Network %s deleted", networkId)), false);
+        cs.sendSuccess(Component.literal(String.format("Network %s deleted", networkId)), false);
 
         return 1;
     }
@@ -71,7 +71,7 @@ public class PNetCommand {
         long daytime = dim.getDayTime();
         float celestialAngle = dim.getSunAngle(1.0F);
 
-        cs.sendSuccess(new TextComponent(String.format("daytime: %d, angle: %f", daytime, celestialAngle)), false);
+        cs.sendSuccess(Component.literal(String.format("daytime: %d, angle: %f", daytime, celestialAngle)), false);
         return 1;
     }
 }

@@ -11,12 +11,12 @@ import com.drakmyth.minecraft.manufactory.blocks.entities.GrinderBlockEntity;
 import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public final class ModBlockEntityTypes {
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Reference.MOD_ID);
 
     public static final RegistryObject<BlockEntityType<GrinderBlockEntity>> GRINDER = BLOCK_ENTITY_TYPES.register("grinder", () -> BlockEntityType.Builder.of(GrinderBlockEntity::new, ModBlocks.GRINDER.get()).build(null));
     public static final RegistryObject<BlockEntityType<BallMillBlockEntity>> BALL_MILL = BLOCK_ENTITY_TYPES.register("ball_mill", () -> BlockEntityType.Builder.of(BallMillBlockEntity::new, ModBlocks.BALL_MILL.get()).build(null));

@@ -13,21 +13,18 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public abstract class AnimatedTextureProvider implements DataProvider {
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
     private final Map<ResourceLocation, Builder> data = new TreeMap<>();
     private final DataGenerator gen;
     private final String modid;
@@ -42,14 +39,14 @@ public abstract class AnimatedTextureProvider implements DataProvider {
     protected abstract void registerAnimatedTextures();
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         registerAnimatedTextures();
         if (data.isEmpty()) return;
 
         for (Entry<ResourceLocation, Builder> entry : data.entrySet()) {
             ResourceLocation key = entry.getKey();
             Path path = this.gen.getOutputFolder().resolve("assets/" + key.getNamespace() + "/textures/" + key.getPath() + ".png.mcmeta");
-            DataProvider.save(GSON, cache, entry.getValue().toJson(), path);
+            DataProvider.saveStable(cache, entry.getValue().toJson(), path);
         }
     }
 

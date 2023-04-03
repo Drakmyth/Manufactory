@@ -9,13 +9,13 @@ import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.commands.CommandSourceStack;
 
 public class ManufactoryCommand {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LOGGER.debug(LogMarkers.REGISTRATION, "Registering ManufactoryCommand...");

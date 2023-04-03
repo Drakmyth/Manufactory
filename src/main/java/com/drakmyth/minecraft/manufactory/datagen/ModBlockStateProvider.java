@@ -20,6 +20,7 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     private ExistingFileHelper exFileHelper;
@@ -65,20 +66,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerCubeBlock(Block block) {
-        String name = block.getRegistryName().getPath();
+        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
         ModelFile model = cubeAll(block);
         simpleBlock(block, model);
         itemModels().getBuilder(name).parent(model);
     };
 
     private void registerFluidBlock(Block block) {
-        String name = block.getRegistryName().getPath();
+        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
         ModelFile model = models().getBuilder(name).texture("particle", modLoc("block/" + name + "_still"));
         simpleBlock(block, model);
     }
 
     private void registerCubeMachineBlock(Block block) {
-        String name = block.getRegistryName().getPath();
+        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
         ModelFile model = generateCubeMachineModel(name);
         generateCubeMachineBlockState(block, model);
         itemModels().getBuilder(name).parent(model);

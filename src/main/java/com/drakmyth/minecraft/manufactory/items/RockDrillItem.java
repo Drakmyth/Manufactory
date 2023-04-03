@@ -18,8 +18,8 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,10 +37,10 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 public class RockDrillItem extends Item {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public RockDrillItem(Properties properties) {
         super(properties);
@@ -101,7 +101,7 @@ public class RockDrillItem extends Item {
         if (!level.isClientSide()) {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening upgrade gui...");
             MenuProvider containerProvider = new ItemMenuProvider("Rock Drill", stack, RockDrillUpgradeMenu::new);
-            NetworkHooks.openGui((ServerPlayer)player, containerProvider, buf -> {
+            NetworkHooks.openScreen((ServerPlayer)player, containerProvider, buf -> {
                 buf.writeItem(stack);
             });
         }

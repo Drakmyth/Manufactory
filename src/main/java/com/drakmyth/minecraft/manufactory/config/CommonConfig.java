@@ -7,13 +7,13 @@ package com.drakmyth.minecraft.manufactory.config;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonConfig {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     // public final ForgeConfigSpec.IntValue Field;
 

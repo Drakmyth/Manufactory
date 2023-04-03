@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,10 +23,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
+import net.minecraftforge.network.NetworkEvent.Context;
 
 public class OpenMenuWithUpgradesPacket {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private ItemStack[] upgrades;
     private BlockPos pos;
@@ -50,7 +50,7 @@ public class OpenMenuWithUpgradesPacket {
             data.writeItem(upgrade);
         }
         data.writeBlockPos(pos);
-        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet encoded { upgrades: {}, pos: {} }", () -> LogHelper.items(upgrades), () -> LogHelper.blockPos(pos));
+        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet encoded { upgrades: {}, pos: {} }", LogHelper.items(upgrades), LogHelper.blockPos(pos));
     }
 
     public static OpenMenuWithUpgradesPacket decode(FriendlyByteBuf data) {
@@ -60,7 +60,7 @@ public class OpenMenuWithUpgradesPacket {
             upgrades.add(data.readItem());
         }
         BlockPos pos = data.readBlockPos();
-        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet decoded { upgrades: {}, pos: {} }", () -> LogHelper.items(upgrades), () -> LogHelper.blockPos(pos));
+        LOGGER.trace(LogMarkers.NETWORK, "OpenMenuWithUpgrades packet decoded { upgrades: {}, pos: {} }", LogHelper.items(upgrades), LogHelper.blockPos(pos));
         return new OpenMenuWithUpgradesPacket(upgrades.toArray(new ItemStack[]{}), pos);
     }
 
@@ -76,17 +76,17 @@ public class OpenMenuWithUpgradesPacket {
                     Minecraft minecraft = Minecraft.getInstance();
                     Level level = minecraft.level;
                     if (!level.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position {} is not currently loaded. Dropping packet...", () -> LogHelper.blockPos(pos));
+                        LOGGER.warn(LogMarkers.NETWORK, "Position {} is not currently loaded. Dropping packet...", LogHelper.blockPos(pos));
                         return;
                     }
                     BlockEntity be = level.getBlockEntity(pos);
                     if (!(be instanceof IOpenMenuWithUpgradesListener)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position {} does not contain an IOpenMenuWithUpgradesListener tile entity. Dropping packet...", () -> LogHelper.blockPos(pos));
+                        LOGGER.warn(LogMarkers.NETWORK, "Position {} does not contain an IOpenMenuWithUpgradesListener tile entity. Dropping packet...", LogHelper.blockPos(pos));
                         return;
                     }
                     IOpenMenuWithUpgradesListener prl = (IOpenMenuWithUpgradesListener) be;
                     prl.onContainerOpened(upgrades);
-                    LOGGER.trace(LogMarkers.NETWORK, "Upgrades synced - upgrades: {}", () -> LogHelper.items(upgrades));
+                    LOGGER.trace(LogMarkers.NETWORK, "Upgrades synced - upgrades: {}", LogHelper.items(upgrades));
                 }
             });
         });

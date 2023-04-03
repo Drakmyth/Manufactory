@@ -8,8 +8,8 @@ package com.drakmyth.minecraft.manufactory;
 import com.drakmyth.minecraft.manufactory.commands.ManufactoryCommand;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -21,14 +21,14 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
 public final class ForgeEventSubscriber {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     @SubscribeEvent
-    public static void worldTick(TickEvent.WorldTickEvent event) {
+    public static void levelTick(TickEvent.LevelTickEvent event) {
         if (event.side == LogicalSide.CLIENT) return;
         if (event.phase == Phase.END) return;
-        PowerNetworkManager networkManager = PowerNetworkManager.get((ServerLevel)event.world);
-        networkManager.tick(event.world);
+        PowerNetworkManager networkManager = PowerNetworkManager.get((ServerLevel)event.level);
+        networkManager.tick(event.level);
     }
 
     @SubscribeEvent

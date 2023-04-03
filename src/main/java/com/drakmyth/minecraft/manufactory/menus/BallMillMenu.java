@@ -10,8 +10,8 @@ import com.drakmyth.minecraft.manufactory.blocks.entities.BallMillBlockEntity;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModMenuTypes;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -28,7 +28,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class BallMillMenu extends AbstractContainerMenu implements IPowerProgressMenu {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public final ItemStackHandler ballMillInventory;
     private final ContainerLevelAccess posCallable;

@@ -11,7 +11,7 @@ import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
 import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeSerializer;
 
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

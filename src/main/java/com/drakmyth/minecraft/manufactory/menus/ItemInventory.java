@@ -12,10 +12,10 @@ package com.drakmyth.minecraft.manufactory.menus;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemInventory extends SimpleContainer {
 	private static final String ITEMS_KEY = "items";
@@ -25,7 +25,7 @@ public class ItemInventory extends SimpleContainer {
 		super(size);
 		this.host = stack;
 
-		ListTag items = host.getOrCreateTag().getList(ITEMS_KEY, NBT.TAG_COMPOUND);
+		ListTag items = host.getOrCreateTag().getList(ITEMS_KEY, Tag.TAG_COMPOUND);
 		for (int i = 0; i < size && i < items.size(); i++) {
 			setItem(i, ItemStack.of(items.getCompound(i)));
 		}

@@ -7,12 +7,12 @@ package com.drakmyth.minecraft.manufactory.blocks.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IGrinderWheelUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
@@ -26,8 +26,8 @@ import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.drakmyth.minecraft.manufactory.util.TierHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
@@ -38,12 +38,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraft.util.RandomSource;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 public class GrinderBlockEntity extends BlockEntity implements IMachineProgressListener, IPowerRateListener, IOpenMenuWithUpgradesListener {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private boolean firstTick;
     private ItemStackHandler grinderInventory;
@@ -95,7 +96,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced progress with powerRequired {} and powerRemaining {}", () -> LogHelper.blockPos(getBlockPos()), () -> powerRequired, () -> powerRemaining);
+        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced progress with powerRequired {} and powerRemaining {}", LogHelper.blockPos(getBlockPos()), powerRequired, powerRemaining);
     }
 
     // Client-Side Only
@@ -104,7 +105,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = received;
         maxPowerPerTick = expected;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced power rate with lastPowerReceived {} and maxPowerPerTick {}", () -> LogHelper.blockPos(getBlockPos()), () -> lastPowerReceived, () -> maxPowerPerTick);
+        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced power rate with lastPowerReceived {} and maxPowerPerTick {}", LogHelper.blockPos(getBlockPos()), lastPowerReceived, maxPowerPerTick);
     }
 
     // Client-Side Only
@@ -116,21 +117,20 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        super.save(compound);
-        LOGGER.trace(LogMarkers.MACHINE, "Writing Grinder at {} to NBT...", () -> LogHelper.blockPos(getBlockPos()));
+    public void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+        LOGGER.trace(LogMarkers.MACHINE, "Writing Grinder at {} to NBT...", LogHelper.blockPos(getBlockPos()));
         compound.put("inventory", grinderInventory.serializeNBT());
         compound.put("upgradeInventory", grinderUpgradeInventory.serializeNBT());
         compound.putFloat("powerRequired", powerRequired);
         compound.putFloat("powerRemaining", powerRemaining);
         compound.putFloat("maxPowerPerTick", maxPowerPerTick);
-        return compound;
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        LOGGER.debug(LogMarkers.MACHINE, "Reading Grinder at {} from NBT...", () -> LogHelper.blockPos(getBlockPos()));
+        LOGGER.debug(LogMarkers.MACHINE, "Reading Grinder at {} from NBT...", LogHelper.blockPos(getBlockPos()));
         grinderInventory.deserializeNBT(tag.getCompound("inventory"));
         grinderUpgradeInventory.deserializeNBT(tag.getCompound("upgradeInventory"));
         powerRequired = tag.getFloat("powerRequired");
@@ -162,7 +162,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
 
     private boolean tryStartRecipe() {
         LOGGER.trace(LogMarkers.MACHINE, "Trying to start Grinder recipe...");
-        GrinderRecipe recipe = level.getRecipeManager().getRecipeFor(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), level).orElse(null);
+        GrinderRecipe recipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRINDER.get(), new RecipeWrapper(grinderInventory), level).orElse(null);
         if (recipe == null) {
             LOGGER.trace(LogMarkers.MACHINE, "No recipe matches input. Skipping...");
             return false;
@@ -193,9 +193,9 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
         PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
         LevelChunk chunk = level.getChunkAt(getBlockPos());
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update screen at {}...", () -> LogHelper.blockPos(getBlockPos()));
+        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update screen at {}...", LogHelper.blockPos(getBlockPos()));
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
-        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update screen at {}...", () -> LogHelper.blockPos(getBlockPos()));
+        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update screen at {}...", LogHelper.blockPos(getBlockPos()));
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
         LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
     }
@@ -217,8 +217,8 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         if (firstTick) {
             firstTick = false;
             if (!grinderInventory.getStackInSlot(0).isEmpty()) {
-                currentRecipe = level.getRecipeManager().getRecipeFor(GrinderRecipe.recipeType, new RecipeWrapper(grinderInventory), level).orElse(null);
-                LOGGER.debug(LogMarkers.MACHINE, "Grinder input at {} not empty on first tick, initialized current recipe", () -> LogHelper.blockPos(getBlockPos()));
+                currentRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRINDER.get(), new RecipeWrapper(grinderInventory), level).orElse(null);
+                LOGGER.debug(LogMarkers.MACHINE, "Grinder input at {} not empty on first tick, initialized current recipe", LogHelper.blockPos(getBlockPos()));
             }
         }
 
@@ -251,7 +251,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
             LOGGER.debug(LogMarkers.MACHINE, "Grinder operation complete, processing results...");
             grinderInventory.extractItem(0, 1, false);
             ItemStack resultStack = currentRecipe.getResultItem().copy();
-            Random rand = level.getRandom();
+            RandomSource rand = level.getRandom();
             if (getEfficiencyModifier() > 0) {
                 LOGGER.debug(LogMarkers.MACHINE, "Rolling to determine if extra results happen...");
                 if (currentRecipe.hasExtraChance() && rand.nextFloat() <= (currentRecipe.getExtraChance() * getEfficiencyModifier())) {

@@ -5,7 +5,10 @@
 
 package com.drakmyth.minecraft.manufactory.init;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 
@@ -14,19 +17,33 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.Item;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Properties;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries.Keys;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public final class ModFluids {
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(Keys.FLUID_TYPES, Reference.MOD_ID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Reference.MOD_ID);
 
+    // TODO: Consider utilizing tinting for fluid textures instead of color shifting the textures themselves?
+    public static RegistryObject<FluidType> SLURRIED_COAL_ORE_TYPE = registerFluidType("slurried_coal_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_DIAMOND_ORE_TYPE = registerFluidType("slurried_diamond_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_EMERALD_ORE_TYPE = registerFluidType("slurried_emerald_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_GOLD_ORE_TYPE = registerFluidType("slurried_gold_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_IRON_ORE_TYPE = registerFluidType("slurried_iron_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_COPPER_ORE_TYPE = registerFluidType("slurried_copper_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_LAPIS_ORE_TYPE = registerFluidType("slurried_lapis_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_NETHER_QUARTZ_ORE_TYPE = registerFluidType("slurried_nether_quartz_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_REDSTONE_ORE_TYPE = registerFluidType("slurried_redstone_ore", 0xFFFFFFFF);
+    public static RegistryObject<FluidType> SLURRIED_ANCIENT_DEBRIS_TYPE = registerFluidType("slurried_ancient_debris", 0xFFFFFFFF);
+
     public static final RegistryObject<FlowingFluid> SLURRIED_COAL_ORE = FLUIDS.register("slurried_coal_ore", () -> new ForgeFlowingFluid.Source(slurriedCoalOreProperties()));
-    public static final RegistryObject<FlowingFluid> SLURRIED_COAL_ORE_FLOWING = FLUIDS.register("flowing_slurried_coal_ore", () -> new ForgeFlowingFluid.Flowing(slurriedCoalOreProperties()));
+    public static final RegistryObject<FlowingFluid> SLURRIED_COAL_ORE_FLOWING = FLUIDS.register("slurried_coal_ore_flowing", () -> new ForgeFlowingFluid.Flowing(slurriedCoalOreProperties()));
     public static final RegistryObject<FlowingFluid> SLURRIED_DIAMOND_ORE = FLUIDS.register("slurried_diamond_ore", () -> new ForgeFlowingFluid.Source(slurriedDiamondOreProperties()));
     public static final RegistryObject<FlowingFluid> SLURRIED_DIAMOND_ORE_FLOWING = FLUIDS.register("flowing_slurried_diamond_ore", () -> new ForgeFlowingFluid.Flowing(slurriedDiamondOreProperties()));
     public static final RegistryObject<FlowingFluid> SLURRIED_EMERALD_ORE = FLUIDS.register("slurried_emerald_ore", () -> new ForgeFlowingFluid.Source(slurriedEmeraldOreProperties()));
@@ -46,133 +63,80 @@ public final class ModFluids {
     public static final RegistryObject<FlowingFluid> SLURRIED_ANCIENT_DEBRIS = FLUIDS.register("slurried_ancient_debris", () -> new ForgeFlowingFluid.Source(slurriedAncientDebrisProperties()));
     public static final RegistryObject<FlowingFluid> SLURRIED_ANCIENT_DEBRIS_FLOWING = FLUIDS.register("flowing_slurried_ancient_debris", () -> new ForgeFlowingFluid.Flowing(slurriedAncientDebrisProperties()));
 
-    private static Properties slurriedCoalOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_coal_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_coal_ore_flow");
+    
+    private static RegistryObject<FluidType> registerFluidType(String name, int tint) {
+        return FLUID_TYPES.register(name, () -> new FluidType(FluidType.Properties.create()) {
+            @Override
+            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
+            {
+                consumer.accept(new IClientFluidTypeExtensions() {
+                    @Override
+                    public ResourceLocation getStillTexture() {
+                        return new ResourceLocation(Reference.MOD_ID, String.format("block/%s_still", name));
+                    }
+                    
+                    @Override
+                    public ResourceLocation getFlowingTexture() {
+                        return new ResourceLocation(Reference.MOD_ID, String.format("block/%s_flow", name));
+                    }
+                    
+                    @Nullable
+                    @Override
+                    public ResourceLocation getOverlayTexture() {
+                        // TODO: provide %s_overlay textures
+                        return new ResourceLocation(Reference.MOD_ID, String.format("block/%s_still", name));
+                    }
+    
+                    @Override
+                    public int getTintColor() {
+                        // return 0x3F1080FF;
+                        return tint;
+                    }
+                });
+            }
+        });
+    }
 
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_COAL_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_COAL_ORE_FLOWING.get();
+    private static Properties slurriedCoalOreProperties() {
         Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_COAL_ORE.get();
         Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_COAL_ORE_BUCKET.get();
 
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);//.density(1024).viscosity(1024);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_COAL_ORE_TYPE, SLURRIED_COAL_ORE, SLURRIED_COAL_ORE_FLOWING).block(blockSupplier).bucket(bucketSupplier);
     }
 
     private static Properties slurriedDiamondOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_diamond_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_diamond_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_DIAMOND_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_DIAMOND_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_DIAMOND_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_DIAMOND_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_DIAMOND_ORE_TYPE, SLURRIED_DIAMOND_ORE, SLURRIED_DIAMOND_ORE_FLOWING).block(ModBlocks.SLURRIED_DIAMOND_ORE).bucket(ModItems.SLURRIED_DIAMOND_ORE_BUCKET);
     }
 
     private static Properties slurriedEmeraldOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_emerald_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_emerald_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_EMERALD_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_EMERALD_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_EMERALD_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_EMERALD_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_EMERALD_ORE_TYPE, SLURRIED_EMERALD_ORE, SLURRIED_EMERALD_ORE_FLOWING).block(ModBlocks.SLURRIED_EMERALD_ORE).bucket(ModItems.SLURRIED_EMERALD_ORE_BUCKET);
     }
 
     private static Properties slurriedGoldOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_gold_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_gold_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_GOLD_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_GOLD_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_GOLD_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_GOLD_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_GOLD_ORE_TYPE, SLURRIED_GOLD_ORE, SLURRIED_GOLD_ORE_FLOWING).block(ModBlocks.SLURRIED_GOLD_ORE).bucket(ModItems.SLURRIED_GOLD_ORE_BUCKET);
     }
 
     private static Properties slurriedIronOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_iron_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_iron_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_IRON_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_IRON_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_IRON_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_IRON_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_IRON_ORE_TYPE, SLURRIED_IRON_ORE, SLURRIED_IRON_ORE_FLOWING).block(ModBlocks.SLURRIED_IRON_ORE).bucket(ModItems.SLURRIED_IRON_ORE_BUCKET);
     }
 
     private static Properties slurriedCopperOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_copper_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_copper_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_COPPER_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_COPPER_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_COPPER_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_COPPER_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_COPPER_ORE_TYPE, SLURRIED_COPPER_ORE, SLURRIED_COPPER_ORE_FLOWING).block(ModBlocks.SLURRIED_COPPER_ORE).bucket(ModItems.SLURRIED_COPPER_ORE_BUCKET);
     }
 
     private static Properties slurriedLapisOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_lapis_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_lapis_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_LAPIS_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_LAPIS_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_LAPIS_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_LAPIS_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_LAPIS_ORE_TYPE, SLURRIED_LAPIS_ORE, SLURRIED_LAPIS_ORE_FLOWING).block(ModBlocks.SLURRIED_LAPIS_ORE).bucket(ModItems.SLURRIED_LAPIS_ORE_BUCKET);
     }
 
     private static Properties slurriedNetherQuartzOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_nether_quartz_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_nether_quartz_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_NETHER_QUARTZ_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_NETHER_QUARTZ_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_NETHER_QUARTZ_ORE_TYPE, SLURRIED_NETHER_QUARTZ_ORE, SLURRIED_NETHER_QUARTZ_ORE_FLOWING).block(ModBlocks.SLURRIED_NETHER_QUARTZ_ORE).bucket(ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET);
     }
 
     private static Properties slurriedRedstoneOreProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_redstone_ore_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_redstone_ore_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_REDSTONE_ORE.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_REDSTONE_ORE_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_REDSTONE_ORE.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_REDSTONE_ORE_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_REDSTONE_ORE_TYPE, SLURRIED_REDSTONE_ORE, SLURRIED_REDSTONE_ORE_FLOWING).block(ModBlocks.SLURRIED_REDSTONE_ORE).bucket(ModItems.SLURRIED_REDSTONE_ORE_BUCKET);
     }
 
     private static Properties slurriedAncientDebrisProperties() {
-        ResourceLocation stillResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_ancient_debris_still");
-        ResourceLocation flowResource = new ResourceLocation(Reference.MOD_ID, "block/slurried_ancient_debris_flow");
-
-        Supplier<Fluid> stillSupplier = () -> SLURRIED_ANCIENT_DEBRIS.get();
-        Supplier<Fluid> flowSupplier = () -> SLURRIED_ANCIENT_DEBRIS_FLOWING.get();
-        Supplier<LiquidBlock> blockSupplier = () -> ModBlocks.SLURRIED_ANCIENT_DEBRIS.get();
-        Supplier<Item> bucketSupplier = () -> ModItems.SLURRIED_ANCIENT_DEBRIS_BUCKET.get();
-
-        Builder attributes = FluidAttributes.builder(stillResource, flowResource);
-        return new Properties(stillSupplier, flowSupplier, attributes).block(blockSupplier).bucket(bucketSupplier);
+        return new Properties(SLURRIED_ANCIENT_DEBRIS_TYPE, SLURRIED_ANCIENT_DEBRIS, SLURRIED_ANCIENT_DEBRIS_FLOWING).block(ModBlocks.SLURRIED_ANCIENT_DEBRIS).bucket(ModItems.SLURRIED_ANCIENT_DEBRIS_BUCKET);
     }
 }

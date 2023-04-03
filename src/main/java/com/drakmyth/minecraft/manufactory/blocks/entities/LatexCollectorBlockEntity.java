@@ -14,8 +14,8 @@ import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
@@ -23,10 +23,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 public class LatexCollectorBlockEntity extends BlockEntity implements IMachineProgressListener {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private int totalTicks = 0;
     private int ticksRemaining = 0;
@@ -62,7 +62,7 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     }
 
     private void updateClient(Level level, BlockPos pos) {
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update animation at {}...", () -> LogHelper.blockPos(pos));
+        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update animation at {}...", LogHelper.blockPos(pos));
         MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, totalTicks, pos);
         LevelChunk chunk = level.getChunkAt(pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
@@ -82,18 +82,17 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        super.save(compound);
-        LOGGER.trace(LogMarkers.MACHINE, "Writing Latex Collector at {} to NBT...", () -> LogHelper.blockPos(getBlockPos()));
+    public void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+        LOGGER.trace(LogMarkers.MACHINE, "Writing Latex Collector at {} to NBT...", LogHelper.blockPos(getBlockPos()));
         compound.putInt("totalTicks", totalTicks);
         compound.putInt("ticksRemaining", ticksRemaining);
-        return compound;
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        LOGGER.debug(LogMarkers.MACHINE, "Reading Latex Collector at {} from NBT...", () -> LogHelper.blockPos(getBlockPos()));
+        LOGGER.debug(LogMarkers.MACHINE, "Reading Latex Collector at {} from NBT...", LogHelper.blockPos(getBlockPos()));
         totalTicks = tag.getInt("totalTicks");
         ticksRemaining = tag.getInt("ticksRemaining");
         LOGGER.debug(LogMarkers.MACHINE, "Latex Collector Loaded!");
@@ -126,6 +125,6 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     public void onProgressUpdate(float progress, float total) {
         totalTicks = (int)total;
         ticksRemaining = (int)progress;
-        LOGGER.trace(LogMarkers.MACHINE, "Latex Collector at {} synced progress with ticksRemaining {} and totalTicks {}", () -> LogHelper.blockPos(getBlockPos()), () -> ticksRemaining, () -> totalTicks);
+        LOGGER.trace(LogMarkers.MACHINE, "Latex Collector at {} synced progress with ticksRemaining {} and totalTicks {}", LogHelper.blockPos(getBlockPos()), ticksRemaining, totalTicks);
     }
 }

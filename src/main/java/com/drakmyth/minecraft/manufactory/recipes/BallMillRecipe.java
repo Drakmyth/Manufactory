@@ -5,8 +5,8 @@
 
 package com.drakmyth.minecraft.manufactory.recipes;
 
-import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
+import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -16,8 +16,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
 
 public class BallMillRecipe extends ManufactoryRecipe {
-
-    public static final RecipeType<BallMillRecipe> recipeType = RecipeType.register(String.format("%s:ball_mill", Reference.MOD_ID));
 
     public BallMillRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime) {
         super(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
@@ -30,6 +28,6 @@ public class BallMillRecipe extends ManufactoryRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return recipeType;
+        return ModRecipeTypes.BALL_MILL.get();
     }
 }

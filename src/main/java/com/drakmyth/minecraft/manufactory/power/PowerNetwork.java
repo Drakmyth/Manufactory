@@ -21,20 +21,20 @@ import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 public class PowerNetwork {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private String networkId;
     private Map<BlockPos, Direction[]> nodes;
@@ -102,7 +102,7 @@ public class PowerNetwork {
 
     public void addNode(PowerNetworkNode node, Type type) {
         BlockPos pos = node.getPos();
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Adding node type {} at {} to Power Network {}...", () -> type, () -> LogHelper.blockPos(pos), () -> networkId);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Adding node type {} at {} to Power Network {}...", type, LogHelper.blockPos(pos), networkId);
         nodes.put(pos, node.getDirections());
         switch(type) {
             case SOURCE:
@@ -124,7 +124,7 @@ public class PowerNetwork {
         nodes.remove(pos);
         sources.remove(pos);
         sinks.remove(pos);
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Removed {} from Power Network {}", () -> LogHelper.blockPos(pos), () -> networkId);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Removed {} from Power Network {}", LogHelper.blockPos(pos), networkId);
     }
 
     public Map<BlockPos, Direction[]> getNodes() {
@@ -162,9 +162,9 @@ public class PowerNetwork {
     }
 
     public float consumePower(float requested, BlockPos pos) {
-        LOGGER.trace(LogMarkers.POWERNETWORK, "Request to consume {} power received from {} by network {}", () -> requested, () -> LogHelper.blockPos(pos), () -> networkId);
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Request to consume {} power received from {} by network {}", requested, LogHelper.blockPos(pos), networkId);
         if (requested <= 0) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Negative power requested from network {} by {}. Rejecting request...", () -> networkId, () -> LogHelper.blockPos(pos));
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Negative power requested from network {} by {}. Rejecting request...", networkId, LogHelper.blockPos(pos));
             return 0;
         }
         spreading_window.add(pos);
@@ -185,7 +185,7 @@ public class PowerNetwork {
     public static PowerNetwork fromNBT(CompoundTag nbt) {
         String networkId = nbt.getString("networkId");
         LOGGER.debug(LogMarkers.POWERNETWORK, "Creating Power Network {} from NBT...", networkId);
-        ListTag nodeListTag = nbt.getList("nodes", Constants.NBT.TAG_COMPOUND);
+        ListTag nodeListTag = nbt.getList("nodes", Tag.TAG_COMPOUND);
         List<PowerNetworkNode> nodes = nodeListTag.stream().map(compound -> {
             CompoundTag nodeTag = (CompoundTag)compound;
             int x = nodeTag.getInt("x");
@@ -200,7 +200,7 @@ public class PowerNetwork {
             return new PowerNetworkNode(pos, directions);
         }).collect(Collectors.toList());
 
-        ListTag sourceListTag = nbt.getList("sources", Constants.NBT.TAG_COMPOUND);
+        ListTag sourceListTag = nbt.getList("sources", Tag.TAG_COMPOUND);
         List<BlockPos> sources = sourceListTag.stream().map(compound -> {
             CompoundTag sourcePosTag = (CompoundTag)compound;
             int x = sourcePosTag.getInt("x");
@@ -210,7 +210,7 @@ public class PowerNetwork {
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
 
-        ListTag sinkListTag = nbt.getList("sinks", Constants.NBT.TAG_COMPOUND);
+        ListTag sinkListTag = nbt.getList("sinks", Tag.TAG_COMPOUND);
         List<BlockPos> sinks = sinkListTag.stream().map(compound -> {
             CompoundTag sinkPosTag = (CompoundTag)compound;
             int x = sinkPosTag.getInt("x");

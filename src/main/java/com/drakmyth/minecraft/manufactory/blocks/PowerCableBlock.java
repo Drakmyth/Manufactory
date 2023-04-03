@@ -8,18 +8,21 @@ package com.drakmyth.minecraft.manufactory.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -31,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -38,7 +42,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
 public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IPowerBlock {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
     public static final BooleanProperty EAST = BlockStateProperties.EAST;
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
@@ -137,7 +141,7 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
-            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.getFluidTicks().schedule(new ScheduledTick<Fluid>(Fluids.WATER, currentPos, Fluids.WATER.getTickDelay(level), 0));
         }
 
         Direction oppositeFacing = facing.getOpposite();
@@ -161,8 +165,8 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Power Cable placed at {}", () -> LogHelper.blockPos(pos));
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Power Cable placed at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.trackBlock(pos, Direction.values(), getPowerBlockType());
@@ -170,7 +174,7 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Power Cable at {} replaced.", () -> LogHelper.blockPos(pos));
+        LOGGER.debug(LogMarkers.MACHINE, "Power Cable at {} replaced.", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 

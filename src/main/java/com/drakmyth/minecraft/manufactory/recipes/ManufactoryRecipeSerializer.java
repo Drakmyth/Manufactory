@@ -19,10 +19,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>>
-        implements RecipeSerializer<T> {
+public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements RecipeSerializer<T> {
     private final ManufactoryRecipeSerializer.IFactory<T> factory;
 
 

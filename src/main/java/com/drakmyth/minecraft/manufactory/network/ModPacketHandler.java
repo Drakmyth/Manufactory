@@ -8,16 +8,16 @@ package com.drakmyth.minecraft.manufactory.network;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class ModPacketHandler {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final String PROTOCOL_VERSION = "1";
 
     public static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
@@ -33,21 +33,21 @@ public class ModPacketHandler {
         INSTANCE.messageBuilder(MachineProgressPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(MachineProgressPacket::encode)
                 .decoder(MachineProgressPacket::decode)
-                .consumer(MachineProgressPacket::handle)
+                .consumerMainThread(MachineProgressPacket::handle)
                 .add();
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering PowerRatePacket with id {}...", messageId);
         INSTANCE.messageBuilder(PowerRatePacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PowerRatePacket::encode)
                 .decoder(PowerRatePacket::decode)
-                .consumer(PowerRatePacket::handle)
+                .consumerMainThread(PowerRatePacket::handle)
                 .add();
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering OpenContainerWithUpgradesPacket with id {}...", messageId);
         INSTANCE.messageBuilder(OpenMenuWithUpgradesPacket.class, messageId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(OpenMenuWithUpgradesPacket::encode)
                 .decoder(OpenMenuWithUpgradesPacket::decode)
-                .consumer(OpenMenuWithUpgradesPacket::handle)
+                .consumerMainThread(OpenMenuWithUpgradesPacket::handle)
                 .add();
     }
 }

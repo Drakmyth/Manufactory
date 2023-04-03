@@ -15,17 +15,17 @@ import java.util.Queue;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 public class PowerNetworkWalker {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static List<PowerNetworkNode> walk(Map<BlockPos, Direction[]> allNodes, BlockPos start) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Beginning Power Network branch walk from {}...", () -> LogHelper.blockPos(start));
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Beginning Power Network branch walk from {}...", LogHelper.blockPos(start));
         Queue<PowerNetworkNode> nodesToVisit = new ArrayDeque<>();
         Map<BlockPos, PowerNetworkNode> visitedNodes = new HashMap<>();
         nodesToVisit.add(new PowerNetworkNode(start, allNodes.get(start)));

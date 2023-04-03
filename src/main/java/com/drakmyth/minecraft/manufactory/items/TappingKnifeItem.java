@@ -11,8 +11,8 @@ import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEnt
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -26,7 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
 public class TappingKnifeItem extends Item {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public TappingKnifeItem(Properties properties) {
         super(properties);

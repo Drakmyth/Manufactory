@@ -16,7 +16,7 @@ import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeBuilder;
 
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -28,7 +28,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public final class OreRecipes extends RecipeProvider {
@@ -106,7 +106,7 @@ public final class OreRecipes extends RecipeProvider {
 
     private static class OreProcessingRecipeData {
         private final Item ore;
-        private final Tag.Named<Item> oreTag;
+        private final TagKey<Item> oreTag;
         private final Item stage1;
         private final Item stage2;
         // private final Fluid stage3;
@@ -115,7 +115,7 @@ public final class OreRecipes extends RecipeProvider {
         private final Tier tier;
         private final int[] extraAmounts;
         
-        private OreProcessingRecipeData(Item ore, Tag.Named<Item> oreTag, Item stage1, Item stage2, Fluid stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
+        private OreProcessingRecipeData(Item ore, TagKey<Item> oreTag, Item stage1, Item stage2, Fluid stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
             this.ore = ore;
             this.oreTag = oreTag;
             this.stage1 = stage1;
@@ -127,11 +127,11 @@ public final class OreRecipes extends RecipeProvider {
             this.extraAmounts = extraAmounts;
         }
         
-        public OreProcessingRecipeData(Tag.Named<Item> oreTag, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
+        public OreProcessingRecipeData(TagKey<Item> oreTag, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier, int[] extraAmounts) {
             this(null, oreTag, stage1.get(), stage2.get(), stage3.get(), /*stage4,*/ stage5, tier, extraAmounts);
         }
 
-        public OreProcessingRecipeData(Tag.Named<Item> oreTag, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier) {
+        public OreProcessingRecipeData(TagKey<Item> oreTag, RegistryObject<Item> stage1, RegistryObject<Item> stage2, RegistryObject<FlowingFluid> stage3, /*Item stage4,*/ Item stage5, Tier tier) {
             this(oreTag, stage1, stage2, stage3, /*stage4,*/ stage5, tier, new int[]{1});
         }
         
@@ -148,7 +148,7 @@ public final class OreRecipes extends RecipeProvider {
         }
 
         public String getOreName() {
-            return ore == null ? oreTag.getName().getPath() : ForgeRegistries.ITEMS.getKey(ore).getPath();
+            return ore == null ? oreTag.location().getPath() : ForgeRegistries.ITEMS.getKey(ore).getPath();
         }
 
         public InventoryChangeTrigger.TriggerInstance getOreInventoryChangeTriggerInstance() {

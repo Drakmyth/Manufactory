@@ -14,8 +14,8 @@ import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,13 +33,13 @@ import com.mojang.math.Vector3f;
 
 public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollectorBlockEntity> {
     public static final ResourceLocation LATEX_TEXTURE = new ResourceLocation("minecraft", "block/quartz_block_top");
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public LatexCollectorRenderer(BlockEntityRendererProvider.Context context) { }
 
     @Override
     public void render(LatexCollectorBlockEntity blockEntity, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at {}...", () -> LogHelper.blockPos(blockEntity.getBlockPos()));
+        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at {}...", LogHelper.blockPos(blockEntity.getBlockPos()));
         BlockState state = blockEntity.getBlockState();
         if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {
             LOGGER.trace(LogMarkers.RENDERING, "Latex collector is empty. Nothing to render.");

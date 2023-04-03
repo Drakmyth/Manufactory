@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,10 +20,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
+import net.minecraftforge.network.NetworkEvent.Context;
 
 public class PowerRatePacket {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private float received;
     private float expected;
@@ -51,14 +51,14 @@ public class PowerRatePacket {
         data.writeFloat(received);
         data.writeFloat(expected);
         data.writeBlockPos(pos);
-        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet encoded { received: {}, expected: {}, pos: {} }", () -> received, () -> expected, () -> LogHelper.blockPos(pos));
+        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet encoded { received: {}, expected: {}, pos: {} }", received, expected, LogHelper.blockPos(pos));
     }
 
     public static PowerRatePacket decode(FriendlyByteBuf data) {
         float received = data.readFloat();
         float expected = data.readFloat();
         BlockPos pos = data.readBlockPos();
-        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet decoded { received: {}, expected: {}, pos: {} }", () -> received, () -> expected, () -> LogHelper.blockPos(pos));
+        LOGGER.trace(LogMarkers.NETWORK, "PowerRate packet decoded { received: {}, expected: {}, pos: {} }", received, expected, LogHelper.blockPos(pos));
         return new PowerRatePacket(received, expected, pos);
     }
 
@@ -74,12 +74,12 @@ public class PowerRatePacket {
                     Minecraft minecraft = Minecraft.getInstance();
                     Level level = minecraft.level;
                     if (!level.isAreaLoaded(pos, 1)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position {} is not currently loaded. Dropping packet...", () -> LogHelper.blockPos(pos));
+                        LOGGER.warn(LogMarkers.NETWORK, "Position {} is not currently loaded. Dropping packet...", LogHelper.blockPos(pos));
                         return;
                     }
                     BlockEntity be = level.getBlockEntity(pos);
                     if (!(be instanceof IPowerRateListener)) {
-                        LOGGER.warn(LogMarkers.NETWORK, "Position {} does not contain an IPowerRateListener tile entity. Dropping packet...", () -> LogHelper.blockPos(pos));
+                        LOGGER.warn(LogMarkers.NETWORK, "Position {} does not contain an IPowerRateListener tile entity. Dropping packet...", LogHelper.blockPos(pos));
                         return;
                     }
                     IPowerRateListener prl = (IPowerRateListener) be;
