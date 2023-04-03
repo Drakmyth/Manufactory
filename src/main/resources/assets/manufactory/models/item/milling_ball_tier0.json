@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "manufactory:item/milling_ball_tier0"
-  }
-}
