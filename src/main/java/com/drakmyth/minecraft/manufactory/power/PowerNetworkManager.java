@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.power;
 
 import java.util.Arrays;
@@ -11,27 +6,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.common.util.Constants;
 
 public class PowerNetworkManager extends SavedData {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final String DATA_NAME = Reference.MOD_ID + "_PowerNetworkData";
 
     private Map<BlockPos, String> blockCache;
@@ -83,13 +75,14 @@ public class PowerNetworkManager extends SavedData {
     public float consumePower(float requested, BlockPos pos) {
         String networkId = blockCache.get(pos);
         if (networkId == null) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Machine at {} requested power, but is not part of a power network.", () -> LogHelper.blockPos(pos));
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Machine at {} requested power, but is not part of a power network.", LogHelper.blockPos(pos));
             return 0;
         }
 
         PowerNetwork network = networks.get(networkId);
         if (network == null) {
             LOGGER.warn(LogMarkers.POWERNETWORK, "Power requested from network {}, but network doesn't exist.", networkId);
+            return 0;
         }
 
         float consumed = network.consumePower(requested, pos);
@@ -98,7 +91,7 @@ public class PowerNetworkManager extends SavedData {
     }
 
     public void trackBlock(BlockPos pos, Direction[] dirs, Type type) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to track block {} as {}", () -> LogHelper.blockPos(pos), () -> type);
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to track block {} as {}", LogHelper.blockPos(pos), type);
         PowerNetworkNode node = new PowerNetworkNode(pos, dirs);
         List<String> existingNetworks = getSurroundingNetworkIds(node);
 
@@ -107,10 +100,10 @@ public class PowerNetworkManager extends SavedData {
             PowerNetwork network = new PowerNetwork();
             networks.put(network.getId(), network);
             addNodeToNetwork(node, network.getId(), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to newly created network {}", () -> LogHelper.blockPos(pos), () -> network.getId());
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to newly created network {}", LogHelper.blockPos(pos), network.getId());
         } else if (existingNetworks.size() == 1) {
             addNodeToNetwork(node, existingNetworks.get(0), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to adjacent connecting network {}", () -> LogHelper.blockPos(pos), () -> existingNetworks.get(0));
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to adjacent connecting network {}", LogHelper.blockPos(pos), existingNetworks.get(0));
         } else {
             LOGGER.debug(LogMarkers.POWERNETWORK, "Multiple adjacent connecting networks identified. Merging...");
             PowerNetwork firstNetwork = networks.get(existingNetworks.remove(0));
@@ -123,17 +116,17 @@ public class PowerNetworkManager extends SavedData {
             }
 
             addNodeToNetwork(node, firstNetwork.getId(), type);
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to adjacent connecting network {}", () -> LogHelper.blockPos(pos), () -> existingNetworks.get(0));
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Block {} added to adjacent connecting network {}", LogHelper.blockPos(pos), existingNetworks.get(0));
         }
 
         setDirty();
     }
 
     public void untrackBlock(BlockPos pos) {
-        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to untrack block {}", () -> LogHelper.blockPos(pos));
+        LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to untrack block {}", LogHelper.blockPos(pos));
         PowerNetwork currentNetwork = networks.get(blockCache.get(pos));
-        if(currentNetwork == null) {
-            LOGGER.warn(LogMarkers.POWERNETWORK, "Tried to untrack block {}, but block wasn't being tracked", () -> LogHelper.blockPos(pos));
+        if (currentNetwork == null) {
+            LOGGER.warn(LogMarkers.POWERNETWORK, "Tried to untrack block {}, but block wasn't being tracked", LogHelper.blockPos(pos));
             return;
         }
 
@@ -148,19 +141,16 @@ public class PowerNetworkManager extends SavedData {
             currentNetwork.removeBlock(pos);
             blockCache.remove(pos);
         } else {
-            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking {} requires a network split. Splitting...", () -> LogHelper.blockPos(pos));
+            LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking {} requires a network split. Splitting...", LogHelper.blockPos(pos));
             Map<BlockPos, Direction[]> allNodes = currentNetwork.getNodes();
             allNodes.remove(pos);
-            List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections())
-                .map(dir -> {
-                    BlockPos start = pos.relative(dir);
-                    if (!allNodes.containsKey(start)) return null;
-                    List<PowerNetworkNode> branchNodes = PowerNetworkWalker.walk(allNodes, start);
-                    branchNodes.forEach(bn -> allNodes.remove(bn.getPos()));
-                    return branchNodes;
-                })
-                .filter(list -> list != null)
-                .collect(Collectors.toList());
+            List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections()).map(dir -> {
+                BlockPos start = pos.relative(dir);
+                if (!allNodes.containsKey(start)) return null;
+                List<PowerNetworkNode> branchNodes = PowerNetworkWalker.walk(allNodes, start);
+                branchNodes.forEach(bn -> allNodes.remove(bn.getPos()));
+                return branchNodes;
+            }).filter(list -> list != null).collect(Collectors.toList());
 
             branches.remove(0); // The first branch will keep the old networkId
             for (List<PowerNetworkNode> branch : branches) {
@@ -184,17 +174,17 @@ public class PowerNetworkManager extends SavedData {
 
     private List<BlockPos> getSurroundingNetworkedBlocks(PowerNetworkNode node) {
         return Stream.of(node.getDirections())
-            .map(dir -> node.getPos().relative(dir))
-            .filter(block -> blockCache.containsKey(block))
-            .collect(Collectors.toList());
+                .map(dir -> node.getPos().relative(dir))
+                .filter(block -> blockCache.containsKey(block))
+                .collect(Collectors.toList());
     }
 
     private List<String> getSurroundingNetworkIds(PowerNetworkNode node) {
         return Stream.of(node.getDirections())
-            .map(dir -> blockCache.get(node.getPos().relative(dir)))
-            .distinct()
-            .filter(networkId -> networkId != null)
-            .collect(Collectors.toList());
+                .map(dir -> blockCache.get(node.getPos().relative(dir)))
+                .distinct()
+                .filter(networkId -> networkId != null)
+                .collect(Collectors.toList());
     }
 
     public static PowerNetworkManager load(CompoundTag nbt) {
@@ -202,7 +192,7 @@ public class PowerNetworkManager extends SavedData {
         LOGGER.debug(LogMarkers.POWERNETWORK, "Loading Power Networks from NBT...");
         pnm.blockCache = new HashMap<>();
         pnm.networks = new HashMap<>();
-        ListTag networkTags = nbt.getList("powerNetworks", Constants.NBT.TAG_COMPOUND);
+        ListTag networkTags = nbt.getList("powerNetworks", Tag.TAG_COMPOUND);
         networkTags.stream().forEach(compound -> {
             PowerNetwork network = PowerNetwork.fromNBT((CompoundTag)compound);
             pnm.networks.put(network.getId(), network);

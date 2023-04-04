@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -10,16 +5,17 @@ import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.mojang.logging.LogUtils;
+import javax.annotation.Nullable;
+import org.slf4j.Logger;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -34,7 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
 public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IPowerBlock {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -42,8 +38,8 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
         super(properties);
 
         BlockState defaultState = this.stateDefinition.any()
-            .setValue(HORIZONTAL_FACING, Direction.NORTH)
-            .setValue(WATERLOGGED, false);
+                .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                .setValue(WATERLOGGED, false);
         this.registerDefaultState(defaultState);
     }
 
@@ -61,8 +57,9 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction facing = context.getHorizontalDirection().getOpposite();
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HORIZONTAL_FACING, facing)
-                                     .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
+        return this.defaultBlockState()
+                .setValue(HORIZONTAL_FACING, facing)
+                .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
@@ -73,22 +70,22 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
-            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.getFluidTicks().schedule(new ScheduledTick<Fluid>(Fluids.WATER, currentPos, Fluids.WATER.getTickDelay(level), 0));
         }
         return state;
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Solar Panel placed at {}", () -> LogHelper.blockPos(pos));
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Solar Panel placed at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
-        pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
+        pnm.trackBlock(pos, new Direction[] { state.getValue(HORIZONTAL_FACING).getOpposite() }, getPowerBlockType());
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Solar Panel at {} replaced.", () -> LogHelper.blockPos(pos));
+        LOGGER.debug(LogMarkers.MACHINE, "Solar Panel at {} replaced.", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         if (state.is(newState.getBlock())) return;
 
@@ -118,7 +115,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
         float lightAndWeatherFactor = level.getMaxLocalRawBrightness(pos.above()) / 15f;
         float peakPowerGen = ConfigData.SERVER.SolarPanelPeakPowerGeneration.get().floatValue();
         float availablePower = peakPowerGen * timeFactor * lightAndWeatherFactor;
-        LOGGER.trace(LogMarkers.POWERNETWORK, "Solar Panel at {} made {} power available", () -> LogHelper.blockPos(pos), () -> availablePower);
+        LOGGER.trace(LogMarkers.POWERNETWORK, "Solar Panel at {} made {} power available", LogHelper.blockPos(pos), availablePower);
         return availablePower;
     }
 }

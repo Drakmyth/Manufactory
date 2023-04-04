@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -18,10 +13,9 @@ import com.drakmyth.minecraft.manufactory.network.OpenMenuWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.mojang.logging.LogUtils;
+import javax.annotation.Nullable;
+import org.slf4j.Logger;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,19 +40,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public BallMillBlock(Properties properties) {
         super(properties);
 
-        BlockState defaultState = this.stateDefinition.any()
-            .setValue(HORIZONTAL_FACING, Direction.NORTH);
+        BlockState defaultState = this.stateDefinition.any().setValue(HORIZONTAL_FACING, Direction.NORTH);
         this.registerDefaultState(defaultState);
     }
 
@@ -80,7 +73,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (!BallMillBlockEntity.class.isInstance(be)) return false;
+        if (be == null || !BallMillBlockEntity.class.isInstance(be)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
 
         BallMillBlockEntity gte = (BallMillBlockEntity)be;
@@ -99,29 +92,29 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Ball Mill at {}", () -> LogHelper.blockPos(pos));
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Ball Mill at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         interactWith(state, level, pos, player, player.getItemInHand(hand), hit.getDirection());
         return InteractionResult.CONSUME;
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Ball Mill placed at {}", () -> LogHelper.blockPos(pos));
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        LOGGER.debug(LogMarkers.INTERACTION, "Ball Mill placed at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
-        pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
+        pnm.trackBlock(pos, new Direction[] { state.getValue(HORIZONTAL_FACING).getOpposite() }, getPowerBlockType());
     }
 
     private void interactWith(BlockState state, Level level, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (!BallMillBlockEntity.class.isInstance(be)) {
+        if (be == null || !BallMillBlockEntity.class.isInstance(be)) {
             LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of BallMillBlockEntity!");
             return;
         }
 
         MenuProvider containerProvider;
-        if (ModTags.Items.UPGRADE_ACCESS_TOOL.contains(heldItem.getItem()) && face == state.getValue(HORIZONTAL_FACING).getOpposite()) {
+        if (heldItem.is(ModTags.Items.UPGRADE_ACCESS_TOOL) && face == state.getValue(HORIZONTAL_FACING).getOpposite()) {
             LOGGER.debug(LogMarkers.INTERACTION, "Used access tool on back face. Opening upgrade gui...");
             containerProvider = new BlockMenuProvider("Ball Mill", pos, BallMillUpgradeMenu::new);
         } else {
@@ -130,7 +123,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
         }
         OpenMenuWithUpgradesPacket packet = new OpenMenuWithUpgradesPacket(((BallMillBlockEntity)be).getInstalledUpgrades(), pos);
         ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
-        NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
+        NetworkHooks.openScreen((ServerPlayer)player, containerProvider, pos);
     }
 
     @Override
@@ -140,16 +133,15 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at {} replaced.", () -> LogHelper.blockPos(pos));
+        LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at {} replaced.", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
-        
         if (state.is(newState.getBlock())) return;
 
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
         pnm.untrackBlock(pos);
 
         BlockEntity be = level.getBlockEntity(pos);
-        if (!BallMillBlockEntity.class.isInstance(be)) {
+        if (be == null || !BallMillBlockEntity.class.isInstance(be)) {
             LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of BallMillBlockEntity!");
             return;
         }

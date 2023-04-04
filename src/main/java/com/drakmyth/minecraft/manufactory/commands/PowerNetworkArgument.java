@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.commands;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -12,10 +7,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceKey;
@@ -25,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
 public class PowerNetworkArgument implements ArgumentType<String> {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static SuggestionProvider<CommandSourceStack> SUGGESTIONS = (ctx, sb) -> SharedSuggestionProvider.suggest(PowerNetworkArgument.getPowerNetworkIdsForDimension(ctx), sb);
 
@@ -33,7 +26,7 @@ public class PowerNetworkArgument implements ArgumentType<String> {
     public String parse(StringReader reader) throws CommandSyntaxException {
         int i = reader.getCursor();
 
-        while(reader.canRead() && isValidIdCharacter(reader.peek())) {
+        while (reader.canRead() && isValidIdCharacter(reader.peek())) {
             reader.skip();
         }
 

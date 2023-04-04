@@ -1,11 +1,4 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.recipes;
-
-import java.util.Random;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +6,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
 public abstract class ManufactoryRecipe implements Recipe<Container> {
@@ -25,7 +19,8 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     private int powerRequired;
     private int processTime;
 
-    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime) {
+    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired,
+            int processTime) {
         this.recipeId = recipeId;
         this.ingredient = ingredient;
         this.result = result;
@@ -48,7 +43,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
         return extraAmounts.length > 0;
     }
 
-    public int getRandomExtraAmount(Random rand) {
+    public int getRandomExtraAmount(RandomSource rand) {
         return extraAmounts[rand.nextInt(extraAmounts.length)];
     }
 
@@ -81,7 +76,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     public ItemStack getMaxOutput() {
         ItemStack maxResult = result.copy();
         int max = 0;
-        for(int amount : extraAmounts) {
+        for (int amount : extraAmounts) {
             max = Math.max(max, amount);
         }
         maxResult.grow(max);

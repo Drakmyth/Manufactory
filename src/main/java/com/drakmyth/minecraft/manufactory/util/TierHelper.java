@@ -1,12 +1,6 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.util;
 
 import java.util.List;
-
 import net.minecraft.world.item.Tier;
 import net.minecraftforge.common.TierSortingRegistry;
 

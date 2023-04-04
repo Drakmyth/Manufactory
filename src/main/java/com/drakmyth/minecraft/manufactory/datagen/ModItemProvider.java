@@ -1,11 +1,6 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
-
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -37,16 +32,16 @@ public class ModItemProvider extends ItemModelProvider {
         registerItem("rubber");
 
         String[] ores = {
-            "coal_ore",
-            "diamond_ore",
-            "emerald_ore",
-            "gold_ore",
-            "iron_ore",
-            "copper_ore",
-            "lapis_ore",
-            "nether_quartz_ore",
-            "redstone_ore",
-            "ancient_debris"
+                "coal_ore",
+                "diamond_ore",
+                "emerald_ore",
+                "gold_ore",
+                "iron_ore",
+                "copper_ore",
+                "lapis_ore",
+                "nether_quartz_ore",
+                "redstone_ore",
+                "ancient_debris"
         };
 
         for (String ore : ores) {

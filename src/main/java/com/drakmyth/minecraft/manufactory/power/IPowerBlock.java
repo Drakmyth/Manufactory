@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.power;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,12 +8,16 @@ import net.minecraft.world.level.Level;
 
 public interface IPowerBlock {
     boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir);
+
     Type getPowerBlockType();
+
     float getAvailablePower(BlockState state, Level level, BlockPos pos);
 
     public static enum Type {
+        // @formatter:off
         NONE,
         SOURCE,
         SINK
+        // @formatter:on
     }
 }

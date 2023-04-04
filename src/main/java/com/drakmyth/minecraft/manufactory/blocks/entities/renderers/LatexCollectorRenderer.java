@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks.entities.renderers;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -13,10 +8,8 @@ import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
@@ -33,13 +26,13 @@ import com.mojang.math.Vector3f;
 
 public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollectorBlockEntity> {
     public static final ResourceLocation LATEX_TEXTURE = new ResourceLocation("minecraft", "block/quartz_block_top");
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
-    public LatexCollectorRenderer(BlockEntityRendererProvider.Context context) { }
+    public LatexCollectorRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
     public void render(LatexCollectorBlockEntity blockEntity, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at {}...", () -> LogHelper.blockPos(blockEntity.getBlockPos()));
+        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at {}...", LogHelper.blockPos(blockEntity.getBlockPos()));
         BlockState state = blockEntity.getBlockState();
         if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {
             LOGGER.trace(LogMarkers.RENDERING, "Latex collector is empty. Nothing to render.");
@@ -56,10 +49,22 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
         LOGGER.trace(LogMarkers.RENDERING, "Beginning matrix manipulation and vertex construction...");
         pose.pushPose();
         pose.translate(0.5, 0.5, 0.5);
-        float x1 = -2f/16f; float z1 = -7f/16f; float u1 = sprite.getU0(); float v1 = sprite.getV1();
-        float x2 = -2f/16f; float z2 = -3f/16f; float u2 = sprite.getU0(); float v2 = sprite.getV0();
-        float x3 =  2f/16f; float z3 = -3f/16f; float u3 = sprite.getU1(); float v3 = sprite.getV0();
-        float x4 =  2f/16f; float z4 = -7f/16f; float u4 = sprite.getU1(); float v4 = sprite.getV1();
+        float x1 = -2f / 16f;
+        float z1 = -7f / 16f;
+        float u1 = sprite.getU0();
+        float v1 = sprite.getV1();
+        float x2 = -2f / 16f;
+        float z2 = -3f / 16f;
+        float u2 = sprite.getU0();
+        float v2 = sprite.getV0();
+        float x3 = 2f / 16f;
+        float z3 = -3f / 16f;
+        float u3 = sprite.getU1();
+        float v3 = sprite.getV0();
+        float x4 = 2f / 16f;
+        float z4 = -7f / 16f;
+        float u4 = sprite.getU1();
+        float v4 = sprite.getV1();
 
         Direction facing = state.getValue(LatexCollectorBlock.HORIZONTAL_FACING);
         if (facing == Direction.NORTH || facing == Direction.SOUTH) {
@@ -68,8 +73,8 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
         float angle = facing.toYRot();
         pose.mulPose(new Quaternion(0, angle, 0, true));
 
-        float yEmpty = -5f/16f;
-        float yFull = -3f/16f;
+        float yEmpty = -5f / 16f;
+        float yFull = -3f / 16f;
         float y = Mth.lerp(progress, yEmpty, yFull);
 
         addVertex(vertexBuffer, pose, x1, y, z1, u1, v1, combinedLight);
@@ -84,10 +89,10 @@ public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollecto
     private void addVertex(VertexConsumer buffer, PoseStack pose, float x, float y, float z, float u, float v, int combinedLight) {
         Vector3f normal = Direction.UP.step();
         buffer.vertex(pose.last().pose(), x, y, z)
-            .color(1f, 1f, 1f, 1f)
-            .uv(u, v)
-            .uv2(combinedLight)
-            .normal(normal.x(), normal.y(), normal.z())
-            .endVertex();
+                .color(1f, 1f, 1f, 1f)
+                .uv(u, v)
+                .uv2(combinedLight)
+                .normal(normal.x(), normal.y(), normal.z())
+                .endVertex();
     }
 }

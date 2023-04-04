@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -12,15 +7,14 @@ import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -42,13 +36,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 
 public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<FillStatus> FILL_STATUS = EnumProperty.create("fill_status", FillStatus.class);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -62,15 +57,15 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         super(properties);
 
         BlockState defaultState = this.stateDefinition.any()
-            .setValue(HORIZONTAL_FACING, Direction.NORTH)
-            .setValue(FILL_STATUS, FillStatus.EMPTY)
-            .setValue(WATERLOGGED, false);
+                .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                .setValue(FILL_STATUS, FillStatus.EMPTY)
+                .setValue(WATERLOGGED, false);
         this.registerDefaultState(defaultState);
     }
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at {}", () -> LogHelper.blockPos(pos));
+        LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Latex Collector at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (state.getValue(FILL_STATUS) == FillStatus.FULL) {
             int configLatexSpawnCount = ConfigData.SERVER.FullLatexSpawnCount.get();
@@ -127,8 +122,9 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         }
 
         FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HORIZONTAL_FACING, face.getOpposite())
-                                       .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+        return this.defaultBlockState()
+                .setValue(HORIZONTAL_FACING, face.getOpposite())
+                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
     @Override
@@ -139,7 +135,7 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
-            level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.getFluidTicks().schedule(new ScheduledTick<Fluid>(Fluids.WATER, currentPos, Fluids.WATER.getTickDelay(level), 0));
         }
         return state;
     }
@@ -170,9 +166,11 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     }
 
     public enum FillStatus implements StringRepresentable {
+        // @formatter:off
         EMPTY,
         FILLING,
         FULL;
+        // @formatter:on
 
         @Override
         public String getSerializedName() {
