@@ -1,18 +1,10 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.network;
 
 import java.util.function.Supplier;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -83,7 +75,7 @@ public class PowerRatePacket {
                         LOGGER.warn(LogMarkers.NETWORK, "Position {} does not contain an IPowerRateListener tile entity. Dropping packet...", LogHelper.blockPos(pos));
                         return;
                     }
-                    IPowerRateListener prl = (IPowerRateListener) be;
+                    IPowerRateListener prl = (IPowerRateListener)be;
                     prl.onPowerRateUpdate(received, expected);
                     LOGGER.trace(LogMarkers.NETWORK, "Power rate synced - received {}, expected {}", received, expected);
                 }

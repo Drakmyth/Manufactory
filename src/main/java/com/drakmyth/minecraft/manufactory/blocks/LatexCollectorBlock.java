@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -12,10 +7,8 @@ import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,9 +57,9 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         super(properties);
 
         BlockState defaultState = this.stateDefinition.any()
-            .setValue(HORIZONTAL_FACING, Direction.NORTH)
-            .setValue(FILL_STATUS, FillStatus.EMPTY)
-            .setValue(WATERLOGGED, false);
+                .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                .setValue(FILL_STATUS, FillStatus.EMPTY)
+                .setValue(WATERLOGGED, false);
         this.registerDefaultState(defaultState);
     }
 
@@ -129,8 +122,9 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
         }
 
         FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HORIZONTAL_FACING, face.getOpposite())
-                                       .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+        return this.defaultBlockState()
+                .setValue(HORIZONTAL_FACING, face.getOpposite())
+                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
     @Override
@@ -172,9 +166,11 @@ public class LatexCollectorBlock extends Block implements SimpleWaterloggedBlock
     }
 
     public enum FillStatus implements StringRepresentable {
+        // @formatter:off
         EMPTY,
         FILLING,
         FULL;
+        // @formatter:on
 
         @Override
         public String getSerializedName() {

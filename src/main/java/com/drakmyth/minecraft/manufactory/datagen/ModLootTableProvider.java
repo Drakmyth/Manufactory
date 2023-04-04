@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import java.util.List;
@@ -10,11 +5,9 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;
@@ -34,9 +27,7 @@ public class ModLootTableProvider extends LootTableProvider {
 
     @Override
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootContextParamSet>> getTables() {
-        return ImmutableList.of(
-            Pair.of(ModBlockLoot::new, LootContextParamSets.BLOCK)
-        );
+        return ImmutableList.of(Pair.of(ModBlockLoot::new, LootContextParamSets.BLOCK));
     }
 
     @Override

@@ -1,18 +1,11 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.commands;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
@@ -22,26 +15,17 @@ import net.minecraft.server.level.ServerLevel;
 public class PNetCommand {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    static ArgumentBuilder<CommandSourceStack, ?> register()
-    {
+    static ArgumentBuilder<CommandSourceStack, ?> register() {
         LOGGER.debug(LogMarkers.REGISTRATION, "Registering PNetCommand...");
         ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("pnet")
-            .requires(cs->cs.hasPermission(Commands.LEVEL_ALL))
-            .then(Commands.argument("dim", DimensionArgument.dimension())
-                .then(Commands.literal("list")
-                    .executes(ctx -> listNetworksInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim")))
-                )
-                .then(Commands.literal("delete")
-                    .then(Commands.argument("networkId", PowerNetworkArgument.getPowerNetwork())
-                        .suggests(PowerNetworkArgument.SUGGESTIONS)
-                        .executes(ctx -> deleteNetworkInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim"), PowerNetworkArgument.getPowerNetworkArgument(ctx, "networkId")))
-                    )
-                )
-                .then(Commands.literal("time")
-                    .executes(ctx -> printTime(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim")))
-                )
-            )
-        ;
+                .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+                .then(Commands.argument("dim", DimensionArgument.dimension())
+                        .then(Commands.literal("list").executes(ctx -> listNetworksInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim"))))
+                        .then(Commands.literal("delete")
+                                .then(Commands.argument("networkId", PowerNetworkArgument.getPowerNetwork()).suggests(PowerNetworkArgument.SUGGESTIONS)
+                                        .executes(ctx -> deleteNetworkInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim"),
+                                                PowerNetworkArgument.getPowerNetworkArgument(ctx, "networkId")))))
+                        .then(Commands.literal("time").executes(ctx -> printTime(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim")))));
         LOGGER.debug(LogMarkers.REGISTRATION, "PNetCommand registered");
         return builder;
     }

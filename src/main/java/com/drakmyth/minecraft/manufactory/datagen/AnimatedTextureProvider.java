@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import java.io.IOException;
@@ -11,12 +6,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -57,8 +50,8 @@ public abstract class AnimatedTextureProvider implements DataProvider {
 
     public Builder getBuilder(ResourceLocation texture) {
         Preconditions.checkNotNull(texture, "Texture must not be null");
-        Preconditions.checkArgument(existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures"),
-                "Texture %s does not exist in any known resource pack", texture);
+        boolean textureExists = existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
+        Preconditions.checkArgument(textureExists, "Texture %s does not exist in any known resource pack", texture);
         Builder builder = new Builder();
         data.put(texture, builder);
         return builder;

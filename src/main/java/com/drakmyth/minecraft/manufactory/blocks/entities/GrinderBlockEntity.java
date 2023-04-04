@@ -1,15 +1,8 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Nullable;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
@@ -25,10 +18,8 @@ import com.drakmyth.minecraft.manufactory.network.PowerRatePacket;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.drakmyth.minecraft.manufactory.util.TierHelper;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +53,8 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         firstTick = true;
         grinderInventory = new ItemStackHandler(2);
         grinderUpgradeInventory = new ItemStackHandler(4);
-        LOGGER.debug(LogMarkers.MACHINE, "Grinder block entity initialized with {} inventory slots and {} upgrade inventory slots", grinderInventory.getSlots(), grinderUpgradeInventory.getSlots());
+        LOGGER.debug(LogMarkers.MACHINE, "Grinder block entity initialized with {} inventory slots and {} upgrade inventory slots", grinderInventory.getSlots(),
+                grinderUpgradeInventory.getSlots());
     }
 
     public ItemStackHandler getInventory() {
@@ -78,7 +70,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         for (int i = 0; i < 3; i++) {
             upgrades.add(grinderUpgradeInventory.getStackInSlot(i));
         }
-        return upgrades.toArray(new ItemStack[]{});
+        return upgrades.toArray(new ItemStack[] {});
     }
 
     public float getProgress() {
@@ -97,7 +89,8 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     public void onProgressUpdate(float progress, float total) {
         powerRequired = total;
         powerRemaining = progress;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced progress with powerRequired {} and powerRemaining {}", LogHelper.blockPos(getBlockPos()), powerRequired, powerRemaining);
+        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced progress with powerRequired {} and powerRemaining {}", LogHelper.blockPos(getBlockPos()), powerRequired,
+                powerRemaining);
     }
 
     // Client-Side Only
@@ -106,13 +99,14 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         // TODO: Consider using a rolling window to display ramp up/down
         lastPowerReceived = received;
         maxPowerPerTick = expected;
-        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced power rate with lastPowerReceived {} and maxPowerPerTick {}", LogHelper.blockPos(getBlockPos()), lastPowerReceived, maxPowerPerTick);
+        LOGGER.trace(LogMarkers.MACHINE, "Grinder at {} synced power rate with lastPowerReceived {} and maxPowerPerTick {}", LogHelper.blockPos(getBlockPos()), lastPowerReceived,
+                maxPowerPerTick);
     }
 
     // Client-Side Only
     @Override
     public void onContainerOpened(ItemStack[] upgrades) {
-        for(int i = 0; i < upgrades.length; i++) {
+        for (int i = 0; i < upgrades.length; i++) {
             grinderUpgradeInventory.setStackInSlot(i, upgrades[i]);
         }
     }
@@ -213,7 +207,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     }
 
     public void tick() {
-        var level = getLevel();
+        Level level = getLevel();
         if (level == null || level.isClientSide()) return;
 
         if (firstTick) {

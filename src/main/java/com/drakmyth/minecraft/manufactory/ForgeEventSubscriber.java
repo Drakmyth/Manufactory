@@ -1,16 +1,9 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory;
 
 import com.drakmyth.minecraft.manufactory.commands.ManufactoryCommand;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;

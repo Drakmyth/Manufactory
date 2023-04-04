@@ -1,18 +1,10 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.network;
 
 import java.util.function.Supplier;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -83,7 +75,7 @@ public class MachineProgressPacket {
                         LOGGER.warn(LogMarkers.NETWORK, "Position {} does not contain an IMachineProgressListener tile entity. Dropping packet...", LogHelper.blockPos(pos));
                         return;
                     }
-                    IMachineProgressListener mpl = (IMachineProgressListener) be;
+                    IMachineProgressListener mpl = (IMachineProgressListener)be;
                     mpl.onProgressUpdate(progress, total);
                     LOGGER.trace(LogMarkers.NETWORK, "Machine progress synced - progress {}, total {}", progress, total);
                 }

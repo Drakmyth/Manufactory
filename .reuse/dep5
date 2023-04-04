@@ -1,0 +1,34 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Manufactory
+Upstream-Contact: Shaun Hamman <shaun.hamman@gmail.com>
+Source: https://github.com/Drakmyth/Manufactory
+
+# source code
+Files: *.java *.gradle gradle.properties
+Copyright: 2023 Shaun Hamman <shaun.hamman@gmail.com>
+License: LGPL-3.0-only
+
+# assets
+Files: *.png
+Copyright: 2023 Shaun Hamman <shaun.hamman@gmail.com>
+License: LGPL-3.0-only
+
+# metadata
+Files: *.mcmeta *.toml *.xml update.json README.md LICENSE.md .reuse/*
+Copyright: 2023 Shaun Hamman <shaun.hamman@gmail.com>
+License: LGPL-3.0-only
+
+# git
+Files: .gitattributes .gitignore
+Copyright: None
+License: CC0-1.0
+
+# ci
+Files: .github/*
+Copyright: None
+License: CC0-1.0
+
+# ide configurations
+Files: .vscode/*
+Copyright: None
+License: CC0-1.0

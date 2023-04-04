@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.power;
 
 import java.util.Arrays;
@@ -11,15 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -133,7 +125,7 @@ public class PowerNetworkManager extends SavedData {
     public void untrackBlock(BlockPos pos) {
         LOGGER.debug(LogMarkers.POWERNETWORK, "Request received to untrack block {}", LogHelper.blockPos(pos));
         PowerNetwork currentNetwork = networks.get(blockCache.get(pos));
-        if(currentNetwork == null) {
+        if (currentNetwork == null) {
             LOGGER.warn(LogMarkers.POWERNETWORK, "Tried to untrack block {}, but block wasn't being tracked", LogHelper.blockPos(pos));
             return;
         }
@@ -152,16 +144,13 @@ public class PowerNetworkManager extends SavedData {
             LOGGER.debug(LogMarkers.POWERNETWORK, "Untracking {} requires a network split. Splitting...", LogHelper.blockPos(pos));
             Map<BlockPos, Direction[]> allNodes = currentNetwork.getNodes();
             allNodes.remove(pos);
-            List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections())
-                .map(dir -> {
-                    BlockPos start = pos.relative(dir);
-                    if (!allNodes.containsKey(start)) return null;
-                    List<PowerNetworkNode> branchNodes = PowerNetworkWalker.walk(allNodes, start);
-                    branchNodes.forEach(bn -> allNodes.remove(bn.getPos()));
-                    return branchNodes;
-                })
-                .filter(list -> list != null)
-                .collect(Collectors.toList());
+            List<List<PowerNetworkNode>> branches = Arrays.stream(node.getDirections()).map(dir -> {
+                BlockPos start = pos.relative(dir);
+                if (!allNodes.containsKey(start)) return null;
+                List<PowerNetworkNode> branchNodes = PowerNetworkWalker.walk(allNodes, start);
+                branchNodes.forEach(bn -> allNodes.remove(bn.getPos()));
+                return branchNodes;
+            }).filter(list -> list != null).collect(Collectors.toList());
 
             branches.remove(0); // The first branch will keep the old networkId
             for (List<PowerNetworkNode> branch : branches) {
@@ -185,17 +174,17 @@ public class PowerNetworkManager extends SavedData {
 
     private List<BlockPos> getSurroundingNetworkedBlocks(PowerNetworkNode node) {
         return Stream.of(node.getDirections())
-            .map(dir -> node.getPos().relative(dir))
-            .filter(block -> blockCache.containsKey(block))
-            .collect(Collectors.toList());
+                .map(dir -> node.getPos().relative(dir))
+                .filter(block -> blockCache.containsKey(block))
+                .collect(Collectors.toList());
     }
 
     private List<String> getSurroundingNetworkIds(PowerNetworkNode node) {
         return Stream.of(node.getDirections())
-            .map(dir -> blockCache.get(node.getPos().relative(dir)))
-            .distinct()
-            .filter(networkId -> networkId != null)
-            .collect(Collectors.toList());
+                .map(dir -> blockCache.get(node.getPos().relative(dir)))
+                .distinct()
+                .filter(networkId -> networkId != null)
+                .collect(Collectors.toList());
     }
 
     public static PowerNetworkManager load(CompoundTag nbt) {

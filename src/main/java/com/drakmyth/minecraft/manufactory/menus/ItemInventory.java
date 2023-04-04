@@ -1,12 +1,7 @@
 /*
- * This class is adapted from ItemBackedInventory which is distributed
- * as part of the Botania Mod.
- * 
- * Get the Source Code in github:
- * https://github.com/Vazkii/Botania
- *
- * Botania is Open Source and distributed under the
- * Botania License: http://botaniamod.net/license.php
+ * This class is adapted from ItemBackedInventory which is distributed as part of the Botania Mod.
+ * Get the Source Code in github: https://github.com/Vazkii/Botania
+ * Botania is Open Source and distributed under the Botania License: http://botaniamod.net/license.php
  */
 package com.drakmyth.minecraft.manufactory.menus;
 
@@ -18,31 +13,31 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemInventory extends SimpleContainer {
-	private static final String ITEMS_KEY = "items";
-	private final ItemStack host;
+    private static final String ITEMS_KEY = "items";
+    private final ItemStack host;
 
-	public ItemInventory(ItemStack stack, int size) {
-		super(size);
-		this.host = stack;
+    public ItemInventory(ItemStack stack, int size) {
+        super(size);
+        this.host = stack;
 
-		ListTag items = host.getOrCreateTag().getList(ITEMS_KEY, Tag.TAG_COMPOUND);
-		for (int i = 0; i < size && i < items.size(); i++) {
-			setItem(i, ItemStack.of(items.getCompound(i)));
-		}
-	}
+        ListTag items = host.getOrCreateTag().getList(ITEMS_KEY, Tag.TAG_COMPOUND);
+        for (int i = 0; i < size && i < items.size(); i++) {
+            setItem(i, ItemStack.of(items.getCompound(i)));
+        }
+    }
 
-	@Override
-	public boolean stillValid(Player player) {
-		return !host.isEmpty();
-	}
+    @Override
+    public boolean stillValid(Player player) {
+        return !host.isEmpty();
+    }
 
-	@Override
-	public void setChanged() {
-		super.setChanged();
-		ListTag list = new ListTag();
-		for (int i = 0; i < getContainerSize(); i++) {
-			list.add(getItem(i).save(new CompoundTag()));
-		}
-		host.getOrCreateTag().put(ITEMS_KEY, list);
-	}
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        ListTag list = new ListTag();
+        for (int i = 0; i < getContainerSize(); i++) {
+            list.add(getItem(i).save(new CompoundTag()));
+        }
+        host.getOrCreateTag().put(ITEMS_KEY, list);
+    }
 }

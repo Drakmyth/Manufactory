@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks.entities;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -13,10 +8,8 @@ import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -125,6 +118,7 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     public void onProgressUpdate(float progress, float total) {
         totalTicks = (int)total;
         ticksRemaining = (int)progress;
-        LOGGER.trace(LogMarkers.MACHINE, "Latex Collector at {} synced progress with ticksRemaining {} and totalTicks {}", LogHelper.blockPos(getBlockPos()), ticksRemaining, totalTicks);
+        LOGGER.trace(LogMarkers.MACHINE, "Latex Collector at {} synced progress with ticksRemaining {} and totalTicks {}", LogHelper.blockPos(getBlockPos()), ticksRemaining,
+                totalTicks);
     }
 }

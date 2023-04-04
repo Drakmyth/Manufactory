@@ -1,14 +1,8 @@
-// /*
-//  *  SPDX-License-Identifier: LGPL-3.0-only
-//  *  Copyright (c) 2020 Drakmyth. All rights reserved.
-//  */
 // package com.drakmyth.minecraft;
 
 // import java.util.UUID;
-
 // import com.drakmyth.minecraft.manufactory.Reference;
 // import com.mojang.authlib.GameProfile;
-
 // import net.minecraft.server.level.ServerPlayer;
 // import net.minecraft.server.MinecraftServer;
 // import net.minecraft.world.level.Level;

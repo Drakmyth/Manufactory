@@ -1,14 +1,10 @@
-/*
-*  SPDX-License-Identifier: LGPL-3.0-only
-*  Copyright (c) 2020 Drakmyth. All rights reserved.
-*/
 package com.drakmyth.minecraft.manufactory;
 
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 public class LogMarkers {
-    
+
     // Manufactory Markers
     public static final Marker CONTAINER = MarkerFactory.getMarker("CONTAINER");
     public static final Marker INTERACTION = MarkerFactory.getMarker("INTERACTION");

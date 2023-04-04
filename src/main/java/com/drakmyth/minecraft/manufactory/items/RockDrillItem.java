@@ -1,14 +1,7 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.items;
 
 import java.util.Map;
-
 import javax.annotation.Nullable;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.menus.ItemInventory;
 import com.drakmyth.minecraft.manufactory.menus.RockDrillUpgradeMenu;
@@ -17,10 +10,8 @@ import com.drakmyth.minecraft.manufactory.init.ModTags;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IDrillHeadUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IMotorUpgrade;
 import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -72,7 +63,7 @@ public class RockDrillItem extends Item {
         ItemStack power = inv.getItem(2);
         return power.getItem() instanceof IPowerUpgrade ? (IPowerUpgrade)power.getItem() : null;
     }
-    
+
     private boolean isReadyToDig(ItemStack stack) {
         Container upgradeInventory = getInventory(stack);
         IDrillHeadUpgrade head = getDrillHead(upgradeInventory);
@@ -127,11 +118,10 @@ public class RockDrillItem extends Item {
     }
 
     /*
-    / This is a bit of a hack. Since there doesn't seem to be a way to set the loot context to use silk touch
-    / without actually adding it to the rock drill, we *do* actually add it to the drill in onBlockStartBreak
-    / if it's a block we want to silk touch. Then, since we don't want to silk touch all blocks, we immediately
-    / remove silk touch here in the next inventory tick after the block has been mined.
-    */
+     * This is a bit of a hack. Since there doesn't seem to be a way to set the loot context to use silk touch without actually adding it to the rock drill, we *do* actually add it
+     * to the drill in onBlockStartBreak if it's a block we want to silk touch. Then, since we don't want to silk touch all blocks, we immediately remove silk touch here in the
+     * next inventory tick after the block has been mined.
+     */
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);

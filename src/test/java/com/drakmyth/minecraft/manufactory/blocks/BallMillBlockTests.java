@@ -1,27 +1,18 @@
-// /*
-//  *  SPDX-License-Identifier: LGPL-3.0-only
-//  *  Copyright (c) 2020 Drakmyth. All rights reserved.
-//  */
-
 // package com.drakmyth.minecraft.manufactory.blocks;
 
 // import static org.junit.jupiter.api.Assertions.assertEquals;
 // import static org.junit.jupiter.api.Assertions.assertFalse;
 // import static org.junit.jupiter.api.Assertions.assertNotEquals;
 // import static org.junit.jupiter.api.Assertions.assertTrue;
-
 // import java.util.ArrayList;
 // import java.util.Arrays;
 // import java.util.HashMap;
 // import java.util.List;
 // import java.util.Map;
 // import java.util.Map.Entry;
-
 // import com.drakmyth.minecraft.TestUtils;
 // import com.drakmyth.minecraft.manufactory.tileentities.BallMillTileEntity;
-
 // import org.junit.jupiter.api.Test;
-
 // import net.minecraft.world.level.block.state.BlockState;
 // import net.minecraft.block.AbstractBlock.Properties;
 // import net.minecraft.block.material.Material;

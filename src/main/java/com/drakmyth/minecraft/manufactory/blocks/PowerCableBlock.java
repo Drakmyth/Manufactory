@@ -1,23 +1,14 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Nullable;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -63,13 +54,13 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
         super(properties);
 
         BlockState defaultState = this.stateDefinition.any()
-            .setValue(NORTH, false)
-            .setValue(EAST, false)
-            .setValue(SOUTH, false)
-            .setValue(WEST, false)
-            .setValue(UP, false)
-            .setValue(DOWN, false)
-            .setValue(WATERLOGGED, false);
+                .setValue(NORTH, false)
+                .setValue(EAST, false)
+                .setValue(SOUTH, false)
+                .setValue(WEST, false)
+                .setValue(UP, false)
+                .setValue(DOWN, false)
+                .setValue(WATERLOGGED, false);
         this.registerDefaultState(defaultState);
     }
 
@@ -124,13 +115,13 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
         BlockPos downPos = context.getClickedPos().below();
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
         return this.defaultBlockState()
-            .setValue(NORTH, canConnect(level.getBlockState(northPos), northPos, level, Direction.SOUTH))
-            .setValue(EAST, canConnect(level.getBlockState(eastPos), eastPos, level, Direction.WEST))
-            .setValue(SOUTH, canConnect(level.getBlockState(southPos), southPos, level, Direction.NORTH))
-            .setValue(WEST, canConnect(level.getBlockState(westPos), westPos, level, Direction.EAST))
-            .setValue(UP, canConnect(level.getBlockState(upPos), upPos, level, Direction.DOWN))
-            .setValue(DOWN, canConnect(level.getBlockState(downPos), downPos, level, Direction.UP))
-            .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
+                .setValue(NORTH, canConnect(level.getBlockState(northPos), northPos, level, Direction.SOUTH))
+                .setValue(EAST, canConnect(level.getBlockState(eastPos), eastPos, level, Direction.WEST))
+                .setValue(SOUTH, canConnect(level.getBlockState(southPos), southPos, level, Direction.NORTH))
+                .setValue(WEST, canConnect(level.getBlockState(westPos), westPos, level, Direction.EAST))
+                .setValue(UP, canConnect(level.getBlockState(upPos), upPos, level, Direction.DOWN))
+                .setValue(DOWN, canConnect(level.getBlockState(downPos), downPos, level, Direction.UP))
+                .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
@@ -146,7 +137,7 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
 
         Direction oppositeFacing = facing.getOpposite();
         boolean canConnect = canConnect(facingState, facingPos, level, oppositeFacing);
-        switch(facing) {
+        switch (facing) {
             case NORTH:
                 return state.setValue(NORTH, canConnect);
             case EAST:

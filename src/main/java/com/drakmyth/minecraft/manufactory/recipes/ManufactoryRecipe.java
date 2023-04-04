@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.recipes;
 
 import net.minecraft.world.Container;
@@ -24,7 +19,8 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     private int powerRequired;
     private int processTime;
 
-    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime) {
+    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired,
+            int processTime) {
         this.recipeId = recipeId;
         this.ingredient = ingredient;
         this.result = result;
@@ -80,7 +76,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     public ItemStack getMaxOutput() {
         ItemStack maxResult = result.copy();
         int max = 0;
-        for(int amount : extraAmounts) {
+        for (int amount : extraAmounts) {
             max = Math.max(max, amount);
         }
         maxResult.grow(max);

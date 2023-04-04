@@ -1,14 +1,8 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
 package com.drakmyth.minecraft.manufactory.util;
 
 import java.util.Arrays;
 import java.util.List;
-
 import com.mojang.logging.LogUtils;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,7 +12,7 @@ public final class LogHelper {
     }
 
     public static Object items(List<ItemStack> items) {
-        return LogUtils.defer(() -> itemArrayToString(items.toArray(new ItemStack[]{})));
+        return LogUtils.defer(() -> itemArrayToString(items.toArray(new ItemStack[] {})));
     }
 
     public static Object items(ItemStack[] items) {

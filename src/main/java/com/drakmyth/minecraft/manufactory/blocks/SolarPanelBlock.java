@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -10,13 +5,9 @@ import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
-
 import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -47,8 +38,8 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
         super(properties);
 
         BlockState defaultState = this.stateDefinition.any()
-            .setValue(HORIZONTAL_FACING, Direction.NORTH)
-            .setValue(WATERLOGGED, false);
+                .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                .setValue(WATERLOGGED, false);
         this.registerDefaultState(defaultState);
     }
 
@@ -66,8 +57,9 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction facing = context.getHorizontalDirection().getOpposite();
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HORIZONTAL_FACING, facing)
-                                     .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
+        return this.defaultBlockState()
+                .setValue(HORIZONTAL_FACING, facing)
+                .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
@@ -88,7 +80,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
         LOGGER.debug(LogMarkers.INTERACTION, "Solar Panel placed at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
-        pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
+        pnm.trackBlock(pos, new Direction[] { state.getValue(HORIZONTAL_FACING).getOpposite() }, getPowerBlockType());
     }
 
     @Override

@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.power;
 
 import java.util.ArrayDeque;
@@ -16,14 +11,11 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock.Type;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
@@ -104,7 +96,7 @@ public class PowerNetwork {
         BlockPos pos = node.getPos();
         LOGGER.debug(LogMarkers.POWERNETWORK, "Adding node type {} at {} to Power Network {}...", type, LogHelper.blockPos(pos), networkId);
         nodes.put(pos, node.getDirections());
-        switch(type) {
+        switch (type) {
             case SOURCE:
                 sources.add(pos);
                 break;
@@ -168,13 +160,13 @@ public class PowerNetwork {
             return 0;
         }
         spreading_window.add(pos);
-        while(spreading_window.size() > sinks.size()) {
+        while (spreading_window.size() > sinks.size()) {
             spreading_window.remove();
         }
         LOGGER.trace(LogMarkers.POWERNETWORK, "Network {} spreading window updated", networkId);
         long activeSinks = spreading_window.stream().distinct().count();
         LOGGER.trace(LogMarkers.POWERNETWORK, "Network {} has identified {} active sinks", networkId, activeSinks);
-        float available = Math.min(requested, totalPower/activeSinks);
+        float available = Math.min(requested, totalPower / activeSinks);
         available = Math.min(available, remainingPower);
         remainingPower -= available;
         markDirty();
@@ -193,9 +185,9 @@ public class PowerNetwork {
             int z = nodeTag.getInt("z");
             BlockPos pos = new BlockPos(x, y, z);
             Direction[] directions = Arrays.stream(nodeTag.getIntArray("directions"))
-                .boxed()
-                .map(index -> Direction.from3DDataValue(index))
-                .toArray(Direction[]::new);
+                    .boxed()
+                    .map(index -> Direction.from3DDataValue(index))
+                    .toArray(Direction[]::new);
             LOGGER.debug(LogMarkers.POWERNETWORK, "Loaded node at ({}, {}, {}) with directions {}", x, y, z, Arrays.toString(directions));
             return new PowerNetworkNode(pos, directions);
         }).collect(Collectors.toList());
@@ -235,9 +227,7 @@ public class PowerNetwork {
             nodeTag.putInt("x", block.getX());
             nodeTag.putInt("y", block.getY());
             nodeTag.putInt("z", block.getZ());
-            List<Integer> directions = Stream.of(node.getValue())
-                .map(dir -> dir.get3DDataValue())
-                .collect(Collectors.toList());
+            List<Integer> directions = Stream.of(node.getValue()).map(dir -> dir.get3DDataValue()).collect(Collectors.toList());
             nodeTag.putIntArray("directions", directions);
             nodeListTag.add(nodeTag);
         });

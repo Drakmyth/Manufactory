@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory;
 
 import com.drakmyth.minecraft.manufactory.blocks.entities.renderers.LatexCollectorRenderer;
@@ -23,10 +18,8 @@ import com.drakmyth.minecraft.manufactory.menus.screens.PowerProgressScreen;
 import com.drakmyth.minecraft.manufactory.menus.screens.ScreenTextures;
 import com.drakmyth.minecraft.manufactory.menus.screens.SimpleScreen;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -44,10 +37,10 @@ public final class ModEventSubscriber {
     @SubscribeEvent
     public static void gatherData(final GatherDataEvent event) {
         LOGGER.info(LogMarkers.REGISTRATION, "Registering data generators...");
-        
+
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper helper = event.getExistingFileHelper();
-        
+
         generator.addProvider(event.includeClient(), new ModRecipeProvider(generator));
         generator.addProvider(event.includeClient(), new ModLootTableProvider(generator));
         generator.addProvider(event.includeClient(), new ModItemProvider(generator, helper));

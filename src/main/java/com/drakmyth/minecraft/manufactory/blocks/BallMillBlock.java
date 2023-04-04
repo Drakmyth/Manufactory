@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.blocks;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -18,13 +13,9 @@ import com.drakmyth.minecraft.manufactory.network.OpenMenuWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
-
 import com.mojang.logging.LogUtils;
-
 import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,8 +51,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     public BallMillBlock(Properties properties) {
         super(properties);
 
-        BlockState defaultState = this.stateDefinition.any()
-            .setValue(HORIZONTAL_FACING, Direction.NORTH);
+        BlockState defaultState = this.stateDefinition.any().setValue(HORIZONTAL_FACING, Direction.NORTH);
         this.registerDefaultState(defaultState);
     }
 
@@ -113,7 +103,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
         LOGGER.debug(LogMarkers.INTERACTION, "Ball Mill placed at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
-        pnm.trackBlock(pos, new Direction[] {state.getValue(HORIZONTAL_FACING).getOpposite()}, getPowerBlockType());
+        pnm.trackBlock(pos, new Direction[] { state.getValue(HORIZONTAL_FACING).getOpposite() }, getPowerBlockType());
     }
 
     private void interactWith(BlockState state, Level level, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
@@ -145,7 +135,6 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at {} replaced.", LogHelper.blockPos(pos));
         if (level.isClientSide()) return;
-        
         if (state.is(newState.getBlock())) return;
 
         PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);

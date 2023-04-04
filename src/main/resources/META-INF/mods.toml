@@ -1,6 +1,3 @@
-#  SPDX-License-Identifier: LGPL-3.0-only
-#  Copyright (c) 2020 Drakmyth. All rights reserved.
-
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 

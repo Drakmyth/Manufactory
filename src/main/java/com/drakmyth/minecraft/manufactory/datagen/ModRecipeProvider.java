@@ -1,17 +1,10 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import java.util.function.Consumer;
-
 import com.drakmyth.minecraft.manufactory.datagen.recipes.BlockRecipes;
 import com.drakmyth.minecraft.manufactory.datagen.recipes.ItemRecipes;
 import com.drakmyth.minecraft.manufactory.datagen.recipes.MachineUpgradeRecipes;
 import com.drakmyth.minecraft.manufactory.datagen.recipes.OreRecipes;
-
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;

@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.items;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
@@ -10,10 +5,8 @@ import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +54,7 @@ public class TappingKnifeItem extends Item {
         double configAmberSpawnChance = ConfigData.SERVER.AmberChance.get();
         LOGGER.debug(LogMarkers.INTERACTION, "Rolling for amber against chance {}...", configAmberSpawnChance);
         if (configAmberSpawnChance <= 0) return;
-        if (player.getRandom().nextDouble() >= configAmberSpawnChance ) return;
+        if (player.getRandom().nextDouble() >= configAmberSpawnChance) return;
         LOGGER.debug(LogMarkers.INTERACTION, "Roll success!");
 
         int configAmberSpawnCount = ConfigData.SERVER.AmberTapSpawnCount.get();

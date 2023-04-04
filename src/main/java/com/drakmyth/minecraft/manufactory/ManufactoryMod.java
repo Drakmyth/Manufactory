@@ -1,8 +1,3 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory;
 
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
@@ -15,10 +10,8 @@ import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -58,7 +51,7 @@ public class ManufactoryMod {
         LOGGER.info(LogMarkers.REGISTRATION, "Container type registration complete");
 
         ModRecipeTypes.RECIPE_TYPES.register(modEventBus);
-        
+
         LOGGER.info(LogMarkers.REGISTRATION, "Registering recipe serializers...");
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         LOGGER.info(LogMarkers.REGISTRATION, "Recipe serializer registration complete");

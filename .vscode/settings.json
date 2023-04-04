@@ -1,0 +1,8 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.format.settings.url": ".vscode/eclipse-java-formatter.xml",
+    "[java]": {
+        "editor.detectIndentation": false
+    },
+}

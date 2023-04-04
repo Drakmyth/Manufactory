@@ -1,13 +1,7 @@
-/*
- *  SPDX-License-Identifier: LGPL-3.0-only
- *  Copyright (c) 2020 Drakmyth. All rights reserved.
- */
-
 package com.drakmyth.minecraft.manufactory.recipes;
 
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -17,7 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class GrinderRecipe extends ManufactoryRecipe {
 
-    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime) {
+    public GrinderRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired,
+            int processTime) {
         super(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }
 
