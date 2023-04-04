@@ -73,7 +73,8 @@ public class PowerRatePacket {
                     LOGGER.trace(LogMarkers.NETWORK, "Processing PowerRate packet...");
                     Minecraft minecraft = Minecraft.getInstance();
                     Level level = minecraft.level;
-                    if (!level.isAreaLoaded(pos, 1)) {
+                    if (level == null) return;
+                    if (!level.isLoaded(pos)) {
                         LOGGER.warn(LogMarkers.NETWORK, "Position {} is not currently loaded. Dropping packet...", LogHelper.blockPos(pos));
                         return;
                     }

@@ -87,6 +87,7 @@ public class RockDrillItem extends Item {
         Container upgradeInventory = getInventory(stack);
         IMotorUpgrade motor = getMotor(upgradeInventory);
         IDrillHeadUpgrade head = getDrillHead(upgradeInventory);
+        if (head == null || motor == null) return 1;
         return isReadyToDig(stack) && TierSortingRegistry.isCorrectTierForDrops(head.getTier(), state) ? motor.getBlockBreakingSpeed() : 1;
     }
 

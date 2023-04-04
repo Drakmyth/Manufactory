@@ -83,7 +83,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (!BallMillBlockEntity.class.isInstance(be)) return false;
+        if (be == null || !BallMillBlockEntity.class.isInstance(be)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
 
         BallMillBlockEntity gte = (BallMillBlockEntity)be;
@@ -118,7 +118,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
 
     private void interactWith(BlockState state, Level level, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (!BallMillBlockEntity.class.isInstance(be)) {
+        if (be == null || !BallMillBlockEntity.class.isInstance(be)) {
             LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of BallMillBlockEntity!");
             return;
         }
@@ -152,7 +152,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
         pnm.untrackBlock(pos);
 
         BlockEntity be = level.getBlockEntity(pos);
-        if (!BallMillBlockEntity.class.isInstance(be)) {
+        if (be == null || !BallMillBlockEntity.class.isInstance(be)) {
             LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of BallMillBlockEntity!");
             return;
         }

@@ -35,6 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.server.level.ServerLevel;
@@ -160,7 +161,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         return (IGrinderWheelUpgrade.class.isInstance(wheel1) && IGrinderWheelUpgrade.class.isInstance(wheel2));
     }
 
-    private boolean tryStartRecipe() {
+    private boolean tryStartRecipe(Level level) {
         LOGGER.trace(LogMarkers.MACHINE, "Trying to start Grinder recipe...");
         GrinderRecipe recipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRINDER.get(), new RecipeWrapper(grinderInventory), level).orElse(null);
         if (recipe == null) {
@@ -189,7 +190,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         return true;
     }
 
-    private void updateClientScreen() {
+    private void updateClientScreen(Level level) {
         MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
         PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
         LevelChunk chunk = level.getChunkAt(getBlockPos());
@@ -212,7 +213,8 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     }
 
     public void tick() {
-        if (level.isClientSide()) return;
+        var level = getLevel();
+        if (level == null || level.isClientSide()) return;
 
         if (firstTick) {
             firstTick = false;
@@ -223,7 +225,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
         }
 
         if (currentRecipe == null) {
-            boolean recipeStarted = tryStartRecipe();
+            boolean recipeStarted = tryStartRecipe(level);
             if (!recipeStarted) return;
         }
 
@@ -234,7 +236,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
             powerRequired = 0;
             powerRemaining = 0;
             maxPowerPerTick = 0;
-            updateClientScreen();
+            updateClientScreen(level);
             setChanged();
             return;
         }
@@ -267,7 +269,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
             maxPowerPerTick = 0;
         }
 
-        updateClientScreen();
+        updateClientScreen(level);
         setChanged();
     }
 }

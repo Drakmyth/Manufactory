@@ -150,7 +150,7 @@ public class PowerNetwork {
             return;
         }
         totalPower = sources.stream().reduce(0f, (powerFromSources, source) -> {
-            if (!level.isAreaLoaded(source, 1)) return powerFromSources;
+            if (!level.isLoaded(source)) return powerFromSources;
             BlockState sourceBlockState = level.getBlockState(source);
             Block sourceBlock = sourceBlockState.getBlock();
             if (!(sourceBlock instanceof IPowerBlock)) return powerFromSources;

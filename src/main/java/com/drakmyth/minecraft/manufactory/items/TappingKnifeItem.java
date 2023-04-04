@@ -39,7 +39,7 @@ public class TappingKnifeItem extends Item {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         BlockPos bePos = context.getClickedPos().relative(context.getClickedFace());
         BlockEntity be = level.getBlockEntity(bePos);
-        if (!LatexCollectorBlockEntity.class.isInstance(be)) {
+        if (be == null || !LatexCollectorBlockEntity.class.isInstance(be)) {
             LOGGER.debug(LogMarkers.MACHINE, "Latex Collector block entity not found");
             return InteractionResult.PASS;
         }

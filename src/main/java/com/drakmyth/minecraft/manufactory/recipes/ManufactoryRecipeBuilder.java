@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import com.drakmyth.minecraft.manufactory.init.ModCreativeTabs;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -42,7 +43,8 @@ public class ManufactoryRecipeBuilder {
    private String group;
    private final ManufactoryRecipeSerializer<?> recipeSerializer;
 
-   private ManufactoryRecipeBuilder(Ingredient ingredient, ItemStack result, ManufactoryRecipeSerializer<?> serializer) {
+   private ManufactoryRecipeBuilder(Ingredient ingredient, ItemStack result,
+         ManufactoryRecipeSerializer<?> serializer) {
       this.ingredient = ingredient;
       this.result = result.copy();
       this.extraChance = 0;
@@ -53,7 +55,8 @@ public class ManufactoryRecipeBuilder {
       this.recipeSerializer = serializer;
    }
 
-   private static ManufactoryRecipeBuilder manufactoryRecipe(Ingredient ingredient, ItemStack result, ManufactoryRecipeSerializer<?> serializer) {
+   private static ManufactoryRecipeBuilder manufactoryRecipe(Ingredient ingredient, ItemStack result,
+         ManufactoryRecipeSerializer<?> serializer) {
       return new ManufactoryRecipeBuilder(ingredient, result, serializer);
    }
 
@@ -62,7 +65,8 @@ public class ManufactoryRecipeBuilder {
    }
 
    public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, ItemLike result, int count) {
-      return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.GRINDER.get());
+      return manufactoryRecipe(ingredient, new ItemStack(result, count),
+            (ManufactoryRecipeSerializer<?>) ModRecipeSerializers.GRINDER.get());
    }
 
    public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, ItemLike result) {
@@ -70,11 +74,12 @@ public class ManufactoryRecipeBuilder {
    }
 
    public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, ItemLike result, int count) {
-      return manufactoryRecipe(ingredient, new ItemStack(result, count), (ManufactoryRecipeSerializer<?>)ModRecipeSerializers.BALL_MILL.get());
+      return manufactoryRecipe(ingredient, new ItemStack(result, count),
+            (ManufactoryRecipeSerializer<?>) ModRecipeSerializers.BALL_MILL.get());
    }
 
    public ManufactoryRecipeBuilder withExtraChance(float extraChance, int extraAmount) {
-      return withExtraChance(extraChance, new int[]{extraAmount});
+      return withExtraChance(extraChance, new int[] { extraAmount });
    }
 
    public ManufactoryRecipeBuilder withExtraChance(float extraChance, int[] extraAmounts) {
@@ -119,8 +124,24 @@ public class ManufactoryRecipeBuilder {
 
    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
       this.validate(id);
-      this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-      consumer.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts, this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + id.getPath()), this.recipeSerializer));
+      this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
+            .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+            .rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+            
+      var advancementPath = "recipes/" + ModCreativeTabs.MANUFACTORY.getRecipeFolderName() + "/" + id.getPath();
+      consumer.accept(new ManufactoryRecipeBuilder.Result(
+            id,
+            this.group == null ? "" : this.group,
+            this.ingredient,
+            this.result,
+            this.extraChance,
+            this.extraAmounts,
+            this.tierRequired,
+            this.powerRequired,
+            this.processTime,
+            this.advancementBuilder,
+            new ResourceLocation(id.getNamespace(), advancementPath),
+            this.recipeSerializer));
    }
 
    /**
@@ -146,7 +167,10 @@ public class ManufactoryRecipeBuilder {
       private final ResourceLocation advancementId;
       private final RecipeSerializer<? extends Recipe<Container>> serializer;
 
-      public Result(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime, Advancement.Builder advancementBuilder, ResourceLocation advancementId, RecipeSerializer<? extends Recipe<Container>> serializer) {
+      public Result(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, float extraChance,
+            int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime,
+            Advancement.Builder advancementBuilder, ResourceLocation advancementId,
+            RecipeSerializer<? extends Recipe<Container>> serializer) {
          this.id = id;
          this.group = group;
          this.ingredient = ingredient;
@@ -202,7 +226,8 @@ public class ManufactoryRecipeBuilder {
       }
 
       /**
-       * Gets the JSON for the advancement that unlocks this recipe. Null if there is no advancement.
+       * Gets the JSON for the advancement that unlocks this recipe. Null if there is
+       * no advancement.
        */
       @Override
       @Nullable
@@ -211,7 +236,8 @@ public class ManufactoryRecipeBuilder {
       }
 
       /**
-       * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
+       * Gets the ID for the advancement associated with this recipe. Should not be
+       * null if {@link #getAdvancementJson}
        * is non-null.
        */
       @Override

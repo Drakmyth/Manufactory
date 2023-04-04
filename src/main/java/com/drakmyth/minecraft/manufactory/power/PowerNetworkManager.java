@@ -90,6 +90,7 @@ public class PowerNetworkManager extends SavedData {
         PowerNetwork network = networks.get(networkId);
         if (network == null) {
             LOGGER.warn(LogMarkers.POWERNETWORK, "Power requested from network {}, but network doesn't exist.", networkId);
+            return 0;
         }
 
         float consumed = network.consumePower(requested, pos);

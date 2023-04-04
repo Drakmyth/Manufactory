@@ -83,7 +83,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     @Override
     public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (!GrinderBlockEntity.class.isInstance(be)) return false;
+        if (be == null || !GrinderBlockEntity.class.isInstance(be)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
 
         GrinderBlockEntity gte = (GrinderBlockEntity)be;
@@ -118,7 +118,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
 
     private void interactWith(BlockState state, Level level, BlockPos pos, Player player, ItemStack heldItem, Direction face) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (!GrinderBlockEntity.class.isInstance(be)) {
+        if (be == null || !GrinderBlockEntity.class.isInstance(be)) {
             LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of GrinderBlockEntity!");
             return;
         }
@@ -151,7 +151,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
         pnm.untrackBlock(pos);
 
         BlockEntity be = level.getBlockEntity(pos);
-        if (!GrinderBlockEntity.class.isInstance(be)) {
+        if (be == null || !GrinderBlockEntity.class.isInstance(be)) {
             LOGGER.warn(LogMarkers.MACHINE, "Block entity not instance of GrinderBlockEntity!");
             return;
         }
