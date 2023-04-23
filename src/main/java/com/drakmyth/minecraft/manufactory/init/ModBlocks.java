@@ -16,8 +16,6 @@ import com.drakmyth.minecraft.manufactory.blocks.SolarPanelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -40,7 +38,9 @@ public final class ModBlocks {
     public static final RegistryObject<Block> MECHANITE_PANEL =
             registerBlock("mechanite_panel", () -> new Block(defaultDecorProperties(MaterialColor.COLOR_PURPLE)));
     public static final RegistryObject<Block> MECHANITE_LAMP =
-            registerBlock("mechanite_lamp", () -> new MechaniteLampBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).lightLevel(litBlockEmission(15)).strength(0.3F).sound(SoundType.GLASS)));
+            registerBlock("mechanite_lamp", () -> MechaniteLampBlock.UnlitBlock(lampProperties()));
+    public static final RegistryObject<Block> MECHANITE_LAMP_INVERTED =
+            registerBlock("mechanite_lamp_inverted", () -> MechaniteLampBlock.LitBlock(lampProperties()));
     public static final RegistryObject<Block> GRINDER =
             registerBlock("grinder", () -> new GrinderBlock(defaultMachineProperties()));
     public static final RegistryObject<Block> BALL_MILL =
@@ -99,11 +99,12 @@ public final class ModBlocks {
                 .noLootTable();
     }
 
-    private static ToIntFunction<BlockState> litBlockEmission(int pLightValue) {
-        return (stateHolder) -> {
-           return stateHolder.getValue(BlockStateProperties.LIT) ? pLightValue : 0;
-        };
-     }
+    private static Block.Properties lampProperties() {
+        return Block.Properties.of(Material.BUILDABLE_GLASS)
+                .lightLevel(state -> state.getValue(BlockStateProperties.LIT) ? 15 : 0)
+                .strength(0.3F)
+                .sound(SoundType.GLASS);
+    }
 
     public static final Map<RegistryObject<Block>, Item.Properties> BLOCKITEM_PROPS =
             Stream.of(new SimpleEntry<>(LATEX_COLLECTOR, defaultBlockItemProps().stacksTo(16))).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));

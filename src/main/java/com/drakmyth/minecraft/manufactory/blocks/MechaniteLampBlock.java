@@ -2,52 +2,55 @@ package com.drakmyth.minecraft.manufactory.blocks;
 
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RedstoneTorchBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public class MechaniteLampBlock extends Block {
-    public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+    public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
 
-    public MechaniteLampBlock(BlockBehaviour.Properties pProperties) {
-        super(pProperties);
-        this.registerDefaultState(this.defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
+    private MechaniteLampBlock(BlockBehaviour.Properties props, boolean defaultLit) {
+        super(props);
+        BlockState defaultState = this.stateDefinition.any()
+                .setValue(LIT, defaultLit)
+                .setValue(INVERTED, defaultLit);
+        this.registerDefaultState(defaultState);
     }
 
+    public static MechaniteLampBlock LitBlock(BlockBehaviour.Properties props) {
+        return new MechaniteLampBlock(props, true);
+    }
+
+    public static MechaniteLampBlock UnlitBlock(BlockBehaviour.Properties props) {
+        return new MechaniteLampBlock(props, false);
+    }
+
+    @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return this.defaultBlockState().setValue(LIT, Boolean.valueOf(pContext.getLevel().hasNeighborSignal(pContext.getClickedPos())));
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        boolean hasNeighborSignal = context.getLevel().hasNeighborSignal(context.getClickedPos());
+        BlockState state = this.defaultBlockState();
+        return state.setValue(LIT, hasNeighborSignal ^ state.getValue(INVERTED));
     }
 
-    public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
-        if (!pLevel.isClientSide) {
-            boolean flag = pState.getValue(LIT);
-            if (flag != pLevel.hasNeighborSignal(pPos)) {
-                if (flag) {
-                    pLevel.scheduleTick(pPos, this, 4);
-                } else {
-                    pLevel.setBlock(pPos, pState.cycle(LIT), 2);
-                }
-            }
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        if (level.isClientSide) return;
 
+        boolean isLit = state.getValue(LIT);
+        if (isLit != (level.hasNeighborSignal(pos) ^ state.getValue(INVERTED))) {
+            level.setBlock(pos, state.cycle(LIT), 2);
         }
     }
 
-    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        if (pState.getValue(LIT) && !pLevel.hasNeighborSignal(pPos)) {
-            pLevel.setBlock(pPos, pState.cycle(LIT), 2);
-        }
-
-    }
-
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(LIT);
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(LIT, INVERTED);
     }
 }

@@ -31,8 +31,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerCubeBlock(ModBlocks.METALOSOL_BLOCK.get());
         registerCubeBlock(ModBlocks.MECHANITE_BLOCK.get());
         registerCubeBlock(ModBlocks.MECHANITE_PANEL.get());
-        registerMechaniteLamp();
-
         registerFluidBlock(ModBlocks.SLURRIED_COAL_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_DIAMOND_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_EMERALD_ORE.get());
@@ -46,6 +44,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         registerCubeMachineBlock(ModBlocks.GRINDER.get());
         registerCubeMachineBlock(ModBlocks.BALL_MILL.get());
+
+        ModelFile mechaniteLampUnlitModel = generateMechaniteLampModel("");
+        ModelFile mechaniteLampLitModel = generateMechaniteLampModel("_on");
+        registerMechaniteLamp(ModBlocks.MECHANITE_LAMP.get(), mechaniteLampLitModel, mechaniteLampUnlitModel, false);
+        registerMechaniteLamp(ModBlocks.MECHANITE_LAMP_INVERTED.get(), mechaniteLampLitModel, mechaniteLampUnlitModel, true);
 
         ModelFile latexCollectorEmptyModel = generateLatexCollectorEmptyModel();
         ModelFile latexCollectorFillingModel = generatePartialLatexCollectorFillingModel();
@@ -84,17 +87,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().getBuilder(name).parent(model);
     }
 
-    private void registerMechaniteLamp() {
+    private ModelFile generateMechaniteLampModel(String suffix) {
         Block block = ModBlocks.MECHANITE_LAMP.get();
         String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        return models().cubeAll(name + suffix, modLoc("block/" + name + suffix));
+    }
 
-        ModelFile litModel = models().cubeAll(name + "_on", modLoc("block/" + name + "_on"));
-        ModelFile unlitModel = models().cubeAll(name, modLoc("block/" + name));
+    private void registerMechaniteLamp(Block block, ModelFile litModel, ModelFile unlitModel, boolean defaultLit) {
+        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
 
-        getVariantBuilder(block)
-                .partialState().with(MechaniteLampBlock.LIT, true).modelForState().modelFile(litModel).addModel()
-                .partialState().with(MechaniteLampBlock.LIT, false).modelForState().modelFile(unlitModel).addModel();
-        itemModels().getBuilder(name).parent(unlitModel);
+        getVariantBuilder(block).forAllStatesExcept(state -> ConfiguredModel.builder()
+                .modelFile(state.getValue(MechaniteLampBlock.LIT) ? litModel : unlitModel)
+                .build(), MechaniteLampBlock.INVERTED);
+        itemModels().getBuilder(name).parent(defaultLit ? litModel : unlitModel);
     }
 
     private ModelFile generateLatexCollectorEmptyModel() {
