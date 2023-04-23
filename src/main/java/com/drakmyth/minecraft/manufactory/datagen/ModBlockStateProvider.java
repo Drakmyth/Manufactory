@@ -27,6 +27,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         registerCubeBlock(ModBlocks.AMBER_BLOCK.get());
+        registerCubeBlock(ModBlocks.METALOSOL_BLOCK.get());
+        registerCubeBlock(ModBlocks.MECHANITE_BLOCK.get());
+        registerCubeBlock(ModBlocks.MECHANITE_PANEL.get());
 
         registerFluidBlock(ModBlocks.SLURRIED_COAL_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_DIAMOND_ORE.get());

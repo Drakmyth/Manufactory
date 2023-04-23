@@ -39,6 +39,9 @@ public class ModLootTableProvider extends LootTableProvider {
         @Override
         protected void addTables() {
             dropSelf(ModBlocks.AMBER_BLOCK.get());
+            dropSelf(ModBlocks.METALOSOL_BLOCK.get());
+            dropSelf(ModBlocks.MECHANITE_BLOCK.get());
+            dropSelf(ModBlocks.MECHANITE_PANEL.get());
             dropSelf(ModBlocks.GRINDER.get());
             dropSelf(ModBlocks.BALL_MILL.get());
             dropSelf(ModBlocks.LATEX_COLLECTOR.get());

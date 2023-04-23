@@ -28,6 +28,12 @@ public final class ModBlocks {
 
     public static final RegistryObject<Block> AMBER_BLOCK =
             registerBlock("amber_block", () -> new Block(defaultDecorProperties(MaterialColor.COLOR_YELLOW)));
+    public static final RegistryObject<Block> METALOSOL_BLOCK =
+            registerBlock("metalosol_block", () -> new Block(defaultDecorProperties(MaterialColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> MECHANITE_BLOCK =
+            registerBlock("mechanite_block", () -> new Block(defaultDecorProperties(MaterialColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> MECHANITE_PANEL =
+            registerBlock("mechanite_panel", () -> new Block(defaultDecorProperties(MaterialColor.COLOR_PURPLE)));
     public static final RegistryObject<Block> GRINDER =
             registerBlock("grinder", () -> new GrinderBlock(defaultMachineProperties()));
     public static final RegistryObject<Block> BALL_MILL =

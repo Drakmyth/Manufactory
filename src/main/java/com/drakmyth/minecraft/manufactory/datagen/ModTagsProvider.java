@@ -24,6 +24,9 @@ public class ModTagsProvider {
         protected void addTags() {
             tag(BlockTags.MINEABLE_WITH_PICKAXE)
                     .add(ModBlocks.AMBER_BLOCK.get())
+                    .add(ModBlocks.METALOSOL_BLOCK.get())
+                    .add(ModBlocks.MECHANITE_BLOCK.get())
+                    .add(ModBlocks.MECHANITE_PANEL.get())
                     .add(ModBlocks.GRINDER.get())
                     .add(ModBlocks.BALL_MILL.get())
                     .add(ModBlocks.SOLAR_PANEL.get());
@@ -33,6 +36,9 @@ public class ModTagsProvider {
 
             tag(Tags.Blocks.NEEDS_WOOD_TOOL)
                     .add(ModBlocks.AMBER_BLOCK.get())
+                    .add(ModBlocks.METALOSOL_BLOCK.get())
+                    .add(ModBlocks.MECHANITE_BLOCK.get())
+                    .add(ModBlocks.MECHANITE_PANEL.get())
                     .add(ModBlocks.GRINDER.get())
                     .add(ModBlocks.BALL_MILL.get())
                     .add(ModBlocks.SOLAR_PANEL.get())
