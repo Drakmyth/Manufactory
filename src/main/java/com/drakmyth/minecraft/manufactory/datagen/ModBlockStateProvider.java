@@ -2,6 +2,7 @@ package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
+import com.drakmyth.minecraft.manufactory.blocks.MechaniteLampBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import net.minecraft.world.level.block.Block;
@@ -30,6 +31,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerCubeBlock(ModBlocks.METALOSOL_BLOCK.get());
         registerCubeBlock(ModBlocks.MECHANITE_BLOCK.get());
         registerCubeBlock(ModBlocks.MECHANITE_PANEL.get());
+        registerMechaniteLamp();
 
         registerFluidBlock(ModBlocks.SLURRIED_COAL_ORE.get());
         registerFluidBlock(ModBlocks.SLURRIED_DIAMOND_ORE.get());
@@ -80,6 +82,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile model = generateCubeMachineModel(name);
         generateCubeMachineBlockState(block, model);
         itemModels().getBuilder(name).parent(model);
+    }
+
+    private void registerMechaniteLamp() {
+        Block block = ModBlocks.MECHANITE_LAMP.get();
+        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+
+        ModelFile litModel = models().cubeAll(name + "_on", modLoc("block/" + name + "_on"));
+        ModelFile unlitModel = models().cubeAll(name, modLoc("block/" + name));
+
+        getVariantBuilder(block)
+                .partialState().with(MechaniteLampBlock.LIT, true).modelForState().modelFile(litModel).addModel()
+                .partialState().with(MechaniteLampBlock.LIT, false).modelForState().modelFile(unlitModel).addModel();
+        itemModels().getBuilder(name).parent(unlitModel);
     }
 
     private ModelFile generateLatexCollectorEmptyModel() {

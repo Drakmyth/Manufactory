@@ -27,6 +27,7 @@ public class ModTagsProvider {
                     .add(ModBlocks.METALOSOL_BLOCK.get())
                     .add(ModBlocks.MECHANITE_BLOCK.get())
                     .add(ModBlocks.MECHANITE_PANEL.get())
+                    .add(ModBlocks.MECHANITE_LAMP.get())
                     .add(ModBlocks.GRINDER.get())
                     .add(ModBlocks.BALL_MILL.get())
                     .add(ModBlocks.SOLAR_PANEL.get());
@@ -39,6 +40,7 @@ public class ModTagsProvider {
                     .add(ModBlocks.METALOSOL_BLOCK.get())
                     .add(ModBlocks.MECHANITE_BLOCK.get())
                     .add(ModBlocks.MECHANITE_PANEL.get())
+                    .add(ModBlocks.MECHANITE_LAMP.get())
                     .add(ModBlocks.GRINDER.get())
                     .add(ModBlocks.BALL_MILL.get())
                     .add(ModBlocks.SOLAR_PANEL.get())

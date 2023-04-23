@@ -3,17 +3,22 @@ package com.drakmyth.minecraft.manufactory.init;
 import java.util.Map;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.blocks.BallMillBlock;
 import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
+import com.drakmyth.minecraft.manufactory.blocks.MechaniteLampBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
 import com.drakmyth.minecraft.manufactory.blocks.SolarPanelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.item.BlockItem;
@@ -34,6 +39,8 @@ public final class ModBlocks {
             registerBlock("mechanite_block", () -> new Block(defaultDecorProperties(MaterialColor.COLOR_PURPLE)));
     public static final RegistryObject<Block> MECHANITE_PANEL =
             registerBlock("mechanite_panel", () -> new Block(defaultDecorProperties(MaterialColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> MECHANITE_LAMP =
+            registerBlock("mechanite_lamp", () -> new MechaniteLampBlock(BlockBehaviour.Properties.of(Material.BUILDABLE_GLASS).lightLevel(litBlockEmission(15)).strength(0.3F).sound(SoundType.GLASS)));
     public static final RegistryObject<Block> GRINDER =
             registerBlock("grinder", () -> new GrinderBlock(defaultMachineProperties()));
     public static final RegistryObject<Block> BALL_MILL =
@@ -91,6 +98,12 @@ public final class ModBlocks {
                 .strength(100f)
                 .noLootTable();
     }
+
+    private static ToIntFunction<BlockState> litBlockEmission(int pLightValue) {
+        return (stateHolder) -> {
+           return stateHolder.getValue(BlockStateProperties.LIT) ? pLightValue : 0;
+        };
+     }
 
     public static final Map<RegistryObject<Block>, Item.Properties> BLOCKITEM_PROPS =
             Stream.of(new SimpleEntry<>(LATEX_COLLECTOR, defaultBlockItemProps().stacksTo(16))).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
