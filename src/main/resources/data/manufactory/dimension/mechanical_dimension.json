@@ -1,0 +1,11 @@
+{
+    "type": "manufactory:mechanical_dimension_type",
+    "generator": {
+        "type": "minecraft:noise",
+        "settings": "manufactory:mechanical_dimension_noise",
+        "biome_source": {
+            "type": "minecraft:fixed",
+            "biome": "manufactory:mechanical_plains"
+        }
+    }
+}

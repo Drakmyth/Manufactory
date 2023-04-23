@@ -3,7 +3,6 @@ package com.drakmyth.minecraft.manufactory.init;
 import java.util.Map;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.function.Supplier;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.drakmyth.minecraft.manufactory.Reference;
