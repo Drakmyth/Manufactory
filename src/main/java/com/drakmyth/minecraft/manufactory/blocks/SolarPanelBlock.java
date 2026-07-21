@@ -19,7 +19,7 @@ import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
@@ -31,7 +31,7 @@ import net.minecraft.server.level.ServerLevel;
 
 public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IPowerBlock {
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public SolarPanelBlock(Properties properties) {

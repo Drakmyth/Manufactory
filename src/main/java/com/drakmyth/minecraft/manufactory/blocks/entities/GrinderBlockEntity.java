@@ -12,9 +12,6 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerProvider;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.network.IOpenMenuWithUpgradesListener;
 import com.drakmyth.minecraft.manufactory.network.IPowerRateListener;
-import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
-import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
-import com.drakmyth.minecraft.manufactory.network.PowerRatePacket;
 import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.drakmyth.minecraft.manufactory.util.TierHelper;
@@ -23,7 +20,7 @@ import org.slf4j.Logger;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -135,7 +132,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     }
 
     @Nullable
-    private Tier getTier() {
+    private ToolMaterial getTier() {
         if (!hasBothWheels()) return null;
         IGrinderWheelUpgrade wheel1 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(0).getItem();
         IGrinderWheelUpgrade wheel2 = (IGrinderWheelUpgrade)grinderUpgradeInventory.getStackInSlot(1).getItem();
@@ -185,14 +182,7 @@ public class GrinderBlockEntity extends BlockEntity implements IMachineProgressL
     }
 
     private void updateClientScreen(Level level) {
-        MachineProgressPacket machineProgress = new MachineProgressPacket(powerRemaining, powerRequired, getBlockPos());
-        PowerRatePacket powerRate = new PowerRatePacket(lastPowerReceived, maxPowerPerTick, getBlockPos());
-        LevelChunk chunk = level.getChunkAt(getBlockPos());
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update screen at {}...", LogHelper.blockPos(getBlockPos()));
-        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), machineProgress);
-        LOGGER.trace(LogMarkers.NETWORK, "Sending PowerRate packet to update screen at {}...", LogHelper.blockPos(getBlockPos()));
-        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), powerRate);
-        LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
+        setChanged();
     }
 
     private float getMotorSpeed() {

@@ -19,13 +19,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
 public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollectorBlockEntity> {
-    public static final ResourceLocation LATEX_TEXTURE = new ResourceLocation("minecraft", "block/quartz_block_top");
+    public static final Identifier LATEX_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "block/quartz_block_top");
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public LatexCollectorRenderer(BlockEntityRendererProvider.Context context) {}

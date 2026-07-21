@@ -106,6 +106,14 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
+// The legacy generators are being replaced by the 26.1 client/data model pipeline.
+// Keep runtime migration compiler passes focused until those providers are restored.
+tasks.named('compileJava', JavaCompile).configure {
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/**'
+    exclude 'com/drakmyth/minecraft/manufactory/blocks/entities/renderers/**'
+    exclude 'com/drakmyth/minecraft/manufactory/network/**'
+}
+
 idea.module {
     downloadSources = true
     downloadJavadoc = true

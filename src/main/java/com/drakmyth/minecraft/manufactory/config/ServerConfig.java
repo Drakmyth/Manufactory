@@ -3,18 +3,18 @@ package com.drakmyth.minecraft.manufactory.config;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ServerConfig {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public final ForgeConfigSpec.DoubleValue AmberChance;
-    public final ForgeConfigSpec.IntValue AmberTapSpawnCount;
-    public final ForgeConfigSpec.IntValue LatexFillSeconds;
-    public final ForgeConfigSpec.IntValue FullLatexSpawnCount;
-    public final ForgeConfigSpec.DoubleValue SolarPanelPeakPowerGeneration;
+    public final ModConfigSpec.DoubleValue AmberChance;
+    public final ModConfigSpec.IntValue AmberTapSpawnCount;
+    public final ModConfigSpec.IntValue LatexFillSeconds;
+    public final ModConfigSpec.IntValue FullLatexSpawnCount;
+    public final ModConfigSpec.DoubleValue SolarPanelPeakPowerGeneration;
 
-    ServerConfig(ForgeConfigSpec.Builder builder) {
+    ServerConfig(ModConfigSpec.Builder builder) {
         LOGGER.debug(LogMarkers.CONFIG, "Initializing SERVER config...");
 
         builder.push("general");

@@ -17,8 +17,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.LootTable.Builder;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ModLootTableProvider extends LootTableProvider {
     public ModLootTableProvider(DataGenerator generator) {
@@ -26,12 +26,12 @@ public class ModLootTableProvider extends LootTableProvider {
     }
 
     @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootContextParamSet>> getTables() {
+    protected List<Pair<Supplier<Consumer<BiConsumer<Identifier, Builder>>>, LootContextParamSet>> getTables() {
         return ImmutableList.of(Pair.of(ModBlockLoot::new, LootContextParamSets.BLOCK));
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationContext) {
+    protected void validate(Map<Identifier, LootTable> map, ValidationContext validationContext) {
         // TODO: This seems to be here to validate that loot tables are not modified programmatically. Do we need this?
     }
 

@@ -5,13 +5,13 @@ import com.drakmyth.minecraft.manufactory.commands.PowerNetworkArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModCommandArgumentTypes {
-    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.COMMAND_ARGUMENT_TYPES, Reference.MOD_ID);
+    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(BuiltInRegistries.COMMAND_ARGUMENT_TYPES, Reference.MOD_ID);
 
-    public static final RegistryObject<SingletonArgumentInfo<PowerNetworkArgument>> POWER_NETWORK_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("power_network",
+    public static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<PowerNetworkArgument>> POWER_NETWORK_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("power_network",
             () -> ArgumentTypeInfos.registerByClass(PowerNetworkArgument.class, SingletonArgumentInfo.contextFree(PowerNetworkArgument::getPowerNetwork)));
 }

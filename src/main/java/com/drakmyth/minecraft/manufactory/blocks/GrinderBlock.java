@@ -8,8 +8,6 @@ import com.drakmyth.minecraft.manufactory.items.upgrades.IPowerUpgrade;
 import com.drakmyth.minecraft.manufactory.menus.GrinderMenu;
 import com.drakmyth.minecraft.manufactory.menus.GrinderUpgradeMenu;
 import com.drakmyth.minecraft.manufactory.menus.providers.BlockMenuProvider;
-import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
-import com.drakmyth.minecraft.manufactory.network.OpenMenuWithUpgradesPacket;
 import com.drakmyth.minecraft.manufactory.power.IPowerBlock;
 import com.drakmyth.minecraft.manufactory.power.PowerNetworkManager;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
@@ -26,7 +24,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,13 +38,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public GrinderBlock(Properties properties) {
         super(properties);
@@ -121,9 +117,7 @@ public class GrinderBlock extends Block implements IPowerBlock, EntityBlock {
             LOGGER.debug(LogMarkers.INTERACTION, "Opening main gui...");
             containerProvider = new BlockMenuProvider("Grinder", pos, GrinderMenu::new);
         }
-        OpenMenuWithUpgradesPacket packet = new OpenMenuWithUpgradesPacket(((GrinderBlockEntity)be).getInstalledUpgrades(), pos);
-        ModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), packet);
-        NetworkHooks.openScreen((ServerPlayer)player, containerProvider, pos);
+        ((ServerPlayer)player).openMenu(containerProvider, buffer -> buffer.writeBlockPos(pos));
     }
 
     @Override

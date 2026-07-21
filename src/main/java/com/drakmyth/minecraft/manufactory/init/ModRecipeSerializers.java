@@ -5,15 +5,15 @@ import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
 import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModRecipeSerializers {
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
 
-    public static final RegistryObject<RecipeSerializer<?>> GRINDER =
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> GRINDER =
             RECIPE_SERIALIZERS.register("grinder", () -> new ManufactoryRecipeSerializer<GrinderRecipe>(GrinderRecipe::new));
-    public static final RegistryObject<RecipeSerializer<?>> BALL_MILL =
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> BALL_MILL =
             RECIPE_SERIALIZERS.register("ball_mill", () -> new ManufactoryRecipeSerializer<BallMillRecipe>(BallMillRecipe::new));
 }

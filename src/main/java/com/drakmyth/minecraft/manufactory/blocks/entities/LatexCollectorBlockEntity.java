@@ -5,8 +5,6 @@ import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
-import com.drakmyth.minecraft.manufactory.network.MachineProgressPacket;
-import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
@@ -55,11 +53,7 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     }
 
     private void updateClient(Level level, BlockPos pos) {
-        LOGGER.trace(LogMarkers.NETWORK, "Sending MachineProgress packet to update animation at {}...", LogHelper.blockPos(pos));
-        MachineProgressPacket msg = new MachineProgressPacket(ticksRemaining, totalTicks, pos);
-        LevelChunk chunk = level.getChunkAt(pos);
-        ModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), msg);
-        LOGGER.trace(LogMarkers.NETWORK, "Packet sent");
+        setChanged();
     }
 
     private boolean isWaterlogged(BlockState state) {

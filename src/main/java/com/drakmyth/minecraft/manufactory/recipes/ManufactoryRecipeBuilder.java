@@ -14,21 +14,21 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class ManufactoryRecipeBuilder {
     private Ingredient ingredient;
     private ItemStack result;
     private float extraChance;
     private int[] extraAmounts;
-    private Tier tierRequired;
+    private ToolMaterial tierRequired;
     private int powerRequired;
     private int processTime;
     private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
@@ -40,7 +40,7 @@ public class ManufactoryRecipeBuilder {
         this.result = result.copy();
         this.extraChance = 0;
         this.extraAmounts = new int[0];
-        this.tierRequired = Tiers.WOOD;
+        this.tierRequired = ToolMaterial.WOOD;
         this.powerRequired = 25;
         this.processTime = 200;
         this.recipeSerializer = serializer;
@@ -76,7 +76,7 @@ public class ManufactoryRecipeBuilder {
         return this;
     }
 
-    public ManufactoryRecipeBuilder withTierRequired(Tier tierRequired) {
+    public ManufactoryRecipeBuilder withTierRequired(ToolMaterial tierRequired) {
         this.tierRequired = tierRequired;
         return this;
     }
@@ -97,12 +97,12 @@ public class ManufactoryRecipeBuilder {
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {
-        this.build(consumer, ForgeRegistries.ITEMS.getKey(this.result.getItem()));
+        this.build(consumer, BuiltInRegistries.ITEMS.getKey(this.result.getItem()));
     }
 
     public void build(Consumer<FinishedRecipe> consumer, String save) {
-        ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result.getItem());
-        ResourceLocation resourcelocation1 = new ResourceLocation(save);
+        Identifier resourcelocation = BuiltInRegistries.ITEMS.getKey(this.result.getItem());
+        Identifier resourcelocation1 = Identifier.parse(save);
         if (resourcelocation1.equals(resourcelocation)) {
             throw new IllegalStateException("Recipe " + resourcelocation1 + " should remove its 'save' argument");
         } else {
@@ -110,43 +110,43 @@ public class ManufactoryRecipeBuilder {
         }
     }
 
-    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void build(Consumer<FinishedRecipe> consumer, Identifier id) {
         this.validate(id);
-        this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
+        this.advancementBuilder.parent(Identifier.withDefaultNamespace("recipes/root"))
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
                 .requirements(RequirementsStrategy.OR);
 
         String advancementPath = "recipes/" + ModCreativeTabs.MANUFACTORY.getRecipeFolderName() + "/" + id.getPath();
         consumer.accept(new ManufactoryRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.ingredient, this.result, this.extraChance, this.extraAmounts,
-                this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, new ResourceLocation(id.getNamespace(), advancementPath), this.recipeSerializer));
+                this.tierRequired, this.powerRequired, this.processTime, this.advancementBuilder, Identifier.fromNamespaceAndPath(id.getNamespace(), advancementPath), this.recipeSerializer));
     }
 
     /**
      * Makes sure that this obtainable.
      */
-    private void validate(ResourceLocation id) {
+    private void validate(Identifier id) {
         if (this.advancementBuilder.getCriteria().isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + id);
         }
     }
 
     public static class Result implements FinishedRecipe {
-        private final ResourceLocation id;
+        private final Identifier id;
         private final String group;
         private Ingredient ingredient;
         private ItemStack result;
         private float extraChance;
         private int[] extraAmounts;
-        private Tier tierRequired;
+        private ToolMaterial tierRequired;
         private int powerRequired;
         private int processTime;
         private final Advancement.Builder advancementBuilder;
-        private final ResourceLocation advancementId;
+        private final Identifier advancementId;
         private final RecipeSerializer<? extends Recipe<Container>> serializer;
 
-        public Result(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired,
-                int processTime, Advancement.Builder advancementBuilder, ResourceLocation advancementId, RecipeSerializer<? extends Recipe<Container>> serializer) {
+        public Result(Identifier id, String group, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, ToolMaterial tierRequired, int powerRequired,
+                int processTime, Advancement.Builder advancementBuilder, Identifier advancementId, RecipeSerializer<? extends Recipe<Container>> serializer) {
             this.id = id;
             this.group = group;
             this.ingredient = ingredient;
@@ -183,7 +183,7 @@ public class ManufactoryRecipeBuilder {
 
         private JsonObject serializeItemStack(ItemStack itemStack) {
             JsonObject json = new JsonObject();
-            json.addProperty("item", ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString());
+            json.addProperty("item", BuiltInRegistries.ITEMS.getKey(itemStack.getItem()).toString());
             json.addProperty("count", itemStack.getCount());
             return json;
         }
@@ -197,7 +197,7 @@ public class ManufactoryRecipeBuilder {
          * Gets the ID for the recipe.
          */
         @Override
-        public ResourceLocation getId() {
+        public Identifier getId() {
             return this.id;
         }
 
@@ -215,7 +215,7 @@ public class ManufactoryRecipeBuilder {
          */
         @Override
         @Nullable
-        public ResourceLocation getAdvancementId() {
+        public Identifier getAdvancementId() {
             return this.advancementId;
         }
     }

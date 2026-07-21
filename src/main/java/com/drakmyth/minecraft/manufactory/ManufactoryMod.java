@@ -9,26 +9,23 @@ import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
-import com.drakmyth.minecraft.manufactory.network.ModPacketHandler;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-import net.neoforged.neoforge.eventbus.api.IEventBus;
-import net.neoforged.neoforge.fml.ModLoadingContext;
-import net.neoforged.neoforge.fml.config.ModConfig;
-import net.neoforged.neoforge.fml.common.Mod;
-import net.neoforged.neoforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(Reference.MOD_ID)
 public class ManufactoryMod {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public ManufactoryMod() {
+    public ManufactoryMod(IEventBus modEventBus, ModContainer modContainer) {
         LOGGER.info("HELLO from Manufactory!");
 
-        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        LOGGER.info(LogMarkers.REGISTRATION, "Registering Packet Handlers...");
-        ModPacketHandler.registerMessages();
-        LOGGER.info(LogMarkers.REGISTRATION, "Packet Handler registration complete");
+        modEventBus.register(ModEventSubscriber.class);
+        NeoForge.EVENT_BUS.register(ForgeEventSubscriber.class);
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering blocks...");
         ModBlocks.BLOCKS.register(modEventBus);
@@ -60,11 +57,10 @@ public class ManufactoryMod {
         ModCommandArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);
         LOGGER.info(LogMarkers.REGISTRATION, "Command argument type registration complete");
 
-        final ModLoadingContext modLoadingContext = ModLoadingContext.get();
         LOGGER.info(LogMarkers.REGISTRATION, "Register config files...");
-        modLoadingContext.registerConfig(ModConfig.Type.SERVER, ConfigData.SERVER_SPEC);
-        modLoadingContext.registerConfig(ModConfig.Type.CLIENT, ConfigData.CLIENT_SPEC);
-        modLoadingContext.registerConfig(ModConfig.Type.COMMON, ConfigData.COMMON_SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, ConfigData.SERVER_SPEC);
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ConfigData.CLIENT_SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, ConfigData.COMMON_SPEC);
         LOGGER.info(LogMarkers.REGISTRATION, "Config file registration complete");
     }
 }

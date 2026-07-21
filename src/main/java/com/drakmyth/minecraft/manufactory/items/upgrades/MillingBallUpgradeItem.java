@@ -2,19 +2,19 @@ package com.drakmyth.minecraft.manufactory.items.upgrades;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 
 public class MillingBallUpgradeItem extends Item implements IMillingBallUpgrade {
-    private Tier tier;
+    private ToolMaterial tier;
     private float efficiency;
 
-    public MillingBallUpgradeItem(Properties properties, Tier tier, float efficiency) {
+    public MillingBallUpgradeItem(Properties properties, ToolMaterial tier, float efficiency) {
         super(properties);
         this.tier = tier;
         this.efficiency = efficiency;
     }
 
-    public Tier getTier() {
+    public ToolMaterial getTier() {
         return tier;
     }
 

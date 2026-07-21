@@ -2,8 +2,8 @@ package com.drakmyth.minecraft.manufactory.items.upgrades;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.ToolMaterial;
 
 public class MillingBallTier0UpgradeItem extends Item implements IMillingBallUpgrade {
 
@@ -11,8 +11,8 @@ public class MillingBallTier0UpgradeItem extends Item implements IMillingBallUpg
         super(properties);
     }
 
-    public Tier getTier() {
-        return Tiers.WOOD;
+    public ToolMaterial getTier() {
+        return ToolMaterial.WOOD;
     }
 
     public float getProcessChance(ItemStack stack) {

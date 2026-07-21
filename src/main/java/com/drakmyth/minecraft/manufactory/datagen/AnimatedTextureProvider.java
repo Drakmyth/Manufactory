@@ -14,11 +14,11 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public abstract class AnimatedTextureProvider implements DataProvider {
-    private final Map<ResourceLocation, Builder> data = new TreeMap<>();
+    private final Map<Identifier, Builder> data = new TreeMap<>();
     private final DataGenerator gen;
     private final String modid;
     private final ExistingFileHelper existingFileHelper;
@@ -36,8 +36,8 @@ public abstract class AnimatedTextureProvider implements DataProvider {
         registerAnimatedTextures();
         if (data.isEmpty()) return;
 
-        for (Entry<ResourceLocation, Builder> entry : data.entrySet()) {
-            ResourceLocation key = entry.getKey();
+        for (Entry<Identifier, Builder> entry : data.entrySet()) {
+            Identifier key = entry.getKey();
             Path path = this.gen.getOutputFolder().resolve("assets/" + key.getNamespace() + "/textures/" + key.getPath() + ".png.mcmeta");
             DataProvider.saveStable(cache, entry.getValue().toJson(), path);
         }
@@ -48,7 +48,7 @@ public abstract class AnimatedTextureProvider implements DataProvider {
         return "AnimatedTextures: " + modid;
     }
 
-    public Builder getBuilder(ResourceLocation texture) {
+    public Builder getBuilder(Identifier texture) {
         Preconditions.checkNotNull(texture, "Texture must not be null");
         boolean textureExists = existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
         Preconditions.checkArgument(textureExists, "Texture %s does not exist in any known resource pack", texture);
@@ -57,12 +57,12 @@ public abstract class AnimatedTextureProvider implements DataProvider {
         return builder;
     }
 
-    public ResourceLocation mcLoc(String path) {
-        return new ResourceLocation("minecraft", path);
+    public Identifier mcLoc(String path) {
+        return Identifier.fromNamespaceAndPath("minecraft", path);
     }
 
-    public ResourceLocation modLoc(String path) {
-        return new ResourceLocation(modid, path);
+    public Identifier modLoc(String path) {
+        return Identifier.fromNamespaceAndPath(modid, path);
     }
 
     public class Builder {

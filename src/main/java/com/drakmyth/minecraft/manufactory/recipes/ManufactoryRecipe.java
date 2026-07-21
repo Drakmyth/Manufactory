@@ -2,24 +2,24 @@ package com.drakmyth.minecraft.manufactory.recipes;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
 public abstract class ManufactoryRecipe implements Recipe<Container> {
-    private final ResourceLocation recipeId;
+    private final Identifier recipeId;
     private Ingredient ingredient;
     private ItemStack result;
     private float extraChance;
     private int[] extraAmounts;
-    private Tier tierRequired;
+    private ToolMaterial tierRequired;
     private int powerRequired;
     private int processTime;
 
-    public ManufactoryRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired,
+    public ManufactoryRecipe(Identifier recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, ToolMaterial tierRequired, int powerRequired,
             int processTime) {
         this.recipeId = recipeId;
         this.ingredient = ingredient;
@@ -51,7 +51,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
         return extraAmounts;
     }
 
-    public Tier getTierRequired() {
+    public ToolMaterial getTierRequired() {
         return tierRequired;
     }
 
@@ -94,7 +94,7 @@ public abstract class ManufactoryRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return recipeId;
     }
 }

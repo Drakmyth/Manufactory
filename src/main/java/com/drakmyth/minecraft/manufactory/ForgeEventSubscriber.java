@@ -6,22 +6,17 @@ import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.LogicalSide;
-import net.neoforged.neoforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
-@EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
 public final class ForgeEventSubscriber {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     @SubscribeEvent
-    public static void levelTick(TickEvent.LevelTickEvent event) {
-        if (event.side == LogicalSide.CLIENT) return;
-        if (event.phase == Phase.END) return;
-        PowerNetworkManager networkManager = PowerNetworkManager.get((ServerLevel)event.level);
-        networkManager.tick(event.level);
+    public static void levelTick(LevelTickEvent.Pre event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        PowerNetworkManager networkManager = PowerNetworkManager.get(level);
+        networkManager.tick(level);
     }
 
     @SubscribeEvent

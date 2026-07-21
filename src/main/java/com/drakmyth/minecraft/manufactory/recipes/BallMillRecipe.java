@@ -3,15 +3,15 @@ package com.drakmyth.minecraft.manufactory.recipes;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BallMillRecipe extends ManufactoryRecipe {
 
-    public BallMillRecipe(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired,
+    public BallMillRecipe(Identifier recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, ToolMaterial tierRequired, int powerRequired,
             int processTime) {
         super(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }

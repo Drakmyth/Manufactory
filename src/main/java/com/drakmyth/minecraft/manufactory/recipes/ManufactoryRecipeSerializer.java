@@ -4,14 +4,14 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements RecipeSerializer<T> {
     private final ManufactoryRecipeSerializer.IFactory<T> factory;
@@ -22,12 +22,12 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements
     }
 
     @Override
-    public T fromJson(ResourceLocation recipeId, JsonObject json) {
+    public T fromJson(Identifier recipeId, JsonObject json) {
         Ingredient ingredient = Ingredient.fromJson(json.get("ingredient"));
         JsonObject resultObj = json.get("result").getAsJsonObject();
-        ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(resultObj, "item", "minecraft:empty"), ':');
+        Identifier itemIdentifier = Identifier.of(GsonHelper.getAsString(resultObj, "item", "minecraft:empty"), ':');
         int amount = GsonHelper.getAsInt(resultObj, "count", 0);
-        ItemStack result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), amount);
+        ItemStack result = new ItemStack(BuiltInRegistries.ITEMS.getValue(itemIdentifier), amount);
         float extraChance = GsonHelper.getAsFloat(json, "extraChance");
         JsonArray resultArray = json.getAsJsonArray("extraAmounts");
         int[] extraAmounts = new int[resultArray.size()];
@@ -35,7 +35,7 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements
             int element = resultArray.get(i).getAsInt();
             extraAmounts[i] = element;
         }
-        Tier tierRequired = Tiers.valueOf(GsonHelper.getAsString(json, "tierRequired", "WOOD"));
+        ToolMaterial tierRequired = ToolMaterial.valueOf(GsonHelper.getAsString(json, "tierRequired", "WOOD"));
         int powerRequired = GsonHelper.getAsInt(json, "powerRequired", 25);
         int processTime = GsonHelper.getAsInt(json, "processTime", 200);
         return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
@@ -43,7 +43,7 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements
 
     @Nullable
     @Override
-    public T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+    public T fromNetwork(Identifier recipeId, FriendlyByteBuf buffer) {
         Ingredient ingredient = Ingredient.fromNetwork(buffer);
         ItemStack result = buffer.readItem();
         float extraChance = buffer.readFloat();
@@ -52,7 +52,7 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements
         for (int i = 0; i < extraAmountsCount; i++) {
             extraAmounts[i] = buffer.readInt();
         }
-        Tier tierRequired = Tiers.valueOf(buffer.readUtf());
+        ToolMaterial tierRequired = ToolMaterial.valueOf(buffer.readUtf());
         int powerRequired = buffer.readInt();
         int processTime = buffer.readInt();
         return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
@@ -74,6 +74,6 @@ public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements
     }
 
     public interface IFactory<T extends ManufactoryRecipe> {
-        T create(ResourceLocation recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, Tier tierRequired, int powerRequired, int processTime);
+        T create(Identifier recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, ToolMaterial tierRequired, int powerRequired, int processTime);
     }
 }

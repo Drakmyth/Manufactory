@@ -11,13 +11,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     private ExistingFileHelper exFileHelper;
@@ -76,20 +76,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerCubeBlock(Block block) {
-        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
         ModelFile model = cubeAll(block);
         simpleBlock(block, model);
         itemModels().getBuilder(name).parent(model);
     };
 
     private void registerFluidBlock(Block block) {
-        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
         ModelFile model = models().getBuilder(name).texture("particle", modLoc("block/" + name + "_still"));
         simpleBlock(block, model);
     }
 
     private void registerCubeMachineBlock(Block block) {
-        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
         ModelFile model = generateCubeMachineModel(name);
         generateCubeMachineBlockState(block, model);
         itemModels().getBuilder(name).parent(model);
@@ -97,12 +97,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private ModelFile generateMechaniteLampModel(String suffix) {
         Block block = ModBlocks.MECHANITE_LAMP.get();
-        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
         return models().cubeAll(name + suffix, modLoc("block/" + name + suffix));
     }
 
     private void registerMechaniteLamp(Block block, ModelFile litModel, ModelFile unlitModel, boolean defaultLit) {
-        String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
 
         getVariantBuilder(block).forAllStatesExcept(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechaniteLampBlock.LIT) ? litModel : unlitModel)
@@ -218,7 +218,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private ModelFile generateCubeMachineModel(String name) {
         return models().getBuilder(name)
-                .parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/cube"), exFileHelper))
+                .parent(new ExistingModelFile(Identifier.fromNamespaceAndPath("minecraft", "block/cube"), exFileHelper))
                 .texture("up", modLoc("block/" + name + "_top"))
                 .texture("down", modLoc("block/" + name + "_top"))
                 .texture("north", modLoc("block/" + name + "_front"))
