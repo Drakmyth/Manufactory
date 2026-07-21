@@ -12,6 +12,7 @@ import com.drakmyth.minecraft.manufactory.menus.screens.SimpleScreen;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.blocks.entities.renderers.LatexCollectorRenderer;
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -44,5 +45,7 @@ public final class ModEventSubscriber {
     public static void gatherClientData(GatherDataEvent.Client event) {
         event.getGenerator().addProvider(true,
                 new ModLanguageProvider(event.getGenerator().getPackOutput(), "en_us"));
+        event.getGenerator().addProvider(true,
+                new ModRecipeProvider.Runner(event.getGenerator().getPackOutput(), event.getLookupProvider()));
     }
 }

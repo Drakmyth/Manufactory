@@ -113,10 +113,9 @@ tasks.named('compileJava', JavaCompile).configure {
     exclude 'com/drakmyth/minecraft/manufactory/datagen/ModItemProvider.java'
     exclude 'com/drakmyth/minecraft/manufactory/datagen/AnimatedTextureProvider.java'
     exclude 'com/drakmyth/minecraft/manufactory/datagen/ModAnimatedTextureProvider.java'
-    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModRecipeProvider.java'
     exclude 'com/drakmyth/minecraft/manufactory/datagen/ModLootTableProvider.java'
     exclude 'com/drakmyth/minecraft/manufactory/datagen/ModTagsProvider.java'
-    exclude 'com/drakmyth/minecraft/manufactory/datagen/recipes/**'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/recipes/OreRecipes.java'
 }
 
 idea.module {
