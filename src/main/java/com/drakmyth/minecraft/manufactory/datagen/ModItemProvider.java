@@ -1,88 +1,52 @@
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
-import net.minecraft.data.DataGenerator;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import com.drakmyth.minecraft.manufactory.init.ModItems;
+import java.util.Set;
+import java.util.stream.Stream;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.core.Holder;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
-public class ModItemProvider extends ItemModelProvider {
+public class ModItemProvider extends ModelProvider {
+    private static final Set<Item> HANDHELD_ITEMS = Set.of(
+            ModItems.WRENCH.get(),
+            ModItems.TAPPING_KNIFE.get(),
+            ModItems.ROCK_DRILL.get(),
+            ModItems.SLURRIED_COAL_ORE_BUCKET.get(),
+            ModItems.SLURRIED_DIAMOND_ORE_BUCKET.get(),
+            ModItems.SLURRIED_EMERALD_ORE_BUCKET.get(),
+            ModItems.SLURRIED_GOLD_ORE_BUCKET.get(),
+            ModItems.SLURRIED_IRON_ORE_BUCKET.get(),
+            ModItems.SLURRIED_COPPER_ORE_BUCKET.get(),
+            ModItems.SLURRIED_LAPIS_ORE_BUCKET.get(),
+            ModItems.SLURRIED_NETHER_QUARTZ_ORE_BUCKET.get(),
+            ModItems.SLURRIED_REDSTONE_ORE_BUCKET.get(),
+            ModItems.SLURRIED_ANCIENT_DEBRIS_BUCKET.get());
 
-    public ModItemProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, Reference.MOD_ID, existingFileHelper);
+    public ModItemProvider(PackOutput output) {
+        super(output, Reference.MOD_ID);
     }
 
     @Override
-    protected void registerModels() {
-        registerTieredItem("motor", 4);
-        registerTieredItem("grinder_wheel", 5);
-        registerTieredItem("milling_ball", 5);
-        registerTieredItem("drill_head", 5);
-
-        registerTool("wrench");
-        registerTool("tapping_knife");
-        registerTool("rock_drill");
-
-        registerItem("latex_collector");
-        registerItem("amber");
-        registerItem("power_socket");
-        registerItem("battery");
-        registerItem("redstone_wire");
-        registerItem("coupling");
-        registerItem("coagulated_latex");
-        registerItem("rubber");
-
-        String[] ores = {
-                "coal_ore",
-                "diamond_ore",
-                "emerald_ore",
-                "gold_ore",
-                "iron_ore",
-                "copper_ore",
-                "lapis_ore",
-                "nether_quartz_ore",
-                "redstone_ore",
-                "ancient_debris"
-        };
-
-        for (String ore : ores) {
-            registerOreItem(ore, "ground", "rough");
-            registerOreItem(ore, "ground", "fine");
-            registerOreTool(ore, "slurried", "bucket");
-        }
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        ModItems.ITEMS.getEntries().forEach(holder -> itemModels.generateFlatItem(
+                holder.get(),
+                HANDHELD_ITEMS.contains(holder.get()) ? ModelTemplates.FLAT_HANDHELD_ITEM : ModelTemplates.FLAT_ITEM));
     }
 
-
-    private void registerTieredItem(String name, int tiers) {
-        for (int i = 0; i < tiers; i++) {
-            registerItem(name + "_tier" + i);
-        }
+    @Override
+    protected Stream<? extends Holder<Block>> getKnownBlocks() {
+        return Stream.empty();
     }
 
-    private void registerItem(String name) {
-        registerGenerated("item/" + name);
-    }
-
-    private void registerTool(String name) {
-        registerHandheld("item/" + name);
-    }
-
-    private void registerOreItem(String name, String prefix, String suffix) {
-        registerGenerated("item/" + prefix + "_" + name + "_" + suffix);
-    }
-
-    private void registerOreTool(String name, String prefix, String suffix) {
-        registerHandheld("item/" + prefix + "_" + name + "_" + suffix);
-    }
-
-    private void registerGenerated(String name) {
-        registerItem(name, "item/generated");
-    }
-
-    private void registerHandheld(String name) {
-        registerItem(name, "item/handheld");
-    }
-
-    private void registerItem(String name, String parent) {
-        withExistingParent(name, parent).texture("layer0", modLoc(name));
+    @Override
+    protected Stream<? extends Holder<Item>> getKnownItems() {
+        return ModItems.ITEMS.getEntries().stream();
     }
 }
