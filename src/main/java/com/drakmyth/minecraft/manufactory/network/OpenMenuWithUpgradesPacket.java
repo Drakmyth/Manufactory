@@ -13,9 +13,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.api.distmarker.Dist;
+import net.neoforged.neoforge.fml.DistExecutor;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class OpenMenuWithUpgradesPacket {
     private static final Logger LOGGER = LogUtils.getLogger();

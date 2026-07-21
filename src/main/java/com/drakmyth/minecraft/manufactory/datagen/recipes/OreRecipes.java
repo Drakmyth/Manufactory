@@ -21,8 +21,8 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public final class OreRecipes extends RecipeProvider {
 

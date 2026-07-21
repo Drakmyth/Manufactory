@@ -5,9 +5,9 @@ import com.drakmyth.minecraft.manufactory.recipes.GrinderRecipe;
 import com.drakmyth.minecraft.manufactory.recipes.BallMillRecipe;
 import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public final class ModRecipeSerializers {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);

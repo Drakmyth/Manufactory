@@ -1,8 +1,7 @@
 {
     "pack": {
-        "description": "${MOD_ID} resources",
-        "pack_format": 9,
-        "forge:resource_pack_format": 9,
-        "forge:data_pack_format": 10
+        "description": "Manufactory resources",
+        "min_format": [84, 0],
+        "max_format": [84, 0]
     }
 }

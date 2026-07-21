@@ -4,7 +4,11 @@ Manufactory
 [![Codecov](https://img.shields.io/codecov/c/github/Drakmyth/Manufactory)](https://codecov.io/gh/Drakmyth/Manufactory)
 [![License](https://img.shields.io/github/license/Drakmyth/Manufactory)](https://github.com/Drakmyth/Manufactory/blob/master/LICENSE.md)
 
-Manufactory is a tech mod for Minecraft focused on automation and resource generation.
+Manufactory is a tech mod for Minecraft 26.1.2 using NeoForge, focused on automation and resource generation.
+
+Development requires Java 25. Generated resources are intentionally not committed; run `./gradlew runData` before `./gradlew build` for a local release build.
+
+Only fresh 26.1.2 worlds are supported. Migration of Forge 1.19.2 saves is not provided.
 
 Issues
 --------------------

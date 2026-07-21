@@ -3,7 +3,7 @@ package com.drakmyth.minecraft.manufactory.config;
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
 
 public class ServerConfig {
     private static final Logger LOGGER = LogUtils.getLogger();

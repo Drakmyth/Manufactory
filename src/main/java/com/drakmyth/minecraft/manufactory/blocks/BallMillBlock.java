@@ -40,9 +40,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.NetworkHooks;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     private static final Logger LOGGER = LogUtils.getLogger();

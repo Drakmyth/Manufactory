@@ -27,8 +27,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.common.TierSortingRegistry;
+import net.neoforged.neoforge.network.NetworkHooks;
 
 public class RockDrillItem extends Item {
     private static final Logger LOGGER = LogUtils.getLogger();

@@ -5,9 +5,9 @@ import com.drakmyth.minecraft.manufactory.Reference;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.NetworkRegistry;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 
 public class ModPacketHandler {
     private static final Logger LOGGER = LogUtils.getLogger();

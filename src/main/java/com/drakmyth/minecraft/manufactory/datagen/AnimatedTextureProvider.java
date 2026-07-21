@@ -15,7 +15,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public abstract class AnimatedTextureProvider implements DataProvider {
     private final Map<ResourceLocation, Builder> data = new TreeMap<>();

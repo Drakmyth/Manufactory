@@ -11,8 +11,8 @@ import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class ModTagsProvider {
     public static class Blocks extends BlockTagsProvider {
@@ -68,11 +68,11 @@ public class ModTagsProvider {
                     .addTag(ModTags.Blocks.ROCK_DRILL_SILK_TOUCH)
                     .addTag(BlockTags.BASE_STONE_OVERWORLD)
                     .addTag(BlockTags.BASE_STONE_NETHER)
-                    .addTag(net.minecraftforge.common.Tags.Blocks.COBBLESTONE)
-                    .addTag(net.minecraftforge.common.Tags.Blocks.STONE)
-                    .addTag(net.minecraftforge.common.Tags.Blocks.SANDSTONE)
-                    .addTag(net.minecraftforge.common.Tags.Blocks.OBSIDIAN)
-                    .addTag(net.minecraftforge.common.Tags.Blocks.END_STONES)
+                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.COBBLESTONE)
+                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.STONE)
+                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.SANDSTONE)
+                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.OBSIDIAN)
+                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.END_STONES)
                     .add(net.minecraft.world.level.block.Blocks.CRYING_OBSIDIAN);
         }
     }

@@ -7,11 +7,11 @@
 // import net.minecraft.server.MinecraftServer;
 // import net.minecraft.world.level.Level;
 // import net.minecraft.server.level.ServerLevel;
-// import net.minecraftforge.common.util.FakePlayerFactory;
-// import net.minecraftforge.event.world.WorldEvent;
-// import net.minecraftforge.eventbus.api.SubscribeEvent;
-// import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-// import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+// import net.neoforged.neoforge.common.util.FakePlayerFactory;
+// import net.neoforged.neoforge.event.world.WorldEvent;
+// import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
+// import net.neoforged.neoforge.fml.common.Mod.EventBusSubscriber;
+// import net.neoforged.neoforge.fml.event.server.FMLServerStartingEvent;
 
 // @EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
 // public class TestUtils {

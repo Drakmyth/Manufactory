@@ -1,299 +1,112 @@
 plugins {
-    id 'eclipse'
+    id 'java-library'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.moddev' version '2.0.141'
+    id 'idea'
 }
 
-version = "${project.minecraftversion}-${project.modversion}"
-group = project.mainpackage.substring(0, project.mainpackage.lastIndexOf('/')).replace('/', '.')
-archivesBaseName = project.modid
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(project.javaversion)
+version = "${minecraft_version}-${mod_version}"
+group = mod_group_id
 
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+base {
+    archivesName = mod_id
+}
 
-minecraft {
-    // mappings channel: 'official', version: project.mappingsversion
-    mappings channel: 'parchment', version: "${project.parchmentversion}-${project.mappingsversion}"
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    exclude '**/*.bbmodel'
+    exclude 'src/generated/**/.cache'
+}
+
+neoForge {
+    version = neo_version
 
     runs {
         client {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            property 'forge.logging.console.level', 'debug'
-
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', project.modid
-
-            // Enable colors in terminal log
-            // property 'log4j.skipJansi', 'false'
-
-            // Use custom log4j2 configuration
-            // property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
-
-            // Stop forge from killing the Gradle daemon on exit
-            // forceExit false
-
-            mods {
-                manufactory {
-                    source sourceSets.main
-                }
-            }
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
-
         server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', project.modid
-
-            // Enable colors in terminal log
-            // property 'log4j.skipJansi', 'false'
-
-            // Use custom log4j2 configuration
-            // property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
-
-            // Stop forge from killing the Gradle daemon on exit
-            // forceExit false
-
-            mods {
-                manufactory {
-                    source sourceSets.main
-                }
-            }
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', project.modid
-
-            mods {
-                manufactory {
-                    source sourceSets.main
-                }
-            }
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
-
         data {
-            workingDirectory project.file('run')
+            clientData()
+            programArguments.addAll '--mod', mod_id, '--all', '--output',
+                    file('src/generated/resources').absolutePath, '--existing',
+                    file('src/main/resources').absolutePath
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
 
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-            
-            // Enable colors in terminal log
-            // property 'log4j.skipJansi', 'false'
-
-            // Use custom log4j2 configuration
-            // property 'log4j.configurationFile', '../src/main/resources/log4j2.xml'
-
-            // Stop forge from killing the Gradle daemon on exit
-            // forceExit false
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', project.modid, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                manufactory {
-                    source sourceSets.main // TODO: Use a dedicated datagen sourceset to exclude non-texture resources
-                }
-            }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
         }
     }
 }
 
-// Include resources generated by data generators.
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
 }
 
-dependencies {
-    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft "net.minecraftforge:forge:${project.minecraftversion}-${project.forgeversion}"
-
-    // Real mod deobf dependency examples - these get remapped to your current mappings
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-
-    // Examples using mod jars from ./libs
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    def replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+            mod_homepage           : mod_homepage,
+            mod_issues             : mod_issues,
+            mod_update_json        : mod_update_json
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into layout.buildDirectory.dir('generated/sources/modMetadata')
 }
 
-jar {
-    manifest {
-        attributes([
-            'Specification-Title': project.modname,
-            'Specification-Vendor': project.author,
-            'Specification-Version': project.modversion.substring(0, project.modversion.lastIndexOf('.')),
-            'Implementation-Title': project.name,
-            'Implementation-Version': project.modversion,
-            'Implementation-Vendor': project.author,
-            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-// publish.dependsOn('reobfJar')
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            artifact jar
+        register('mavenJava', MavenPublication) {
+            from components.java
         }
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            url = layout.projectDirectory.dir('mcmodsrepo')
         }
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }
 
-ext {
-    replacements = [
-        FORGE_VERSION: project.forgeversion,
-        FML_VERSION: project.fmlversion,
-        JAVA_VERSION: project.javaversion,
-        MC_VERSION: project.minecraftversion,
-        MC_VERSION_NEXT: project.minecraftversionnext,
-        MAPPINGS_VERSION: project.mappingsversion,
-        MOD_VERSION: project.modversion,
-        MOD_ID: project.modid,
-        MOD_NAME: project.modname,
-        MAIN_PACKAGE: project.mainpackage,
-        AUTHOR: project.author,
-        CREDITS: project.credits,
-        HOMEPAGE: project.homepage,
-        LOGO_FILE: project.logofile,
-        ISSUE_TRACKER: project.issuetracker,
-        UPDATEJSON: project.updatejson
-    ]
-
-    sourceTokenFiles = ["${project.mainpackage}/Reference.java".toString()]
-    resourceTokenFiles = ['pack.mcmeta', 'META-INF/mods.toml']
+idea.module {
+    downloadSources = true
+    downloadJavadoc = true
 }
-
-task replaceSourceTokens(type: Sync) {
-    inputs.property('replacements', project.replacements)
-
-    from (sourceSets.main.java) {
-        filesMatching(project.sourceTokenFiles) {
-            expand(project.replacements)
-        }
-    }
-    into "$buildDir/src"
-}
-
-compileJava {
-    dependsOn replaceSourceTokens
-    source = replaceSourceTokens.outputs
-}
-
-processResources {
-    inputs.property('replacements', project.replacements)
-
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-    filesMatching(project.resourceTokenFiles) {
-        expand(project.replacements)
-    }
-}
-
-// TODO: Replace using the Mojang GameTest system
-// tasks.whenTaskAdded { task ->
-//     if (task.name.equals('runServerTest')) {
-
-//         jacoco {
-//             applyTo task
-//             toolVersion = '0.8.6'
-//             reportsDir = file("$buildDir/reports/jacoco")
-//         }
-
-//         task.jacoco {
-//             enabled = true
-//             destinationFile = file("$buildDir/jacoco/runServerTest.exec")
-//             includes = []
-//             excludes = []
-//             excludeClassLoaders = []
-//             includeNoLocationClasses = true
-//         }
-//     }
-// }
-
-// task generateCoverageReport(type:JacocoReport) {
-//     enabled = true
-
-//     sourceSets sourceSets.main
-//     executionData = files("$buildDir/jacoco/runServerTest.exec")
-
-//     reports {
-//         xml {
-//             enabled = true
-//             destination = file("$buildDir/reports/coverage.xml")
-//         }
-//         csv.enabled = false
-//         html.enabled = false
-//     }
-// }
-
-// task runServerTestWithCoverage(type:JacocoReport, dependsOn: 'runServerTest') {
-//     enabled = true
-//     group = 'fg_runs'
-
-//     sourceSets sourceSets.main
-//     executionData = files("$buildDir/jacoco/runServerTest.exec")
-
-//     reports {
-//         xml.enabled = false
-//         csv.enabled = false
-//         html {
-//             enabled = true
-//             destination = file("$buildDir/reports/html")
-//         }
-//     }
-// }
