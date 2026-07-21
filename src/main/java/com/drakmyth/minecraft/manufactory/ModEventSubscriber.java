@@ -14,6 +14,7 @@ import com.drakmyth.minecraft.manufactory.blocks.entities.renderers.LatexCollect
 import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModLootTableProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModItemProvider;
+import com.drakmyth.minecraft.manufactory.datagen.ModSimpleBlockModelProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModRecipeProvider;
 import com.drakmyth.minecraft.manufactory.datagen.ModTagsProvider;
 import com.mojang.logging.LogUtils;
@@ -55,5 +56,6 @@ public final class ModEventSubscriber {
         event.createProvider(ModTagsProvider.Fluids::new);
         event.createProvider(ModLootTableProvider::new);
         event.createProvider(ModItemProvider::new);
+        event.createProvider(ModSimpleBlockModelProvider::new);
     }
 }

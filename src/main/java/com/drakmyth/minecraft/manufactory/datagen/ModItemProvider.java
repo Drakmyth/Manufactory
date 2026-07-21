@@ -49,4 +49,9 @@ public class ModItemProvider extends ModelProvider {
     protected Stream<? extends Holder<Item>> getKnownItems() {
         return ModItems.ITEMS.getEntries().stream();
     }
+
+    @Override
+    public String getName() {
+        return "Manufactory item models";
+    }
 }
