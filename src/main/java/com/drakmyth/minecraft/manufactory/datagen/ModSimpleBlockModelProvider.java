@@ -1,6 +1,7 @@
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.blocks.MechaniteLampBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import java.util.stream.Stream;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -40,6 +41,7 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
         createFluidModel(blockModels, ModBlocks.SLURRIED_ANCIENT_DEBRIS.get());
         createMachineModel(blockModels, ModBlocks.GRINDER.get(), "grinder");
         createMachineModel(blockModels, ModBlocks.BALL_MILL.get(), "ball_mill");
+        createLampModels(blockModels);
     }
 
     @Override
@@ -60,7 +62,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.SLURRIED_REDSTONE_ORE,
                 ModBlocks.SLURRIED_ANCIENT_DEBRIS,
                 ModBlocks.GRINDER,
-                ModBlocks.BALL_MILL);
+                ModBlocks.BALL_MILL,
+                ModBlocks.MECHANITE_LAMP,
+                ModBlocks.MECHANITE_LAMP_INVERTED);
     }
 
     @Override
@@ -71,7 +75,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.MECHANITE_BLOCK.get().asItem().builtInRegistryHolder(),
                 ModBlocks.MECHANITE_PANEL.get().asItem().builtInRegistryHolder(),
                 ModBlocks.GRINDER.get().asItem().builtInRegistryHolder(),
-                ModBlocks.BALL_MILL.get().asItem().builtInRegistryHolder());
+                ModBlocks.BALL_MILL.get().asItem().builtInRegistryHolder(),
+                ModBlocks.MECHANITE_LAMP.get().asItem().builtInRegistryHolder(),
+                ModBlocks.MECHANITE_LAMP_INVERTED.get().asItem().builtInRegistryHolder());
     }
 
     @Override
@@ -108,5 +114,29 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
 
     private static Material texture(String name) {
         return new Material(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "block/" + name));
+    }
+
+    private static void createLampModels(BlockModelGenerators blockModels) {
+        Identifier unlitModel = ModelTemplates.CUBE_ALL.create(
+                ModBlocks.MECHANITE_LAMP.get(),
+                TextureMapping.cube(texture("mechanite_lamp")),
+                blockModels.modelOutput);
+        Identifier litModel = ModelTemplates.CUBE_ALL.createWithSuffix(
+                ModBlocks.MECHANITE_LAMP.get(),
+                "_on",
+                TextureMapping.cube(texture("mechanite_lamp_on")),
+                blockModels.modelOutput);
+        registerLamp(blockModels, ModBlocks.MECHANITE_LAMP.get(), litModel, unlitModel, false);
+        registerLamp(blockModels, ModBlocks.MECHANITE_LAMP_INVERTED.get(), litModel, unlitModel, true);
+    }
+
+    private static void registerLamp(BlockModelGenerators blockModels, Block block,
+            Identifier litModel, Identifier unlitModel, boolean defaultLit) {
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(BlockModelGenerators.createBooleanModelDispatch(
+                        MechaniteLampBlock.LIT,
+                        BlockModelGenerators.plainVariant(litModel),
+                        BlockModelGenerators.plainVariant(unlitModel))));
+        blockModels.registerSimpleItemModel(block, defaultLit ? litModel : unlitModel);
     }
 }
