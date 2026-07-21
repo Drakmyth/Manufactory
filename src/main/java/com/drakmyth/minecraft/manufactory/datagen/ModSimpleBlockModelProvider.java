@@ -3,6 +3,9 @@ package com.drakmyth.minecraft.manufactory.datagen;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.MechaniteLampBlock;
+import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
+import com.drakmyth.minecraft.manufactory.blocks.PowerCellReceptacleBlock;
+import com.drakmyth.minecraft.manufactory.blocks.ReceptacleCell;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -49,6 +52,8 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
         createLampModels(blockModels);
         createSolarPanelModel(blockModels);
         createLatexCollectorModels(blockModels);
+        createPowerCableModels(blockModels);
+        createPowerCellReceptacleModels(blockModels);
     }
 
     @Override
@@ -73,7 +78,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.MECHANITE_LAMP,
                 ModBlocks.MECHANITE_LAMP_INVERTED,
                 ModBlocks.SOLAR_PANEL,
-                ModBlocks.LATEX_COLLECTOR);
+                ModBlocks.LATEX_COLLECTOR,
+                ModBlocks.POWER_CABLE,
+                ModBlocks.POWER_CELL_RECEPTACLE);
     }
 
     @Override
@@ -88,7 +95,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.MECHANITE_LAMP.get().asItem().builtInRegistryHolder(),
                 ModBlocks.MECHANITE_LAMP_INVERTED.get().asItem().builtInRegistryHolder(),
                 ModBlocks.SOLAR_PANEL.get().asItem().builtInRegistryHolder(),
-                ModBlocks.LATEX_COLLECTOR.get().asItem().builtInRegistryHolder());
+                ModBlocks.LATEX_COLLECTOR.get().asItem().builtInRegistryHolder(),
+                ModBlocks.POWER_CABLE.get().asItem().builtInRegistryHolder(),
+                ModBlocks.POWER_CELL_RECEPTACLE.get().asItem().builtInRegistryHolder());
     }
 
     @Override
@@ -230,5 +239,99 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
         }
         element.add("faces", faces);
         return element;
+    }
+
+    private static void createPowerCableModels(BlockModelGenerators blockModels) {
+        Identifier center = customModel(blockModels, "power_cable", powerCableCenterModel());
+        Identifier side = customModel(blockModels, "power_cable_side", powerCableSideModel());
+        Identifier up = customModel(blockModels, "power_cable_up", powerCableUpModel());
+        Identifier down = customModel(blockModels, "power_cable_down", powerCableDownModel());
+        MultiPartGenerator parts = MultiPartGenerator.multiPart(ModBlocks.POWER_CABLE.get())
+                .with(BlockModelGenerators.plainVariant(center))
+                .with(BlockModelGenerators.condition(PowerCableBlock.NORTH, true), BlockModelGenerators.plainVariant(side))
+                .with(BlockModelGenerators.condition(PowerCableBlock.EAST, true),
+                        BlockModelGenerators.plainVariant(side).with(BlockModelGenerators.Y_ROT_90))
+                .with(BlockModelGenerators.condition(PowerCableBlock.SOUTH, true),
+                        BlockModelGenerators.plainVariant(side).with(BlockModelGenerators.Y_ROT_180))
+                .with(BlockModelGenerators.condition(PowerCableBlock.WEST, true),
+                        BlockModelGenerators.plainVariant(side).with(BlockModelGenerators.Y_ROT_270))
+                .with(BlockModelGenerators.condition(PowerCableBlock.UP, true), BlockModelGenerators.plainVariant(up))
+                .with(BlockModelGenerators.condition(PowerCableBlock.DOWN, true), BlockModelGenerators.plainVariant(down));
+        blockModels.blockStateOutput.accept(parts);
+        blockModels.registerSimpleItemModel(ModBlocks.POWER_CABLE.get(), center);
+    }
+
+    private static JsonObject powerCableCenterModel() {
+        return model(new String[][]{{"cable", "minecraft:block/coal_block"}, {"particle", "minecraft:block/coal_block"}},
+                element(5, 2, 7, 11, 4, 9, "#cable", Direction.values()),
+                element(7, 0, 7, 9, 6, 9, "#cable", Direction.values()),
+                element(7, 2, 5, 9, 4, 11, "#cable", Direction.values()),
+                element(7, 1, 6, 9, 5, 10, "#cable", Direction.values()),
+                element(6, 2, 6, 10, 4, 10, "#cable", Direction.values()),
+                element(6, 1, 7, 10, 5, 9, "#cable", Direction.values()));
+    }
+
+    private static JsonObject powerCableSideModel() {
+        return model(new String[][]{{"cable", "minecraft:block/coal_block"}},
+                element(5, 2, 0, 11, 4, 7, "#cable", Direction.values()),
+                element(7, 0, 0, 9, 6, 7, "#cable", Direction.values()),
+                element(6, 1, 0, 10, 5, 7, "#cable", Direction.values()));
+    }
+
+    private static JsonObject powerCableUpModel() {
+        return model(new String[][]{{"cable", "minecraft:block/coal_block"}},
+                element(5, 4, 7, 11, 16, 9, "#cable", Direction.values()),
+                element(7, 4, 5, 9, 16, 11, "#cable", Direction.values()),
+                element(6, 4, 6, 10, 16, 10, "#cable", Direction.values()));
+    }
+
+    private static JsonObject powerCableDownModel() {
+        return model(new String[][]{{"cable", "minecraft:block/coal_block"}},
+                element(5, 0, 7, 11, 2, 9, "#cable", Direction.values()),
+                element(7, 0, 5, 9, 2, 11, "#cable", Direction.values()),
+                element(6, 0, 6, 10, 2, 10, "#cable", Direction.values()));
+    }
+
+    private static void createPowerCellReceptacleModels(BlockModelGenerators blockModels) {
+        Identifier receptacle = customModel(blockModels, "power_cell_receptacle", powerCellReceptacleModel());
+        Identifier emptyCell = customModel(blockModels, "power_cell_receptacle_empty", powerCellReceptacleEmptyModel());
+        MultiPartGenerator parts = MultiPartGenerator.multiPart(ModBlocks.POWER_CELL_RECEPTACLE.get())
+                .with(BlockModelGenerators.plainVariant(receptacle))
+                .with(BlockModelGenerators.condition(PowerCellReceptacleBlock.CELL, ReceptacleCell.EMPTY),
+                        BlockModelGenerators.plainVariant(emptyCell))
+                .with(BlockModelGenerators.condition(PowerCellReceptacleBlock.CELL, ReceptacleCell.FULL),
+                        BlockModelGenerators.plainVariant(emptyCell));
+        blockModels.blockStateOutput.accept(parts);
+        blockModels.registerSimpleItemModel(ModBlocks.POWER_CELL_RECEPTACLE.get(), receptacle);
+    }
+
+    private static JsonObject powerCellReceptacleModel() {
+        return model(new String[][]{{"mechanite", "manufactory:block/mechanite_block"},
+                        {"copper", "minecraft:block/copper_block"}, {"particle", "manufactory:block/mechanite_block"}},
+                element(6, 14, 8, 10, 16, 16, "#mechanite", Direction.values()),
+                element(6, 0, 8, 10, 2, 16, "#mechanite", Direction.values()),
+                element(6, 2, 14, 10, 14, 16, "#mechanite", Direction.values()),
+                element(7, 13, 9, 9, 14, 11, "#copper", Direction.values()),
+                element(7, 2, 9, 9, 3, 11, "#copper", Direction.values()));
+    }
+
+    private static JsonObject powerCellReceptacleEmptyModel() {
+        return model(new String[][]{{"mechanite", "manufactory:block/mechanite_block"}, {"glass", "minecraft:block/glass"}},
+                element(6, 12, 8, 10, 13, 12, "#mechanite", Direction.values()),
+                element(5, 11, 7, 11, 12, 13, "#mechanite", Direction.values()),
+                element(6, 5, 8, 10, 11, 12, "#glass", Direction.values()),
+                element(5, 4, 7, 11, 5, 13, "#mechanite", Direction.values()),
+                element(6, 3, 8, 10, 4, 12, "#mechanite", Direction.values()));
+    }
+
+    private static JsonObject model(String[][] textureEntries, JsonObject... modelElements) {
+        JsonObject model = new JsonObject();
+        JsonObject textures = new JsonObject();
+        for (String[] entry : textureEntries) textures.addProperty(entry[0], entry[1]);
+        model.add("textures", textures);
+        JsonArray elements = new JsonArray();
+        for (JsonObject modelElement : modelElements) elements.add(modelElement);
+        model.add("elements", elements);
+        return model;
     }
 }

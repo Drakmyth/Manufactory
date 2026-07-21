@@ -109,7 +109,6 @@ tasks.withType(JavaCompile).configureEach {
 // Minecraft 26.1 replaced the legacy model provider pipeline. Keep only that
 // isolated while recipes, tags, loot, and language migrate on the normal classpath.
 tasks.named('compileJava', JavaCompile).configure {
-    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModBlockStateProvider.java'
     exclude 'com/drakmyth/minecraft/manufactory/datagen/AnimatedTextureProvider.java'
     exclude 'com/drakmyth/minecraft/manufactory/datagen/ModAnimatedTextureProvider.java'
 }
