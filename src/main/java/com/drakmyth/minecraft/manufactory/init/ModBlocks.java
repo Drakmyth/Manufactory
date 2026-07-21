@@ -1,10 +1,7 @@
 package com.drakmyth.minecraft.manufactory.init;
 
-import java.util.Map;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.blocks.BallMillBlock;
 import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
@@ -18,65 +15,72 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModBlocks {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Reference.MOD_ID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, Reference.MOD_ID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Reference.MOD_ID);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Reference.MOD_ID);
 
     public static final DeferredHolder<Block, Block> AMBER_BLOCK =
-            registerBlock("amber_block", () -> new Block(defaultDecorProperties(MapColor.COLOR_YELLOW)));
+            registerBlock("amber_block", Block::new, () -> defaultDecorProperties(MapColor.COLOR_YELLOW));
     public static final DeferredHolder<Block, Block> METALOSOL_BLOCK =
-            registerBlock("metalosol_block", () -> new Block(defaultDecorProperties(MapColor.COLOR_PURPLE)));
+            registerBlock("metalosol_block", Block::new, () -> defaultDecorProperties(MapColor.COLOR_PURPLE));
     public static final DeferredHolder<Block, Block> MECHANITE_BLOCK =
-            registerBlock("mechanite_block", () -> new Block(defaultDecorProperties(MapColor.COLOR_PURPLE)));
+            registerBlock("mechanite_block", Block::new, () -> defaultDecorProperties(MapColor.COLOR_PURPLE));
     public static final DeferredHolder<Block, Block> MECHANITE_PANEL =
-            registerBlock("mechanite_panel", () -> new Block(defaultDecorProperties(MapColor.COLOR_PURPLE)));
+            registerBlock("mechanite_panel", Block::new, () -> defaultDecorProperties(MapColor.COLOR_PURPLE));
     public static final DeferredHolder<Block, Block> MECHANITE_LAMP =
-            registerBlock("mechanite_lamp", () -> MechaniteLampBlock.UnlitBlock(lampProperties()));
+            registerBlock("mechanite_lamp", MechaniteLampBlock::UnlitBlock, ModBlocks::lampProperties);
     public static final DeferredHolder<Block, Block> MECHANITE_LAMP_INVERTED =
-            registerBlock("mechanite_lamp_inverted", () -> MechaniteLampBlock.LitBlock(lampProperties()));
+            registerBlock("mechanite_lamp_inverted", MechaniteLampBlock::LitBlock, ModBlocks::lampProperties);
     public static final DeferredHolder<Block, Block> POWER_CELL_RECEPTACLE =
-            registerBlock("power_cell_receptacle", () -> new PowerCellReceptacleBlock(defaultDecorProperties(MapColor.COLOR_PURPLE)));
+            registerBlock("power_cell_receptacle", PowerCellReceptacleBlock::new, () -> defaultDecorProperties(MapColor.COLOR_PURPLE));
     public static final DeferredHolder<Block, Block> GRINDER =
-            registerBlock("grinder", () -> new GrinderBlock(defaultMachineProperties()));
+            registerBlock("grinder", GrinderBlock::new, ModBlocks::defaultMachineProperties);
     public static final DeferredHolder<Block, Block> BALL_MILL =
-            registerBlock("ball_mill", () -> new BallMillBlock(defaultMachineProperties()));
+            registerBlock("ball_mill", BallMillBlock::new, ModBlocks::defaultMachineProperties);
     public static final DeferredHolder<Block, Block> LATEX_COLLECTOR =
-            registerBlock("latex_collector", () -> new LatexCollectorBlock(Block.Properties.of().mapColor(MapColor.WOOD).strength(1.0f).sound(SoundType.WOOD)));
+            registerBlock("latex_collector", LatexCollectorBlock::new,
+                    () -> Block.Properties.of().mapColor(MapColor.WOOD).strength(1.0f).sound(SoundType.WOOD), 16);
     public static final DeferredHolder<Block, Block> POWER_CABLE =
-            registerBlock("power_cable", () -> new PowerCableBlock(Block.Properties.of().mapColor(MapColor.METAL).strength(0.7f).sound(SoundType.METAL)));
+            registerBlock("power_cable", PowerCableBlock::new,
+                    () -> Block.Properties.of().mapColor(MapColor.METAL).strength(0.7f).sound(SoundType.METAL));
     public static final DeferredHolder<Block, Block> SOLAR_PANEL =
-            registerBlock("solar_panel", () -> new SolarPanelBlock(defaultMachineProperties()));
+            registerBlock("solar_panel", SolarPanelBlock::new, ModBlocks::defaultMachineProperties);
 
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_COAL_ORE =
-            BLOCKS.register("slurried_coal_ore", () -> new LiquidBlock(ModFluids.SLURRIED_COAL_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_coal_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_COAL_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_DIAMOND_ORE =
-            BLOCKS.register("slurried_diamond_ore", () -> new LiquidBlock(ModFluids.SLURRIED_DIAMOND_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_diamond_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_DIAMOND_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_EMERALD_ORE =
-            BLOCKS.register("slurried_emerald_ore", () -> new LiquidBlock(ModFluids.SLURRIED_EMERALD_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_emerald_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_EMERALD_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_GOLD_ORE =
-            BLOCKS.register("slurried_gold_ore", () -> new LiquidBlock(ModFluids.SLURRIED_GOLD_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_gold_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_GOLD_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_IRON_ORE =
-            BLOCKS.register("slurried_iron_ore", () -> new LiquidBlock(ModFluids.SLURRIED_IRON_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_iron_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_IRON_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_COPPER_ORE =
-            BLOCKS.register("slurried_copper_ore", () -> new LiquidBlock(ModFluids.SLURRIED_COPPER_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_copper_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_COPPER_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_LAPIS_ORE =
-            BLOCKS.register("slurried_lapis_ore", () -> new LiquidBlock(ModFluids.SLURRIED_LAPIS_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_lapis_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_LAPIS_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_NETHER_QUARTZ_ORE =
-            BLOCKS.register("slurried_nether_quartz_ore", () -> new LiquidBlock(ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_nether_quartz_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_REDSTONE_ORE =
-            BLOCKS.register("slurried_redstone_ore", () -> new LiquidBlock(ModFluids.SLURRIED_REDSTONE_ORE.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_redstone_ore", properties -> new LiquidBlock(ModFluids.SLURRIED_REDSTONE_ORE.get(), properties), ModBlocks::defaultFluidProperties);
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_ANCIENT_DEBRIS =
-            BLOCKS.register("slurried_ancient_debris", () -> new LiquidBlock(ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), defaultFluidProperties()));
+            BLOCKS.registerBlock("slurried_ancient_debris", properties -> new LiquidBlock(ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), properties), ModBlocks::defaultFluidProperties);
 
-    private static DeferredHolder<Block, Block> registerBlock(String name, Supplier<Block> sup) {
-        DeferredHolder<Block, Block> block = BLOCKS.register(name, sup);
-        ITEMS.register(name, () -> new BlockItem(block.get(), defaultBlockItemProps()));
+    private static DeferredHolder<Block, Block> registerBlock(String name,
+            Function<BlockBehaviour.Properties, ? extends Block> factory, Supplier<BlockBehaviour.Properties> properties) {
+        return registerBlock(name, factory, properties, 64);
+    }
+
+    private static DeferredHolder<Block, Block> registerBlock(String name,
+            Function<BlockBehaviour.Properties, ? extends Block> factory, Supplier<BlockBehaviour.Properties> properties,
+            int stackSize) {
+        DeferredHolder<Block, Block> block = BLOCKS.registerBlock(name, factory, properties);
+        ITEMS.registerSimpleBlockItem(block, itemProperties -> itemProperties.stacksTo(stackSize));
         return block;
     }
 
@@ -107,10 +111,4 @@ public final class ModBlocks {
                 .sound(SoundType.GLASS);
     }
 
-    public static final Map<DeferredHolder<Block, Block>, Item.Properties> BLOCKITEM_PROPS =
-            Stream.of(new SimpleEntry<>(LATEX_COLLECTOR, defaultBlockItemProps().stacksTo(16))).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
-
-    public static Item.Properties defaultBlockItemProps() {
-        return new Item.Properties().stacksTo(64);
-    }
 }
