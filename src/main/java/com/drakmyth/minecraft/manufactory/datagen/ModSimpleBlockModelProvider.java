@@ -8,6 +8,8 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
@@ -36,6 +38,8 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
         createFluidModel(blockModels, ModBlocks.SLURRIED_NETHER_QUARTZ_ORE.get());
         createFluidModel(blockModels, ModBlocks.SLURRIED_REDSTONE_ORE.get());
         createFluidModel(blockModels, ModBlocks.SLURRIED_ANCIENT_DEBRIS.get());
+        createMachineModel(blockModels, ModBlocks.GRINDER.get(), "grinder");
+        createMachineModel(blockModels, ModBlocks.BALL_MILL.get(), "ball_mill");
     }
 
     @Override
@@ -54,7 +58,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.SLURRIED_LAPIS_ORE,
                 ModBlocks.SLURRIED_NETHER_QUARTZ_ORE,
                 ModBlocks.SLURRIED_REDSTONE_ORE,
-                ModBlocks.SLURRIED_ANCIENT_DEBRIS);
+                ModBlocks.SLURRIED_ANCIENT_DEBRIS,
+                ModBlocks.GRINDER,
+                ModBlocks.BALL_MILL);
     }
 
     @Override
@@ -63,7 +69,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.AMBER_BLOCK.get().asItem().builtInRegistryHolder(),
                 ModBlocks.METALOSOL_BLOCK.get().asItem().builtInRegistryHolder(),
                 ModBlocks.MECHANITE_BLOCK.get().asItem().builtInRegistryHolder(),
-                ModBlocks.MECHANITE_PANEL.get().asItem().builtInRegistryHolder());
+                ModBlocks.MECHANITE_PANEL.get().asItem().builtInRegistryHolder(),
+                ModBlocks.GRINDER.get().asItem().builtInRegistryHolder(),
+                ModBlocks.BALL_MILL.get().asItem().builtInRegistryHolder());
     }
 
     @Override
@@ -80,5 +88,25 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 blockModels.modelOutput);
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
                 block, BlockModelGenerators.plainVariant(model)));
+    }
+
+    private static void createMachineModel(BlockModelGenerators blockModels, Block block, String name) {
+        TextureMapping textures = new TextureMapping()
+                .put(TextureSlot.UP, texture(name + "_top"))
+                .put(TextureSlot.DOWN, texture(name + "_top"))
+                .put(TextureSlot.NORTH, texture(name + "_front"))
+                .put(TextureSlot.EAST, texture(name + "_side"))
+                .put(TextureSlot.SOUTH, texture(name + "_back_socket"))
+                .put(TextureSlot.WEST, texture(name + "_side"))
+                .put(TextureSlot.PARTICLE, texture(name + "_top"));
+        Identifier model = ModelTemplates.CUBE.create(block, textures, blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(
+                block, BlockModelGenerators.plainVariant(model))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+        blockModels.registerSimpleItemModel(block, model);
+    }
+
+    private static Material texture(String name) {
+        return new Material(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "block/" + name));
     }
 }
