@@ -4,6 +4,8 @@ import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.MechaniteLampBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
+import com.drakmyth.minecraft.manufactory.blocks.PowerCellReceptacleBlock;
+import com.drakmyth.minecraft.manufactory.blocks.ReceptacleCell;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -60,6 +62,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile powerCableDownModel = generatePartialPowerCableDownModel();
         generatePowerCableBlockState(powerCableCenterModel, powerCableSideModel, powerCableUpModel, powerCableDownModel);
         itemModels().getBuilder("power_cable").parent(powerCableCenterModel);
+
+        ModelFile powerCellReceptacleModel = generatePowerCellReceptacleModel();
+        ModelFile powerCellReceptacleEmptyCellModel = generatePartialPowerCellReceptacleEmptyCellModel();
+        // ModelFile powerCellReceptacleFullCellModel = generatePartialPowerCellReceptacleFullCellModel();
+        generatePowerCellReceptacleBlockState(powerCellReceptacleModel, powerCellReceptacleEmptyCellModel, powerCellReceptacleEmptyCellModel);
+        itemModels().getBuilder("power_cell_receptacle").parent(powerCellReceptacleModel);
 
         ModelFile daylightDetectorModel = new ExistingModelFile(mcLoc("block/daylight_detector"), exFileHelper);
         ModelFile solarPanelModel = models().getBuilder("solar_panel").parent(daylightDetectorModel);
@@ -147,7 +155,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private ModelFile generatePowerCableCenterModel() {
-        return models().getBuilder("power_cable").parent(new ExistingModelFile(new ResourceLocation("minecraft", "block/block"), exFileHelper))
+        return models().getBuilder("power_cable").parent(new ExistingModelFile(mcLoc("block/block"), exFileHelper))
                 // x_core
                 .element().from(5, 2, 7).to(11, 4, 9).allFaces((dir, face) -> face.texture("#cable")).end()
                 // y_core
@@ -225,5 +233,49 @@ public class ModBlockStateProvider extends BlockStateProvider {
             int yRotation = (int)state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite().toYRot();
             return ConfiguredModel.builder().modelFile(model).rotationY(yRotation).build();
         });
+    }
+
+    private ModelFile generatePowerCellReceptacleModel() {
+        return models().getBuilder("power_cell_receptacle").parent(new ExistingModelFile(mcLoc("block/block"), exFileHelper))
+                // top
+                .element().from(6, 14, 8).to(10, 16, 16).allFaces((dir, face) -> face.texture("#mechanite")).end()
+                // bottom
+                .element().from(6, 0, 8).to(10, 2, 16).allFaces((dir, face) -> face.texture("#mechanite")).end()
+                // back
+                .element().from(6, 2, 14).to(10, 14, 16).allFaces((dir, face) -> face.texture("#mechanite")).end()
+                // top_contact
+                .element().from(7, 13, 9).to(9, 14, 11).allFaces((dir, face) -> face.texture("#copper")).end()
+                // bottom_contact
+                .element().from(7, 2, 9).to(9, 3, 11).allFaces((dir, face) -> face.texture("#copper")).end()
+                .texture("mechanite", modLoc("block/mechanite_block"))
+                .texture("copper", mcLoc("block/copper_block"))
+                .texture("particle", modLoc("block/mechanite_block"));
+    }
+
+    private ModelFile generatePartialPowerCellReceptacleEmptyCellModel() {
+        return models().getBuilder("power_cell_receptacle_empty")
+                // top_outer
+                .element().from(6, 12, 8).to(10, 13, 12).allFaces((dir, face) -> face.texture("#mechanite")).end()
+                // top_inner
+                .element().from(5, 11, 7).to(11, 12, 13).allFaces((dir, face) -> face.texture("#mechanite")).end()
+                // glass
+                .element().from(6, 5, 8).to(10, 11, 12).allFaces((dir, face) -> face.texture("#glass")).end()
+                // bottom_inner
+                .element().from(5, 4, 7).to(11, 5, 13).allFaces((dir, face) -> face.texture("#mechanite")).end()
+                // bottom_outer
+                .element().from(6, 3, 8).to(10, 4, 12).allFaces((dir, face) -> face.texture("#mechanite")).end()
+                .texture("mechanite", modLoc("block/mechanite_block"))
+                .texture("glass", mcLoc("block/glass"));
+    }
+
+    // private ModelFile generatePartialPowerCellReceptacleFullCellModel() {
+
+    // }
+
+    private void generatePowerCellReceptacleBlockState(ModelFile receptacleModel, ModelFile emptyCellModel, ModelFile fullCellModel) {
+        getMultipartBuilder(ModBlocks.POWER_CELL_RECEPTACLE.get())
+                .part().modelFile(receptacleModel).addModel().end()
+                .part().modelFile(emptyCellModel).addModel().condition(PowerCellReceptacleBlock.CELL, ReceptacleCell.EMPTY).end()
+                .part().modelFile(fullCellModel).addModel().condition(PowerCellReceptacleBlock.CELL, ReceptacleCell.FULL).end();
     }
 }

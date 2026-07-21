@@ -19,6 +19,7 @@ public class ModLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.MECHANITE_PANEL, "Mechanite Panel");
         addBlock(ModBlocks.MECHANITE_LAMP, "Mechanite Lamp");
         addBlock(ModBlocks.MECHANITE_LAMP_INVERTED, "Mechanite Lamp (Inverted)");
+        addBlock(ModBlocks.POWER_CELL_RECEPTACLE, "Power Cell Receptacle");
         addBlock(ModBlocks.GRINDER, "Grinder");
         addBlock(ModBlocks.BALL_MILL, "Ball Mill");
         addBlock(ModBlocks.LATEX_COLLECTOR, "Latex Collector");

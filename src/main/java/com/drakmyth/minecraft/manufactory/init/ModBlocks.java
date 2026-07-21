@@ -11,6 +11,7 @@ import com.drakmyth.minecraft.manufactory.blocks.GrinderBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.MechaniteLampBlock;
 import com.drakmyth.minecraft.manufactory.blocks.PowerCableBlock;
+import com.drakmyth.minecraft.manufactory.blocks.PowerCellReceptacleBlock;
 import com.drakmyth.minecraft.manufactory.blocks.SolarPanelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -40,6 +41,8 @@ public final class ModBlocks {
             registerBlock("mechanite_lamp", () -> MechaniteLampBlock.UnlitBlock(lampProperties()));
     public static final RegistryObject<Block> MECHANITE_LAMP_INVERTED =
             registerBlock("mechanite_lamp_inverted", () -> MechaniteLampBlock.LitBlock(lampProperties()));
+    public static final RegistryObject<Block> POWER_CELL_RECEPTACLE =
+            registerBlock("power_cell_receptacle", () -> new PowerCellReceptacleBlock(defaultDecorProperties(MaterialColor.COLOR_PURPLE)));
     public static final RegistryObject<Block> GRINDER =
             registerBlock("grinder", () -> new GrinderBlock(defaultMachineProperties()));
     public static final RegistryObject<Block> BALL_MILL =
