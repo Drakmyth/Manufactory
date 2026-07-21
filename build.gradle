@@ -106,12 +106,11 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-// The legacy generators are being replaced by the 26.1 client/data model pipeline.
-// Keep runtime migration compiler passes focused until those providers are restored.
+// Minecraft 26.1 replaced the legacy model/datagen provider pipeline. These
+// providers are migrated as the next isolated milestone; runtime code and the
+// modern recipe builder remain compiled normally.
 tasks.named('compileJava', JavaCompile).configure {
     exclude 'com/drakmyth/minecraft/manufactory/datagen/**'
-    exclude 'com/drakmyth/minecraft/manufactory/blocks/entities/renderers/**'
-    exclude 'com/drakmyth/minecraft/manufactory/recipes/ManufactoryRecipeBuilder.java'
 }
 
 idea.module {

@@ -1,98 +1,84 @@
 package com.drakmyth.minecraft.manufactory.blocks.entities.renderers;
 
-import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock.FillStatus;
 import com.drakmyth.minecraft.manufactory.blocks.entities.LatexCollectorBlockEntity;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
-import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollectorBlockEntity> {
-    public static final Identifier LATEX_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "block/quartz_block_top");
-    private static final Logger LOGGER = LogUtils.getLogger();
+public class LatexCollectorRenderer implements BlockEntityRenderer<LatexCollectorBlockEntity, LatexCollectorRenderer.State> {
+    private static final Identifier LATEX_TEXTURE = Identifier.withDefaultNamespace("textures/block/quartz_block_top.png");
 
     public LatexCollectorRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(LatexCollectorBlockEntity blockEntity, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        LOGGER.trace(LogMarkers.RENDERING, "Beginning render of latex collector at {}...", LogHelper.blockPos(blockEntity.getBlockPos()));
-        BlockState state = blockEntity.getBlockState();
-        if (state.getValue(LatexCollectorBlock.FILL_STATUS) == FillStatus.EMPTY) {
-            LOGGER.trace(LogMarkers.RENDERING, "Latex collector is empty. Nothing to render.");
-            return;
-        }
-
-        int totalTime = ConfigData.SERVER.LatexFillSeconds.get() * 20;
-        int remainingTime = blockEntity.getTicksRemaining();
-        float progress = (totalTime - remainingTime) / (float)totalTime;
-
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LATEX_TEXTURE);
-        VertexConsumer vertexBuffer = buffer.getBuffer(RenderType.solid());
-
-        LOGGER.trace(LogMarkers.RENDERING, "Beginning matrix manipulation and vertex construction...");
-        pose.pushPose();
-        pose.translate(0.5, 0.5, 0.5);
-        float x1 = -2f / 16f;
-        float z1 = -7f / 16f;
-        float u1 = sprite.getU0();
-        float v1 = sprite.getV1();
-        float x2 = -2f / 16f;
-        float z2 = -3f / 16f;
-        float u2 = sprite.getU0();
-        float v2 = sprite.getV0();
-        float x3 = 2f / 16f;
-        float z3 = -3f / 16f;
-        float u3 = sprite.getU1();
-        float v3 = sprite.getV0();
-        float x4 = 2f / 16f;
-        float z4 = -7f / 16f;
-        float u4 = sprite.getU1();
-        float v4 = sprite.getV1();
-
-        Direction facing = state.getValue(LatexCollectorBlock.HORIZONTAL_FACING);
-        if (facing == Direction.NORTH || facing == Direction.SOUTH) {
-            facing = facing.getOpposite();
-        }
-        float angle = facing.toYRot();
-        pose.mulPose(new Quaternion(0, angle, 0, true));
-
-        float yEmpty = -5f / 16f;
-        float yFull = -3f / 16f;
-        float y = Mth.lerp(progress, yEmpty, yFull);
-
-        addVertex(vertexBuffer, pose, x1, y, z1, u1, v1, combinedLight);
-        addVertex(vertexBuffer, pose, x2, y, z2, u2, v2, combinedLight);
-        addVertex(vertexBuffer, pose, x3, y, z3, u3, v3, combinedLight);
-        addVertex(vertexBuffer, pose, x4, y, z4, u4, v4, combinedLight);
-
-        pose.popPose();
-        LOGGER.trace(LogMarkers.RENDERING, "Matrix manipulation and vertex construction complete");
+    public State createRenderState() {
+        return new State();
     }
 
-    private void addVertex(VertexConsumer buffer, PoseStack pose, float x, float y, float z, float u, float v, int combinedLight) {
-        Vector3f normal = Direction.UP.step();
-        buffer.vertex(pose.last().pose(), x, y, z)
-                .color(1f, 1f, 1f, 1f)
-                .uv(u, v)
-                .uv2(combinedLight)
-                .normal(normal.x(), normal.y(), normal.z())
-                .endVertex();
+    @Override
+    public void extractRenderState(LatexCollectorBlockEntity blockEntity, State state, float partialTicks,
+            Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+        BlockState blockState = blockEntity.getBlockState();
+        state.visible = blockState.getValue(LatexCollectorBlock.FILL_STATUS) != FillStatus.EMPTY;
+        state.facing = blockState.getValue(LatexCollectorBlock.HORIZONTAL_FACING);
+        int totalTime = Math.max(1, ConfigData.SERVER.LatexFillSeconds.get() * 20);
+        state.progress = Mth.clamp((totalTime - blockEntity.getTicksRemaining() + partialTicks) / totalTime, 0.0F, 1.0F);
+    }
+
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        if (!state.visible) return;
+
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5);
+        Direction facing = state.facing;
+        if (facing == Direction.NORTH || facing == Direction.SOUTH) facing = facing.getOpposite();
+        poseStack.mulPose(Axis.YP.rotationDegrees(facing.toYRot()));
+        float y = Mth.lerp(state.progress, -5.0F / 16.0F, -3.0F / 16.0F);
+        int light = state.lightCoords;
+        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.entitySolid(LATEX_TEXTURE),
+                (pose, buffer) -> renderSurface(pose, buffer, y, light));
+        poseStack.popPose();
+    }
+
+    private static void renderSurface(PoseStack.Pose pose, VertexConsumer buffer, float y, int light) {
+        addVertex(pose, buffer, -2.0F / 16.0F, y, -7.0F / 16.0F, 0.0F, 1.0F, light);
+        addVertex(pose, buffer, -2.0F / 16.0F, y, -3.0F / 16.0F, 0.0F, 0.0F, light);
+        addVertex(pose, buffer,  2.0F / 16.0F, y, -3.0F / 16.0F, 1.0F, 0.0F, light);
+        addVertex(pose, buffer,  2.0F / 16.0F, y, -7.0F / 16.0F, 1.0F, 1.0F, light);
+    }
+
+    private static void addVertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z,
+            float u, float v, int light) {
+        buffer.addVertex(pose, x, y, z)
+                .setColor(-1)
+                .setUv(u, v)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(light)
+                .setNormal(pose, 0.0F, 1.0F, 0.0F);
+    }
+
+    public static final class State extends BlockEntityRenderState {
+        private boolean visible;
+        private float progress;
+        private Direction facing = Direction.NORTH;
     }
 }

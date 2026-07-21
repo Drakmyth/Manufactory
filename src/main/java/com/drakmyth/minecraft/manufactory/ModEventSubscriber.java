@@ -10,6 +10,7 @@ import com.drakmyth.minecraft.manufactory.menus.screens.PowerProgressScreen;
 import com.drakmyth.minecraft.manufactory.menus.screens.ScreenTextures;
 import com.drakmyth.minecraft.manufactory.menus.screens.SimpleScreen;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
+import com.drakmyth.minecraft.manufactory.blocks.entities.renderers.LatexCollectorRenderer;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -22,7 +23,7 @@ public final class ModEventSubscriber {
 
     @SubscribeEvent
     public static void fmlEntityRenderers(final RegisterRenderers event) {
-        // Renderer registration returns when the 26.1 render-state implementation is restored.
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.LATEX_COLLECTOR.get(), LatexCollectorRenderer::new);
     }
 
     @SubscribeEvent
