@@ -111,7 +111,7 @@ tasks.withType(JavaCompile).configureEach {
 tasks.named('compileJava', JavaCompile).configure {
     exclude 'com/drakmyth/minecraft/manufactory/datagen/**'
     exclude 'com/drakmyth/minecraft/manufactory/blocks/entities/renderers/**'
-    exclude 'com/drakmyth/minecraft/manufactory/network/**'
+    exclude 'com/drakmyth/minecraft/manufactory/recipes/ManufactoryRecipeBuilder.java'
 }
 
 idea.module {

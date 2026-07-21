@@ -1,15 +1,11 @@
 package com.drakmyth.minecraft.manufactory.init;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import com.drakmyth.minecraft.manufactory.Reference;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.Item;
-import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid.Properties;
@@ -20,7 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModFluids {
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, Reference.MOD_ID);
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUIDS, Reference.MOD_ID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID, Reference.MOD_ID);
 
     // TODO: Consider utilizing tinting for fluid textures instead of color shifting the textures themselves?
     public static DeferredHolder<FluidType, FluidType> SLURRIED_COAL_ORE_TYPE = registerFluidType("slurried_coal_ore", 0xFFFFFFFF);
@@ -77,35 +73,7 @@ public final class ModFluids {
 
 
     private static DeferredHolder<FluidType, FluidType> registerFluidType(String name, int tint) {
-        return FLUID_TYPES.register(name, () -> new FluidType(FluidType.Properties.create()) {
-            @Override
-            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                consumer.accept(new IClientFluidTypeExtensions() {
-                    @Override
-                    public Identifier getStillTexture() {
-                        return Identifier.fromNamespaceAndPath(Reference.MOD_ID, String.format("block/%s_still", name));
-                    }
-
-                    @Override
-                    public Identifier getFlowingTexture() {
-                        return Identifier.fromNamespaceAndPath(Reference.MOD_ID, String.format("block/%s_flow", name));
-                    }
-
-                    @Nullable
-                    @Override
-                    public Identifier getOverlayTexture() {
-                        // TODO: provide %s_overlay textures
-                        return Identifier.fromNamespaceAndPath(Reference.MOD_ID, String.format("block/%s_still", name));
-                    }
-
-                    @Override
-                    public int getTintColor() {
-                        // return 0x3F1080FF;
-                        return tint;
-                    }
-                });
-            }
-        });
+        return FLUID_TYPES.register(name, () -> new FluidType(FluidType.Properties.create()));
     }
 
     private static Properties slurriedCoalOreProperties() {

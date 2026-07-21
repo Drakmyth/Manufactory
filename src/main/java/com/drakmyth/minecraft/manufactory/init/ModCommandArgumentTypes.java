@@ -10,7 +10,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModCommandArgumentTypes {
-    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(BuiltInRegistries.COMMAND_ARGUMENT_TYPES, Reference.MOD_ID);
+    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, Reference.MOD_ID);
 
     public static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<PowerNetworkArgument>> POWER_NETWORK_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("power_network",
             () -> ArgumentTypeInfos.registerByClass(PowerNetworkArgument.class, SingletonArgumentInfo.contextFree(PowerNetworkArgument::getPowerNetwork)));

@@ -19,12 +19,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.resources.Identifier;
 
 public class PowerNetworkManager extends SavedData {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String DATA_NAME = Reference.MOD_ID + "_PowerNetworkData";
+    private static final SavedDataType<PowerNetworkManager> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath(Reference.MOD_ID, "power_networks"),
+            PowerNetworkManager::new,
+            CompoundTag.CODEC.xmap(PowerNetworkManager::load, manager -> manager.save(new CompoundTag())));
 
     private Map<BlockPos, String> blockCache;
     private Map<String, PowerNetwork> networks;
@@ -35,8 +40,7 @@ public class PowerNetworkManager extends SavedData {
     }
 
     public static PowerNetworkManager get(ServerLevel level) {
-        DimensionDataStorage storage = level.getDataStorage();
-        return storage.computeIfAbsent(PowerNetworkManager::load, PowerNetworkManager::new, DATA_NAME);
+        return level.getDataStorage().computeIfAbsent(TYPE);
     }
 
     public void tick(Level level) {
@@ -192,7 +196,7 @@ public class PowerNetworkManager extends SavedData {
         LOGGER.debug(LogMarkers.POWERNETWORK, "Loading Power Networks from NBT...");
         pnm.blockCache = new HashMap<>();
         pnm.networks = new HashMap<>();
-        ListTag networkTags = nbt.getList("powerNetworks", Tag.TAG_COMPOUND);
+        ListTag networkTags = nbt.getList("powerNetworks").orElseGet(ListTag::new);
         networkTags.stream().forEach(compound -> {
             PowerNetwork network = PowerNetwork.fromNBT((CompoundTag)compound);
             pnm.networks.put(network.getId(), network);
@@ -204,7 +208,6 @@ public class PowerNetworkManager extends SavedData {
         return pnm;
     }
 
-    @Override
     public CompoundTag save(CompoundTag compound) {
         LOGGER.trace(LogMarkers.POWERNETWORK, "Writing Power Networks to NBT...");
         ListTag powerNetworksTag = new ListTag();

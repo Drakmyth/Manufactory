@@ -36,7 +36,7 @@ public class BallMillUpgradeMenu extends AbstractContainerMenu {
     public BallMillUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModMenuTypes.BALL_MILL_UPGRADE.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillUpgradeMenu...");
-        Level level = player.getCommandSenderWorld();
+        Level level = player.level();
         posCallable = ContainerLevelAccess.create(level, pos);
         blockEntity = (BallMillBlockEntity)level.getBlockEntity(pos);
         upgradeInventory = blockEntity.getUpgradeInventory();

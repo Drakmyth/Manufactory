@@ -11,6 +11,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import com.drakmyth.minecraft.manufactory.blocks.SolarPanelBlock;
 
 public class PNetCommand {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -18,7 +19,7 @@ public class PNetCommand {
     static ArgumentBuilder<CommandSourceStack, ?> register() {
         LOGGER.debug(LogMarkers.REGISTRATION, "Registering PNetCommand...");
         ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("pnet")
-                .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+                .requires(Commands.hasPermission(Commands.LEVEL_ALL))
                 .then(Commands.argument("dim", DimensionArgument.dimension())
                         .then(Commands.literal("list").executes(ctx -> listNetworksInDimension(ctx.getSource(), DimensionArgument.getDimension(ctx, "dim"))))
                         .then(Commands.literal("delete")
@@ -37,7 +38,7 @@ public class PNetCommand {
             int blockCount = pnm.getBlockCount(networkId);
             int sourceCount = pnm.getSourceCount(networkId);
             int sinkCount = pnm.getSinkCount(networkId);
-            cs.sendSuccess(Component.literal(String.format("%s Size:%d, In:%d, Out:%d", networkId, blockCount, sourceCount, sinkCount)), false);
+            cs.sendSuccess(() -> Component.literal(String.format("%s Size:%d, In:%d, Out:%d", networkId, blockCount, sourceCount, sinkCount)), false);
         }
 
         return 1;
@@ -46,16 +47,16 @@ public class PNetCommand {
     private static int deleteNetworkInDimension(CommandSourceStack cs, ServerLevel dim, String networkId) throws CommandSyntaxException {
         PowerNetworkManager pnm = PowerNetworkManager.get(dim);
         pnm.deleteNetwork(networkId);
-        cs.sendSuccess(Component.literal(String.format("Network %s deleted", networkId)), false);
+        cs.sendSuccess(() -> Component.literal(String.format("Network %s deleted", networkId)), false);
 
         return 1;
     }
 
     private static int printTime(CommandSourceStack cs, ServerLevel dim) {
-        long daytime = dim.getDayTime();
-        float celestialAngle = dim.getSunAngle(1.0F);
+        long daytime = dim.getDefaultClockTime();
+        float celestialAngle = SolarPanelBlock.getSunAngle(daytime);
 
-        cs.sendSuccess(Component.literal(String.format("daytime: %d, angle: %f", daytime, celestialAngle)), false);
+        cs.sendSuccess(() -> Component.literal(String.format("daytime: %d, angle: %f", daytime, celestialAngle)), false);
         return 1;
     }
 }

@@ -175,16 +175,16 @@ public class PowerNetwork {
     }
 
     public static PowerNetwork fromNBT(CompoundTag nbt) {
-        String networkId = nbt.getString("networkId");
+        String networkId = nbt.getStringOr("networkId", "");
         LOGGER.debug(LogMarkers.POWERNETWORK, "Creating Power Network {} from NBT...", networkId);
-        ListTag nodeListTag = nbt.getList("nodes", Tag.TAG_COMPOUND);
+        ListTag nodeListTag = nbt.getList("nodes").orElseGet(ListTag::new);
         List<PowerNetworkNode> nodes = nodeListTag.stream().map(compound -> {
             CompoundTag nodeTag = (CompoundTag)compound;
-            int x = nodeTag.getInt("x");
-            int y = nodeTag.getInt("y");
-            int z = nodeTag.getInt("z");
+            int x = nodeTag.getIntOr("x", 0);
+            int y = nodeTag.getIntOr("y", 0);
+            int z = nodeTag.getIntOr("z", 0);
             BlockPos pos = new BlockPos(x, y, z);
-            Direction[] directions = Arrays.stream(nodeTag.getIntArray("directions"))
+            Direction[] directions = Arrays.stream(nodeTag.getIntArray("directions").orElseGet(() -> new int[0]))
                     .boxed()
                     .map(index -> Direction.from3DDataValue(index))
                     .toArray(Direction[]::new);
@@ -192,22 +192,22 @@ public class PowerNetwork {
             return new PowerNetworkNode(pos, directions);
         }).collect(Collectors.toList());
 
-        ListTag sourceListTag = nbt.getList("sources", Tag.TAG_COMPOUND);
+        ListTag sourceListTag = nbt.getList("sources").orElseGet(ListTag::new);
         List<BlockPos> sources = sourceListTag.stream().map(compound -> {
             CompoundTag sourcePosTag = (CompoundTag)compound;
-            int x = sourcePosTag.getInt("x");
-            int y = sourcePosTag.getInt("y");
-            int z = sourcePosTag.getInt("z");
+            int x = sourcePosTag.getIntOr("x", 0);
+            int y = sourcePosTag.getIntOr("y", 0);
+            int z = sourcePosTag.getIntOr("z", 0);
             LOGGER.debug(LogMarkers.POWERNETWORK, "Loaded node at ({}, {}, {}) as SOURCE", x, y, z);
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
 
-        ListTag sinkListTag = nbt.getList("sinks", Tag.TAG_COMPOUND);
+        ListTag sinkListTag = nbt.getList("sinks").orElseGet(ListTag::new);
         List<BlockPos> sinks = sinkListTag.stream().map(compound -> {
             CompoundTag sinkPosTag = (CompoundTag)compound;
-            int x = sinkPosTag.getInt("x");
-            int y = sinkPosTag.getInt("y");
-            int z = sinkPosTag.getInt("z");
+            int x = sinkPosTag.getIntOr("x", 0);
+            int y = sinkPosTag.getIntOr("y", 0);
+            int z = sinkPosTag.getIntOr("z", 0);
             LOGGER.debug(LogMarkers.POWERNETWORK, "Loaded node at ({}, {}, {}) as SINK", x, y, z);
             return new BlockPos(x, y, z);
         }).collect(Collectors.toList());
@@ -227,7 +227,7 @@ public class PowerNetwork {
             nodeTag.putInt("x", block.getX());
             nodeTag.putInt("y", block.getY());
             nodeTag.putInt("z", block.getZ());
-            List<Integer> directions = Stream.of(node.getValue()).map(dir -> dir.get3DDataValue()).collect(Collectors.toList());
+            int[] directions = Stream.of(node.getValue()).mapToInt(Direction::get3DDataValue).toArray();
             nodeTag.putIntArray("directions", directions);
             nodeListTag.add(nodeTag);
         });

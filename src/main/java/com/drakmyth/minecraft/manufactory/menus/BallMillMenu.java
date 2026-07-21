@@ -34,7 +34,7 @@ public class BallMillMenu extends AbstractContainerMenu implements IPowerProgres
     public BallMillMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModMenuTypes.BALL_MILL.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing BallMillMenu...");
-        Level level = player.getCommandSenderWorld();
+        Level level = player.level();
         posCallable = ContainerLevelAccess.create(level, pos);
         blockEntity = (BallMillBlockEntity)level.getBlockEntity(pos);
         ballMillInventory = blockEntity.getInventory();

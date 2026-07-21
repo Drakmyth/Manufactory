@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModMenuTypes {
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU_TYPES, Reference.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, Reference.MOD_ID);
 
     public static final DeferredHolder<MenuType<?>, MenuType<GrinderMenu>> GRINDER =
             MENU_TYPES.register("grinder", () -> IMenuTypeExtension.create(GrinderMenu::new));

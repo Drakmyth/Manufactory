@@ -28,6 +28,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
 
 public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IPowerBlock {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -49,7 +52,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelReader level, Direction dir) {
         return dir == state.getValue(HORIZONTAL_FACING).getOpposite();
     }
 
@@ -63,14 +66,15 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return !state.getValue(WATERLOGGED);
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos currentPos,
+            Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            level.getFluidTicks().schedule(new ScheduledTick<Fluid>(Fluids.WATER, currentPos, Fluids.WATER.getTickDelay(level), 0));
+            ticks.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
         return state;
     }
@@ -84,13 +88,11 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
         LOGGER.debug(LogMarkers.MACHINE, "Solar Panel at {} replaced.", LogHelper.blockPos(pos));
-        if (level.isClientSide()) return;
-        if (state.is(newState.getBlock())) return;
-
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
+        PowerNetworkManager pnm = PowerNetworkManager.get(level);
         pnm.untrackBlock(pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
     }
 
     @Override
@@ -107,7 +109,7 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
     public float getAvailablePower(BlockState state, Level level, BlockPos pos) {
         if (!level.dimensionType().hasSkyLight()) return 0;
 
-        float celestialAngle = level.getSunAngle(1.0F);
+        float celestialAngle = getSunAngle(level.getDefaultClockTime());
         if (celestialAngle >= Math.PI / 2 && celestialAngle <= 3 * Math.PI / 2) return 0;
         float timeFactor = (float)Math.cos(celestialAngle);
 
@@ -117,5 +119,12 @@ public class SolarPanelBlock extends Block implements SimpleWaterloggedBlock, IP
         float availablePower = peakPowerGen * timeFactor * lightAndWeatherFactor;
         LOGGER.trace(LogMarkers.POWERNETWORK, "Solar Panel at {} made {} power available", LogHelper.blockPos(pos), availablePower);
         return availablePower;
+    }
+
+    public static float getSunAngle(long clockTime) {
+        double dayFraction = Math.floorMod(clockTime, 24000L) / 24000.0D - 0.25D;
+        dayFraction -= Math.floor(dayFraction);
+        double smoothed = 0.5D - Math.cos(dayFraction * Math.PI) / 2.0D;
+        return (float)((dayFraction * 2.0D + (smoothed - dayFraction) / 3.0D) * Math.PI * 2.0D);
     }
 }

@@ -10,7 +10,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModRecipeTypes {
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPES, Reference.MOD_ID);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, Reference.MOD_ID);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<GrinderRecipe>> GRINDER =
             RECIPE_TYPES.register("grinder", () -> RecipeType.simple(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "grinder")));

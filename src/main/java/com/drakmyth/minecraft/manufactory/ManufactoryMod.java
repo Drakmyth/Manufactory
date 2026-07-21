@@ -9,6 +9,7 @@ import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
+import com.drakmyth.minecraft.manufactory.init.ModCreativeTabs;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.neoforged.bus.api.IEventBus;
@@ -34,6 +35,7 @@ public class ManufactoryMod {
 
         LOGGER.info(LogMarkers.REGISTRATION, "Registering items...");
         ModItems.ITEMS.register(modEventBus);
+        ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
         LOGGER.info(LogMarkers.REGISTRATION, "Item registration complete");
 
         ModFluids.FLUID_TYPES.register(modEventBus);

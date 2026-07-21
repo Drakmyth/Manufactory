@@ -1,100 +1,73 @@
 package com.drakmyth.minecraft.manufactory.recipes;
 
-import net.minecraft.world.Container;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
-public abstract class ManufactoryRecipe implements Recipe<Container> {
-    private final Identifier recipeId;
-    private Ingredient ingredient;
-    private ItemStack result;
-    private float extraChance;
-    private int[] extraAmounts;
-    private ToolMaterial tierRequired;
-    private int powerRequired;
-    private int processTime;
+public abstract class ManufactoryRecipe implements Recipe<SingleRecipeInput> {
+    private final Ingredient ingredient;
+    private final ItemStack result;
+    private final float extraChance;
+    private final int[] extraAmounts;
+    private final ToolMaterial tierRequired;
+    private final int powerRequired;
+    private final int processTime;
 
-    public ManufactoryRecipe(Identifier recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, ToolMaterial tierRequired, int powerRequired,
-            int processTime) {
-        this.recipeId = recipeId;
+    protected ManufactoryRecipe(Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts,
+            ToolMaterial tierRequired, int powerRequired, int processTime) {
+        if (extraChance < 0.0F || extraChance > 1.0F) throw new IllegalArgumentException("extraChance must be in [0, 1]");
+        if (powerRequired <= 0) throw new IllegalArgumentException("powerRequired must be positive");
+        if (processTime <= 0) throw new IllegalArgumentException("processTime must be positive");
+        for (int amount : extraAmounts) if (amount < 0) throw new IllegalArgumentException("extraAmounts cannot contain negatives");
         this.ingredient = ingredient;
         this.result = result;
         this.extraChance = extraChance;
-        this.extraAmounts = extraAmounts;
+        this.extraAmounts = extraAmounts.clone();
         this.tierRequired = tierRequired;
         this.powerRequired = powerRequired;
         this.processTime = processTime;
     }
 
-    public Ingredient getIngredient() {
-        return ingredient;
-    }
+    public Ingredient getIngredient() { return ingredient; }
+    public float getExtraChance() { return extraChance; }
+    public boolean hasExtraChance() { return extraAmounts.length > 0; }
+    public int[] getExtraAmounts() { return extraAmounts.clone(); }
+    public ToolMaterial getTierRequired() { return tierRequired; }
+    public int getPowerRequired() { return powerRequired; }
+    public int getProcessTime() { return processTime; }
+    public ItemStack getResultItem() { return result; }
 
-    public float getExtraChance() {
-        return extraChance;
-    }
-
-    public boolean hasExtraChance() {
-        return extraAmounts.length > 0;
-    }
-
-    public int getRandomExtraAmount(RandomSource rand) {
-        return extraAmounts[rand.nextInt(extraAmounts.length)];
-    }
-
-    public int[] getExtraAmounts() {
-        return extraAmounts;
-    }
-
-    public ToolMaterial getTierRequired() {
-        return tierRequired;
-    }
-
-    public int getPowerRequired() {
-        return powerRequired;
-    }
-
-    public int getProcessTime() {
-        return processTime;
+    public int getRandomExtraAmount(RandomSource random) {
+        return extraAmounts[random.nextInt(extraAmounts.length)];
     }
 
     @Override
-    public boolean matches(Container inv, Level level) {
-        return ingredient.test(inv.getItem(0));
+    public boolean matches(SingleRecipeInput input, Level level) {
+        return ingredient.test(input.item());
     }
 
     @Override
-    public ItemStack assemble(Container inv) {
-        return result;
+    public ItemStack assemble(SingleRecipeInput input) {
+        return result.copy();
     }
 
     public ItemStack getMaxOutput() {
-        ItemStack maxResult = result.copy();
-        int max = 0;
-        for (int amount : extraAmounts) {
-            max = Math.max(max, amount);
-        }
-        maxResult.grow(max);
-        return maxResult;
+        ItemStack maximum = result.copy();
+        int extra = 0;
+        for (int amount : extraAmounts) extra = Math.max(extra, amount);
+        maximum.grow(extra);
+        return maximum;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem() {
-        return result;
-    }
-
-    @Override
-    public Identifier getId() {
-        return recipeId;
-    }
+    @Override public boolean showNotification() { return false; }
+    @Override public String group() { return ""; }
+    @Override public PlacementInfo placementInfo() { return PlacementInfo.create(ingredient); }
+    @Override public RecipeBookCategory recipeBookCategory() { return RecipeBookCategories.CRAFTING_MISC; }
 }

@@ -59,11 +59,11 @@ public final class OreRecipes extends RecipeProvider {
             // Fluid spiralClassifierOutput = data.getSpiralClassifierOutput();
             // Item floatationSeparatorOutput = data.getFloatationSeparatorOutput();
             Item finalOutput = data.getConcentratingDryerOutput();
-            String grinderOutputName = BuiltInRegistries.ITEMS.getKey(grinderOutput).getPath();
-            String ballMillOutputName = BuiltInRegistries.ITEMS.getKey(ballMillOutput).getPath();
-            // String spiralClassifierOutputName = BuiltInRegistries.FLUIDS.getKey(spiralClassifierOutput).getPath();
-            // String floatationSeparatorOutputName = BuiltInRegistries.ITEMS.getKey(floatationSeparatorOutput).getPath();
-            String finalOutputName = BuiltInRegistries.ITEMS.getKey(finalOutput).getPath();
+            String grinderOutputName = BuiltInRegistries.ITEM.getKey(grinderOutput).getPath();
+            String ballMillOutputName = BuiltInRegistries.ITEM.getKey(ballMillOutput).getPath();
+            // String spiralClassifierOutputName = BuiltInRegistries.FLUID.getKey(spiralClassifierOutput).getPath();
+            // String floatationSeparatorOutputName = BuiltInRegistries.ITEM.getKey(floatationSeparatorOutput).getPath();
+            String finalOutputName = BuiltInRegistries.ITEM.getKey(finalOutput).getPath();
 
             // Ore -> Ground Ore (Rough)
             ManufactoryRecipeBuilder.grinderRecipe(data.getOreIngredient(), data.getGrinderOutput())
@@ -155,7 +155,7 @@ public final class OreRecipes extends RecipeProvider {
         }
 
         public String getOreName() {
-            return ore == null ? oreTag.location().getPath() : BuiltInRegistries.ITEMS.getKey(ore).getPath();
+            return ore == null ? oreTag.location().getPath() : BuiltInRegistries.ITEM.getKey(ore).getPath();
         }
 
         public InventoryChangeTrigger.TriggerInstance getOreInventoryChangeTriggerInstance() {

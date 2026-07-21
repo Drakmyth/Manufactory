@@ -18,7 +18,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModItems {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEMS, Reference.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, Reference.MOD_ID);
 
     // Motor Tiers
     public static final DeferredHolder<Item, Item> MOTOR_TIER0 =
@@ -85,25 +85,25 @@ public final class ModItems {
 
     // Slurried Ore Buckets
     public static final DeferredHolder<Item, Item> SLURRIED_COAL_ORE_BUCKET =
-            ITEMS.register("slurried_coal_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_COAL_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_coal_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_COAL_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_DIAMOND_ORE_BUCKET =
-            ITEMS.register("slurried_diamond_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_DIAMOND_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_diamond_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_DIAMOND_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_EMERALD_ORE_BUCKET =
-            ITEMS.register("slurried_emerald_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_EMERALD_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_emerald_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_EMERALD_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_GOLD_ORE_BUCKET =
-            ITEMS.register("slurried_gold_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_GOLD_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_gold_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_GOLD_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_IRON_ORE_BUCKET =
-            ITEMS.register("slurried_iron_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_IRON_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_iron_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_IRON_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_COPPER_ORE_BUCKET =
-            ITEMS.register("slurried_copper_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_COPPER_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_copper_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_COPPER_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_LAPIS_ORE_BUCKET =
-            ITEMS.register("slurried_lapis_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_LAPIS_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_lapis_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_LAPIS_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_NETHER_QUARTZ_ORE_BUCKET =
-            ITEMS.register("slurried_nether_quartz_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_nether_quartz_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_REDSTONE_ORE_BUCKET =
-            ITEMS.register("slurried_redstone_ore_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), singleItemProperties()));
+            ITEMS.register("slurried_redstone_ore_bucket", () -> new BucketItem(ModFluids.SLURRIED_REDSTONE_ORE.get(), singleItemProperties()));
     public static final DeferredHolder<Item, Item> SLURRIED_ANCIENT_DEBRIS_BUCKET =
-            ITEMS.register("slurried_ancient_debris_bucket", () -> new BucketItem(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), singleItemProperties()));
+            ITEMS.register("slurried_ancient_debris_bucket", () -> new BucketItem(ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), singleItemProperties()));
 
     // Other Items
     public static final DeferredHolder<Item, Item> AMBER = ITEMS.register("amber", () -> new Item(defaultItemProperties()));

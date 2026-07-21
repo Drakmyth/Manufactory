@@ -37,7 +37,7 @@ public class GrinderUpgradeMenu extends AbstractContainerMenu {
     public GrinderUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModMenuTypes.GRINDER_UPGRADE.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderUpgradeMenu...");
-        Level level = player.getCommandSenderWorld();
+        Level level = player.level();
         posCallable = ContainerLevelAccess.create(level, pos);
         blockEntity = (GrinderBlockEntity)level.getBlockEntity(pos);
         upgradeInventory = blockEntity.getUpgradeInventory();

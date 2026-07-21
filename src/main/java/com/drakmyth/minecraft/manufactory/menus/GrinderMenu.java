@@ -34,7 +34,7 @@ public class GrinderMenu extends AbstractContainerMenu implements IPowerProgress
     public GrinderMenu(int windowId, IItemHandler playerInventory, Player player, BlockPos pos) {
         super(ModMenuTypes.GRINDER.get(), windowId);
         LOGGER.debug(LogMarkers.CONTAINER, "Initializing GrinderMenu...");
-        Level level = player.getCommandSenderWorld();
+        Level level = player.level();
         posCallable = ContainerLevelAccess.create(level, pos);
         blockEntity = (GrinderBlockEntity)level.getBlockEntity(pos);
         grinderInventory = blockEntity.getInventory();

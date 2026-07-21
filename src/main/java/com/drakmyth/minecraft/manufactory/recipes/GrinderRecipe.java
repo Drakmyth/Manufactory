@@ -4,25 +4,17 @@ import com.drakmyth.minecraft.manufactory.init.ModRecipeSerializers;
 import com.drakmyth.minecraft.manufactory.init.ModRecipeTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 
-public class GrinderRecipe extends ManufactoryRecipe {
-
-    public GrinderRecipe(Identifier recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, ToolMaterial tierRequired, int powerRequired,
-            int processTime) {
-        super(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
+public final class GrinderRecipe extends ManufactoryRecipe {
+    public GrinderRecipe(Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts,
+            ToolMaterial tierRequired, int powerRequired, int processTime) {
+        super(ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
     }
 
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return ModRecipeSerializers.GRINDER.get();
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return ModRecipeTypes.GRINDER.get();
-    }
+    @Override public RecipeSerializer<? extends GrinderRecipe> getSerializer() { return ModRecipeSerializers.GRINDER.get(); }
+    @Override public RecipeType<? extends GrinderRecipe> getType() { return ModRecipeTypes.GRINDER.get(); }
 }

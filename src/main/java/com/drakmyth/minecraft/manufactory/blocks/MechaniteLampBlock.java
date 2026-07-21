@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 
 public class MechaniteLampBlock extends Block {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -40,8 +41,8 @@ public class MechaniteLampBlock extends Block {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        if (level.isClientSide) return;
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, Orientation orientation, boolean isMoving) {
+        if (level.isClientSide()) return;
 
         boolean isLit = state.getValue(LIT);
         if (isLit != (level.hasNeighborSignal(pos) ^ state.getValue(INVERTED))) {

@@ -5,25 +5,23 @@
  */
 package com.drakmyth.minecraft.manufactory.menus;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 public class ItemInventory extends SimpleContainer {
-    private static final String ITEMS_KEY = "items";
     private final ItemStack host;
 
     public ItemInventory(ItemStack stack, int size) {
         super(size);
         this.host = stack;
 
-        ListTag items = host.getOrCreateTag().getList(ITEMS_KEY, Tag.TAG_COMPOUND);
-        for (int i = 0; i < size && i < items.size(); i++) {
-            setItem(i, ItemStack.of(items.getCompound(i)));
-        }
+        NonNullList<ItemStack> items = NonNullList.withSize(size, ItemStack.EMPTY);
+        host.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(items);
+        for (int i = 0; i < size; i++) setItem(i, items.get(i));
     }
 
     @Override
@@ -34,10 +32,8 @@ public class ItemInventory extends SimpleContainer {
     @Override
     public void setChanged() {
         super.setChanged();
-        ListTag list = new ListTag();
-        for (int i = 0; i < getContainerSize(); i++) {
-            list.add(getItem(i).save(new CompoundTag()));
-        }
-        host.getOrCreateTag().put(ITEMS_KEY, list);
+        NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+        for (int i = 0; i < getContainerSize(); i++) items.set(i, getItem(i));
+        host.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
     }
 }

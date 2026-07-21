@@ -76,20 +76,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerCubeBlock(Block block) {
-        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
         ModelFile model = cubeAll(block);
         simpleBlock(block, model);
         itemModels().getBuilder(name).parent(model);
     };
 
     private void registerFluidBlock(Block block) {
-        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
         ModelFile model = models().getBuilder(name).texture("particle", modLoc("block/" + name + "_still"));
         simpleBlock(block, model);
     }
 
     private void registerCubeMachineBlock(Block block) {
-        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
         ModelFile model = generateCubeMachineModel(name);
         generateCubeMachineBlockState(block, model);
         itemModels().getBuilder(name).parent(model);
@@ -97,12 +97,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private ModelFile generateMechaniteLampModel(String suffix) {
         Block block = ModBlocks.MECHANITE_LAMP.get();
-        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
         return models().cubeAll(name + suffix, modLoc("block/" + name + suffix));
     }
 
     private void registerMechaniteLamp(Block block, ModelFile litModel, ModelFile unlitModel, boolean defaultLit) {
-        String name = BuiltInRegistries.BLOCKS.getKey(block).getPath();
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
 
         getVariantBuilder(block).forAllStatesExcept(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechaniteLampBlock.LIT) ? litModel : unlitModel)

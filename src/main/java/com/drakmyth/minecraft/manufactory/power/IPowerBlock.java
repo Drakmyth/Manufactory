@@ -3,11 +3,11 @@ package com.drakmyth.minecraft.manufactory.power;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 
 public interface IPowerBlock {
-    boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir);
+    boolean canConnectToFace(BlockState state, BlockPos pos, LevelReader level, Direction dir);
 
     Type getPowerBlockType();
 

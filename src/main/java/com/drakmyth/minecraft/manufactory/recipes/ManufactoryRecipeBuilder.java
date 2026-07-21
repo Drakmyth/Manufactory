@@ -97,11 +97,11 @@ public class ManufactoryRecipeBuilder {
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {
-        this.build(consumer, BuiltInRegistries.ITEMS.getKey(this.result.getItem()));
+        this.build(consumer, BuiltInRegistries.ITEM.getKey(this.result.getItem()));
     }
 
     public void build(Consumer<FinishedRecipe> consumer, String save) {
-        Identifier resourcelocation = BuiltInRegistries.ITEMS.getKey(this.result.getItem());
+        Identifier resourcelocation = BuiltInRegistries.ITEM.getKey(this.result.getItem());
         Identifier resourcelocation1 = Identifier.parse(save);
         if (resourcelocation1.equals(resourcelocation)) {
             throw new IllegalStateException("Recipe " + resourcelocation1 + " should remove its 'save' argument");
@@ -183,7 +183,7 @@ public class ManufactoryRecipeBuilder {
 
         private JsonObject serializeItemStack(ItemStack itemStack) {
             JsonObject json = new JsonObject();
-            json.addProperty("item", BuiltInRegistries.ITEMS.getKey(itemStack.getItem()).toString());
+            json.addProperty("item", BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
             json.addProperty("count", itemStack.getCount());
             return json;
         }

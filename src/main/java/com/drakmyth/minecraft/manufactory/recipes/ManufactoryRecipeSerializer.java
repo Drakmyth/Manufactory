@@ -1,79 +1,100 @@
 package com.drakmyth.minecraft.manufactory.recipes;
 
-import javax.annotation.Nullable;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.List;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.Identifier;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class ManufactoryRecipeSerializer<T extends ManufactoryRecipe> implements RecipeSerializer<T> {
-    private final ManufactoryRecipeSerializer.IFactory<T> factory;
+public final class ManufactoryRecipeSerializer {
+    private static final Codec<ToolMaterial> TOOL_MATERIAL_CODEC = Codec.STRING.xmap(
+            ManufactoryRecipeSerializer::materialByName,
+            ManufactoryRecipeSerializer::materialName
+    );
 
-
-    public ManufactoryRecipeSerializer(ManufactoryRecipeSerializer.IFactory<T> factory) {
-        this.factory = factory;
+    private ManufactoryRecipeSerializer() {
     }
 
-    @Override
-    public T fromJson(Identifier recipeId, JsonObject json) {
-        Ingredient ingredient = Ingredient.fromJson(json.get("ingredient"));
-        JsonObject resultObj = json.get("result").getAsJsonObject();
-        Identifier itemIdentifier = Identifier.of(GsonHelper.getAsString(resultObj, "item", "minecraft:empty"), ':');
-        int amount = GsonHelper.getAsInt(resultObj, "count", 0);
-        ItemStack result = new ItemStack(BuiltInRegistries.ITEMS.getValue(itemIdentifier), amount);
-        float extraChance = GsonHelper.getAsFloat(json, "extraChance");
-        JsonArray resultArray = json.getAsJsonArray("extraAmounts");
-        int[] extraAmounts = new int[resultArray.size()];
-        for (int i = 0; i < resultArray.size(); i++) {
-            int element = resultArray.get(i).getAsInt();
-            extraAmounts[i] = element;
-        }
-        ToolMaterial tierRequired = ToolMaterial.valueOf(GsonHelper.getAsString(json, "tierRequired", "WOOD"));
-        int powerRequired = GsonHelper.getAsInt(json, "powerRequired", 25);
-        int processTime = GsonHelper.getAsInt(json, "processTime", 200);
-        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
+    public static <T extends ManufactoryRecipe> RecipeSerializer<T> create(Factory<T> factory) {
+        MapCodec<T> mapCodec = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Ingredient.CODEC.fieldOf("ingredient").forGetter(ManufactoryRecipe::getIngredient),
+                ItemStack.CODEC.fieldOf("result").forGetter(ManufactoryRecipe::getResultItem),
+                Codec.FLOAT.fieldOf("extraChance").forGetter(ManufactoryRecipe::getExtraChance),
+                Codec.INT.listOf().fieldOf("extraAmounts").forGetter(recipe -> toList(recipe.getExtraAmounts())),
+                TOOL_MATERIAL_CODEC.fieldOf("tierRequired").forGetter(ManufactoryRecipe::getTierRequired),
+                Codec.INT.fieldOf("powerRequired").forGetter(ManufactoryRecipe::getPowerRequired),
+                Codec.INT.fieldOf("processTime").forGetter(ManufactoryRecipe::getProcessTime)
+        ).apply(instance, (ingredient, result, chance, amounts, material, power, time) ->
+                factory.create(ingredient, result, chance, toArray(amounts), material, power, time)));
+
+        StreamCodec<RegistryFriendlyByteBuf, T> streamCodec = new StreamCodec<>() {
+            @Override
+            public T decode(RegistryFriendlyByteBuf buffer) {
+                Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+                ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
+                float chance = buffer.readFloat();
+                int[] amounts = new int[buffer.readVarInt()];
+                for (int i = 0; i < amounts.length; i++) amounts[i] = buffer.readVarInt();
+                ToolMaterial material = materialByName(buffer.readUtf());
+                return factory.create(ingredient, result, chance, amounts, material, buffer.readVarInt(), buffer.readVarInt());
+            }
+
+            @Override
+            public void encode(RegistryFriendlyByteBuf buffer, T recipe) {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
+                ItemStack.STREAM_CODEC.encode(buffer, recipe.getResultItem());
+                buffer.writeFloat(recipe.getExtraChance());
+                int[] amounts = recipe.getExtraAmounts();
+                buffer.writeVarInt(amounts.length);
+                for (int amount : amounts) buffer.writeVarInt(amount);
+                buffer.writeUtf(materialName(recipe.getTierRequired()));
+                buffer.writeVarInt(recipe.getPowerRequired());
+                buffer.writeVarInt(recipe.getProcessTime());
+            }
+        };
+        return new RecipeSerializer<>(mapCodec, streamCodec);
     }
 
-    @Nullable
-    @Override
-    public T fromNetwork(Identifier recipeId, FriendlyByteBuf buffer) {
-        Ingredient ingredient = Ingredient.fromNetwork(buffer);
-        ItemStack result = buffer.readItem();
-        float extraChance = buffer.readFloat();
-        int extraAmountsCount = buffer.readInt();
-        int[] extraAmounts = new int[extraAmountsCount];
-        for (int i = 0; i < extraAmountsCount; i++) {
-            extraAmounts[i] = buffer.readInt();
-        }
-        ToolMaterial tierRequired = ToolMaterial.valueOf(buffer.readUtf());
-        int powerRequired = buffer.readInt();
-        int processTime = buffer.readInt();
-        return factory.create(recipeId, ingredient, result, extraChance, extraAmounts, tierRequired, powerRequired, processTime);
+    private static List<Integer> toList(int[] values) {
+        return java.util.Arrays.stream(values).boxed().toList();
     }
 
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, T recipe) {
-        recipe.getIngredient().toNetwork(buffer);
-        buffer.writeItem(recipe.getResultItem());
-        buffer.writeFloat(recipe.getExtraChance());
-        int[] extraAmounts = recipe.getExtraAmounts();
-        buffer.writeInt(extraAmounts.length);
-        for (int amount : extraAmounts) {
-            buffer.writeFloat(amount);
-        }
-        buffer.writeUtf(recipe.getTierRequired().toString());
-        buffer.writeInt(recipe.getPowerRequired());
-        buffer.writeInt(recipe.getProcessTime());
+    private static int[] toArray(List<Integer> values) {
+        return values.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    public interface IFactory<T extends ManufactoryRecipe> {
-        T create(Identifier recipeId, Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts, ToolMaterial tierRequired, int powerRequired, int processTime);
+    private static ToolMaterial materialByName(String name) {
+        return switch (name.toLowerCase(java.util.Locale.ROOT)) {
+            case "wood" -> ToolMaterial.WOOD;
+            case "stone" -> ToolMaterial.STONE;
+            case "copper" -> ToolMaterial.COPPER;
+            case "iron" -> ToolMaterial.IRON;
+            case "diamond" -> ToolMaterial.DIAMOND;
+            case "gold" -> ToolMaterial.GOLD;
+            case "netherite" -> ToolMaterial.NETHERITE;
+            default -> throw new IllegalArgumentException("Unknown tool material: " + name);
+        };
+    }
+
+    private static String materialName(ToolMaterial material) {
+        if (material == ToolMaterial.WOOD) return "wood";
+        if (material == ToolMaterial.STONE) return "stone";
+        if (material == ToolMaterial.COPPER) return "copper";
+        if (material == ToolMaterial.IRON) return "iron";
+        if (material == ToolMaterial.DIAMOND) return "diamond";
+        if (material == ToolMaterial.GOLD) return "gold";
+        if (material == ToolMaterial.NETHERITE) return "netherite";
+        throw new IllegalArgumentException("Unsupported tool material");
+    }
+
+    @FunctionalInterface
+    public interface Factory<T extends ManufactoryRecipe> {
+        T create(Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts,
+                ToolMaterial tierRequired, int powerRequired, int processTime);
     }
 }

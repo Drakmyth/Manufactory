@@ -25,8 +25,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModBlocks {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCKS, Reference.MOD_ID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEMS, Reference.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Reference.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, Reference.MOD_ID);
 
     public static final DeferredHolder<Block, Block> AMBER_BLOCK =
             registerBlock("amber_block", () -> new Block(defaultDecorProperties(MapColor.COLOR_YELLOW)));
@@ -54,25 +54,25 @@ public final class ModBlocks {
             registerBlock("solar_panel", () -> new SolarPanelBlock(defaultMachineProperties()));
 
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_COAL_ORE =
-            BLOCKS.register("slurried_coal_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_COAL_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_coal_ore", () -> new LiquidBlock(ModFluids.SLURRIED_COAL_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_DIAMOND_ORE =
-            BLOCKS.register("slurried_diamond_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_DIAMOND_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_diamond_ore", () -> new LiquidBlock(ModFluids.SLURRIED_DIAMOND_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_EMERALD_ORE =
-            BLOCKS.register("slurried_emerald_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_EMERALD_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_emerald_ore", () -> new LiquidBlock(ModFluids.SLURRIED_EMERALD_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_GOLD_ORE =
-            BLOCKS.register("slurried_gold_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_GOLD_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_gold_ore", () -> new LiquidBlock(ModFluids.SLURRIED_GOLD_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_IRON_ORE =
-            BLOCKS.register("slurried_iron_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_IRON_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_iron_ore", () -> new LiquidBlock(ModFluids.SLURRIED_IRON_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_COPPER_ORE =
-            BLOCKS.register("slurried_copper_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_COPPER_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_copper_ore", () -> new LiquidBlock(ModFluids.SLURRIED_COPPER_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_LAPIS_ORE =
-            BLOCKS.register("slurried_lapis_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_LAPIS_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_lapis_ore", () -> new LiquidBlock(ModFluids.SLURRIED_LAPIS_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_NETHER_QUARTZ_ORE =
-            BLOCKS.register("slurried_nether_quartz_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_nether_quartz_ore", () -> new LiquidBlock(ModFluids.SLURRIED_NETHER_QUARTZ_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_REDSTONE_ORE =
-            BLOCKS.register("slurried_redstone_ore", () -> new LiquidBlock(() -> ModFluids.SLURRIED_REDSTONE_ORE.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_redstone_ore", () -> new LiquidBlock(ModFluids.SLURRIED_REDSTONE_ORE.get(), defaultFluidProperties()));
     public static final DeferredHolder<Block, LiquidBlock> SLURRIED_ANCIENT_DEBRIS =
-            BLOCKS.register("slurried_ancient_debris", () -> new LiquidBlock(() -> ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), defaultFluidProperties()));
+            BLOCKS.register("slurried_ancient_debris", () -> new LiquidBlock(ModFluids.SLURRIED_ANCIENT_DEBRIS.get(), defaultFluidProperties()));
 
     private static DeferredHolder<Block, Block> registerBlock(String name, Supplier<Block> sup) {
         DeferredHolder<Block, Block> block = BLOCKS.register(name, sup);
@@ -95,7 +95,7 @@ public final class ModBlocks {
 
     private static Block.Properties defaultFluidProperties() {
         return Block.Properties.of().mapColor(MapColor.WATER)
-                .noCollission()
+                .noCollision()
                 .strength(100f)
                 .noLootTable();
     }

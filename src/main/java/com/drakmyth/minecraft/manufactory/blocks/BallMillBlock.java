@@ -35,7 +35,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -67,7 +67,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelReader level, Direction dir) {
         BlockEntity be = level.getBlockEntity(pos);
         if (be == null || !BallMillBlockEntity.class.isInstance(be)) return false;
         if (dir != state.getValue(HORIZONTAL_FACING).getOpposite()) return false;
@@ -87,10 +87,10 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         LOGGER.debug(LogMarkers.INTERACTION, "Interacted with Ball Mill at {}", LogHelper.blockPos(pos));
         if (level.isClientSide()) return InteractionResult.SUCCESS;
-        interactWith(state, level, pos, player, player.getItemInHand(hand), hit.getDirection());
+        interactWith(state, level, pos, player, heldItem, hit.getDirection());
         return InteractionResult.CONSUME;
     }
 
@@ -126,12 +126,9 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
         LOGGER.debug(LogMarkers.MACHINE, "Ball Mill at {} replaced.", LogHelper.blockPos(pos));
-        if (level.isClientSide()) return;
-        if (state.is(newState.getBlock())) return;
-
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
+        PowerNetworkManager pnm = PowerNetworkManager.get(level);
         pnm.untrackBlock(pos);
 
         BlockEntity be = level.getBlockEntity(pos);
@@ -153,6 +150,7 @@ public class BallMillBlock extends Block implements IPowerBlock, EntityBlock {
             popResource(level, pos, upgradeInventory.getStackInSlot(i));
         }
         level.removeBlockEntity(pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
     }
 
     @Override

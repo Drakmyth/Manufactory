@@ -13,7 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
@@ -50,7 +50,7 @@ public class PowerNetworkArgument implements ArgumentType<String> {
     private static String[] getPowerNetworkIdsForDimension(CommandContext<CommandSourceStack> context) {
         Identifier resourcelocation = context.getArgument("dim", Identifier.class);
         LOGGER.debug(LogMarkers.POWERNETWORK, "Retrieving power network ids for dimension: {}...", resourcelocation);
-        ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourcelocation);
+        ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, resourcelocation);
         ServerLevel level = context.getSource().getServer().getLevel(key);
         PowerNetworkManager pnm = PowerNetworkManager.get(level);
         String[] powerNetworkIds = pnm.getNetworkIds();

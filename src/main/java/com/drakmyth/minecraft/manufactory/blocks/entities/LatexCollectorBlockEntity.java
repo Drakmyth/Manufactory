@@ -4,19 +4,19 @@ import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.config.ConfigData;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
-import com.drakmyth.minecraft.manufactory.network.IMachineProgressListener;
 import com.drakmyth.minecraft.manufactory.util.LogHelper;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-public class LatexCollectorBlockEntity extends BlockEntity implements IMachineProgressListener {
+public class LatexCollectorBlockEntity extends BlockEntity {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private int totalTicks = 0;
@@ -69,7 +69,7 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
+    protected void saveAdditional(ValueOutput compound) {
         super.saveAdditional(compound);
         LOGGER.trace(LogMarkers.MACHINE, "Writing Latex Collector at {} to NBT...", LogHelper.blockPos(getBlockPos()));
         compound.putInt("totalTicks", totalTicks);
@@ -77,11 +77,11 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
         LOGGER.debug(LogMarkers.MACHINE, "Reading Latex Collector at {} from NBT...", LogHelper.blockPos(getBlockPos()));
-        totalTicks = tag.getInt("totalTicks");
-        ticksRemaining = tag.getInt("ticksRemaining");
+        totalTicks = tag.getIntOr("totalTicks", 0);
+        ticksRemaining = tag.getIntOr("ticksRemaining", 0);
         LOGGER.debug(LogMarkers.MACHINE, "Latex Collector Loaded!");
     }
 
@@ -107,8 +107,6 @@ public class LatexCollectorBlockEntity extends BlockEntity implements IMachinePr
         level.setBlockAndUpdate(pos, state.setValue(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FULL));
         reset();
     }
-
-    @Override
     public void onProgressUpdate(float progress, float total) {
         totalTicks = (int)total;
         ticksRemaining = (int)progress;

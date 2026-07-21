@@ -2,7 +2,8 @@ package com.drakmyth.minecraft.manufactory.menus.screens;
 
 import com.drakmyth.minecraft.manufactory.LogMarkers;
 import com.drakmyth.minecraft.manufactory.menus.IPowerProgressMenu;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,8 +18,8 @@ public class PowerProgressScreen<T extends AbstractContainerMenu & IPowerProgres
     }
 
     @Override
-    protected void renderBg(PoseStack pose, float partialTicks, int x, int y) {
-        super.renderBg(pose, partialTicks, x, y);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
 
         int i = this.leftPos;
         int j = this.topPos;
@@ -27,13 +28,15 @@ public class PowerProgressScreen<T extends AbstractContainerMenu & IPowerProgres
         if (powerRate > 0) {
             LOGGER.trace(LogMarkers.RENDERING, "Power rate {} greater than 0. Rendering power indicator...", powerRate);
             int yOffset = (int)((1 - powerRate) * 15);
-            this.blit(pose, i + 57, j + 54 + yOffset, 176, yOffset, 15, 15 - yOffset);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, ScreenTextures.get(menu.getType()), i + 57, j + 54 + yOffset,
+                    176, yOffset, 15, 15 - yOffset, 256, 256);
         }
 
         float progress = this.menu.getProgress();
         if (progress > 0) {
             LOGGER.trace(LogMarkers.RENDERING, "Progress {} greater than 0. Rendering progress indicator...", progress);
-            this.blit(pose, i + 79, j + 34, 176, 15, (int)(progress * 24), 16);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, ScreenTextures.get(menu.getType()), i + 79, j + 34,
+                    176, 15, (int)(progress * 24), 16, 256, 256);
         }
     }
 }

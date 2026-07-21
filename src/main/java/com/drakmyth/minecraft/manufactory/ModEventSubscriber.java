@@ -12,7 +12,7 @@ import com.drakmyth.minecraft.manufactory.menus.screens.SimpleScreen;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-import net.minecraft.client.gui.screens.MenuScreens;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -26,14 +26,14 @@ public final class ModEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void fmlClientSetup(FMLClientSetupEvent event) {
+    public static void registerScreens(RegisterMenuScreensEvent event) {
         ScreenTextures.init();
         LOGGER.info(LogMarkers.REGISTRATION, "Registering screens...");
-        MenuScreens.register(ModMenuTypes.GRINDER.get(), PowerProgressScreen<GrinderMenu>::new);
-        MenuScreens.register(ModMenuTypes.GRINDER_UPGRADE.get(), SimpleScreen<GrinderUpgradeMenu>::new);
-        MenuScreens.register(ModMenuTypes.BALL_MILL.get(), PowerProgressScreen<BallMillMenu>::new);
-        MenuScreens.register(ModMenuTypes.BALL_MILL_UPGRADE.get(), SimpleScreen<BallMillUpgradeMenu>::new);
-        MenuScreens.register(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), SimpleScreen<RockDrillUpgradeMenu>::new);
+        event.register(ModMenuTypes.GRINDER.get(), PowerProgressScreen<GrinderMenu>::new);
+        event.register(ModMenuTypes.GRINDER_UPGRADE.get(), SimpleScreen<GrinderUpgradeMenu>::new);
+        event.register(ModMenuTypes.BALL_MILL.get(), PowerProgressScreen<BallMillMenu>::new);
+        event.register(ModMenuTypes.BALL_MILL_UPGRADE.get(), SimpleScreen<BallMillUpgradeMenu>::new);
+        event.register(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), SimpleScreen<RockDrillUpgradeMenu>::new);
         LOGGER.info(LogMarkers.REGISTRATION, "Screen registration complete");
     }
 }

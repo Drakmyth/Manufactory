@@ -31,6 +31,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
 
 public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IPowerBlock {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -93,14 +96,14 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
         return Shapes.or(AABB_CENTER, shapes.toArray(new VoxelShape[0]));
     }
 
-    private boolean canConnect(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
+    private boolean canConnect(BlockState state, BlockPos pos, LevelReader level, Direction dir) {
         Block block = state.getBlock();
         if (!(block instanceof IPowerBlock)) return false;
         return ((IPowerBlock)block).canConnectToFace(state, pos, level, dir);
     }
 
     @Override
-    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelAccessor level, Direction dir) {
+    public boolean canConnectToFace(BlockState state, BlockPos pos, LevelReader level, Direction dir) {
         return true;
     }
 
@@ -125,14 +128,15 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return !state.getValue(WATERLOGGED);
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos currentPos,
+            Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            level.getFluidTicks().schedule(new ScheduledTick<Fluid>(Fluids.WATER, currentPos, Fluids.WATER.getTickDelay(level), 0));
+            ticks.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         Direction oppositeFacing = facing.getOpposite();
@@ -164,13 +168,11 @@ public class PowerCableBlock extends Block implements SimpleWaterloggedBlock, IP
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
         LOGGER.debug(LogMarkers.MACHINE, "Power Cable at {} replaced.", LogHelper.blockPos(pos));
-        if (level.isClientSide()) return;
-        if (state.is(newState.getBlock())) return;
-
-        PowerNetworkManager pnm = PowerNetworkManager.get((ServerLevel)level);
+        PowerNetworkManager pnm = PowerNetworkManager.get(level);
         pnm.untrackBlock(pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
     }
 
     @Override

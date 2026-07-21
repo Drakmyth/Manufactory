@@ -24,7 +24,7 @@ public class LogMarkers {
     public static final Marker CLASSLOADING = MarkerFactory.getMarker("CLASSLOADING"); // parent: MODLAUNCHER
     public static final Marker CLIENTHOOKS = MarkerFactory.getMarker("CLIENTHOOKS");
     public static final Marker CONFIG = MarkerFactory.getMarker("CONFIG");
-    public static final Marker CORE = net.neoforged.neoforge.fml.loading.LogMarkers.CORE;
+    public static final Marker CORE = MarkerFactory.getMarker("CORE");
     public static final Marker COREMOD = MarkerFactory.getMarker("COREMOD");
     public static final Marker COREMODLOG = MarkerFactory.getMarker("COREMODLOG"); // parent: COREMOD
     public static final Marker CRAFTHELPER = MarkerFactory.getMarker("CRAFTHELPER");
@@ -36,17 +36,17 @@ public class LogMarkers {
     public static final Marker FORGEHOOKS = MarkerFactory.getMarker("FORGEHOOKS");
     public static final Marker FORGEMOD = MarkerFactory.getMarker("FORGEMOD"); // parent: LOADING
     public static final Marker LAUNCHPLUGIN = MarkerFactory.getMarker("LAUNCHPLUGIN"); // parent: MODLAUNCHER
-    public static final Marker LOADING = net.neoforged.neoforge.fml.loading.LogMarkers.LOADING;
+    public static final Marker LOADING = MarkerFactory.getMarker("LOADING");
     public static final Marker MODELLOADING = MarkerFactory.getMarker("MODELLOADING");
     public static final Marker MODLAUNCHER = MarkerFactory.getMarker("MODLAUNCHER");
     public static final Marker NETREGISTRY = MarkerFactory.getMarker("NETREGISTRY");
     public static final Marker REFLECTION = MarkerFactory.getMarker("REFLECTION");
     public static final Marker REGISTRIES = MarkerFactory.getMarker("REGISTRIES");
     public static final Marker REGISTRYDUMP = MarkerFactory.getMarker("REGISTRYDUMP");
-    public static final Marker SCAN = net.neoforged.neoforge.fml.loading.LogMarkers.SCAN;
+    public static final Marker SCAN = MarkerFactory.getMarker("SCAN");
     public static final Marker SERVERHOOKS = MarkerFactory.getMarker("SERVERHOOKS");
     public static final Marker SIMPLENET = MarkerFactory.getMarker("SIMPLENET");
-    public static final Marker SPLASH = net.neoforged.neoforge.fml.loading.LogMarkers.SPLASH;
+    public static final Marker SPLASH = MarkerFactory.getMarker("SPLASH");
     public static final Marker USERNAMECACHE = MarkerFactory.getMarker("USERNAMECACHE");
     public static final Marker WP = MarkerFactory.getMarker("WP");
 

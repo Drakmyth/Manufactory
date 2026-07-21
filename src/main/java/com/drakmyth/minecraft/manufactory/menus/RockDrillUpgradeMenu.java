@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
@@ -22,8 +22,8 @@ public class RockDrillUpgradeMenu extends AbstractContainerMenu {
     private static final Logger LOGGER = LogUtils.getLogger();
     public final IItemHandler upgradeInventory;
 
-    public RockDrillUpgradeMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-        this(windowId, new InvWrapper(playerInventory), playerInventory.player, data.readItem());
+    public RockDrillUpgradeMenu(int windowId, Inventory playerInventory, RegistryFriendlyByteBuf data) {
+        this(windowId, new InvWrapper(playerInventory), playerInventory.player, ItemStack.STREAM_CODEC.decode(data));
     }
 
     public RockDrillUpgradeMenu(int windowId, IItemHandler playerInventory, Player player, ItemStack stack) {
