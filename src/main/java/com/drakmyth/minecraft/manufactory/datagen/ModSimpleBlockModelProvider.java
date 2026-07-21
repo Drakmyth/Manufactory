@@ -1,8 +1,11 @@
 package com.drakmyth.minecraft.manufactory.datagen;
 
 import com.drakmyth.minecraft.manufactory.Reference;
+import com.drakmyth.minecraft.manufactory.blocks.LatexCollectorBlock;
 import com.drakmyth.minecraft.manufactory.blocks.MechaniteLampBlock;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.util.stream.Stream;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -11,8 +14,10 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -42,6 +47,8 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
         createMachineModel(blockModels, ModBlocks.GRINDER.get(), "grinder");
         createMachineModel(blockModels, ModBlocks.BALL_MILL.get(), "ball_mill");
         createLampModels(blockModels);
+        createSolarPanelModel(blockModels);
+        createLatexCollectorModels(blockModels);
     }
 
     @Override
@@ -64,7 +71,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.GRINDER,
                 ModBlocks.BALL_MILL,
                 ModBlocks.MECHANITE_LAMP,
-                ModBlocks.MECHANITE_LAMP_INVERTED);
+                ModBlocks.MECHANITE_LAMP_INVERTED,
+                ModBlocks.SOLAR_PANEL,
+                ModBlocks.LATEX_COLLECTOR);
     }
 
     @Override
@@ -77,7 +86,9 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                 ModBlocks.GRINDER.get().asItem().builtInRegistryHolder(),
                 ModBlocks.BALL_MILL.get().asItem().builtInRegistryHolder(),
                 ModBlocks.MECHANITE_LAMP.get().asItem().builtInRegistryHolder(),
-                ModBlocks.MECHANITE_LAMP_INVERTED.get().asItem().builtInRegistryHolder());
+                ModBlocks.MECHANITE_LAMP_INVERTED.get().asItem().builtInRegistryHolder(),
+                ModBlocks.SOLAR_PANEL.get().asItem().builtInRegistryHolder(),
+                ModBlocks.LATEX_COLLECTOR.get().asItem().builtInRegistryHolder());
     }
 
     @Override
@@ -138,5 +149,86 @@ public class ModSimpleBlockModelProvider extends ModelProvider {
                         BlockModelGenerators.plainVariant(litModel),
                         BlockModelGenerators.plainVariant(unlitModel))));
         blockModels.registerSimpleItemModel(block, defaultLit ? litModel : unlitModel);
+    }
+
+    private static void createSolarPanelModel(BlockModelGenerators blockModels) {
+        Block block = ModBlocks.SOLAR_PANEL.get();
+        Identifier daylightDetectorModel = Identifier.withDefaultNamespace("block/daylight_detector");
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(
+                block, BlockModelGenerators.plainVariant(daylightDetectorModel)));
+        blockModels.registerSimpleItemModel(block, daylightDetectorModel);
+    }
+
+    private static void createLatexCollectorModels(BlockModelGenerators blockModels) {
+        Identifier empty = customModel(blockModels, "latex_collector", latexCollectorModel(false));
+        Identifier filling = customModel(blockModels, "latex_collector_filling", latexCollectorModel(true));
+        MultiPartGenerator parts = MultiPartGenerator.multiPart(ModBlocks.LATEX_COLLECTOR.get());
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            var rotation = switch (direction) {
+                case EAST -> BlockModelGenerators.Y_ROT_90;
+                case SOUTH -> BlockModelGenerators.Y_ROT_180;
+                case WEST -> BlockModelGenerators.Y_ROT_270;
+                default -> BlockModelGenerators.NOP;
+            };
+            parts.with(BlockModelGenerators.condition(LatexCollectorBlock.HORIZONTAL_FACING, direction),
+                    BlockModelGenerators.plainVariant(empty).with(rotation));
+            parts.with(BlockModelGenerators.condition()
+                            .term(LatexCollectorBlock.HORIZONTAL_FACING, direction)
+                            .term(LatexCollectorBlock.FILL_STATUS, LatexCollectorBlock.FillStatus.FILLING),
+                    BlockModelGenerators.plainVariant(filling).with(rotation));
+        }
+        blockModels.blockStateOutput.accept(parts);
+        blockModels.registerSimpleItemModel(ModBlocks.LATEX_COLLECTOR.get(), empty);
+    }
+
+    private static Identifier customModel(BlockModelGenerators blockModels, String name, JsonObject model) {
+        Identifier id = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "block/" + name);
+        blockModels.modelOutput.accept(id, () -> model);
+        return id;
+    }
+
+    private static JsonObject latexCollectorModel(boolean filling) {
+        JsonObject model = new JsonObject();
+        JsonObject textures = new JsonObject();
+        textures.addProperty(filling ? "latex" : "collector",
+                filling ? "minecraft:block/quartz_block_top" : "minecraft:block/dirt");
+        if (!filling) textures.addProperty("particle", "minecraft:block/dirt");
+        model.add("textures", textures);
+        JsonArray elements = new JsonArray();
+        if (filling) {
+            elements.add(element(7, 3, 0, 9, 12, 2, "#latex", Direction.EAST, Direction.SOUTH,
+                    Direction.WEST, Direction.UP));
+        } else {
+            elements.add(element(6, 2, 1, 10, 3, 5, "#collector", Direction.values()));
+            elements.add(element(5, 3, 0, 11, 5, 1, "#collector", Direction.values()));
+            elements.add(element(5, 3, 5, 11, 5, 6, "#collector", Direction.values()));
+            elements.add(element(5, 3, 1, 6, 5, 5, "#collector", Direction.values()));
+            elements.add(element(10, 3, 1, 11, 5, 5, "#collector", Direction.values()));
+        }
+        model.add("elements", elements);
+        return model;
+    }
+
+    private static JsonObject element(int fromX, int fromY, int fromZ, int toX, int toY, int toZ,
+            String texture, Direction... directions) {
+        JsonObject element = new JsonObject();
+        JsonArray from = new JsonArray();
+        from.add(fromX);
+        from.add(fromY);
+        from.add(fromZ);
+        element.add("from", from);
+        JsonArray to = new JsonArray();
+        to.add(toX);
+        to.add(toY);
+        to.add(toZ);
+        element.add("to", to);
+        JsonObject faces = new JsonObject();
+        for (Direction direction : directions) {
+            JsonObject face = new JsonObject();
+            face.addProperty("texture", texture);
+            faces.add(direction.getSerializedName(), face);
+        }
+        element.add("faces", faces);
+        return element;
     }
 }
