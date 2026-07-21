@@ -11,12 +11,14 @@ import com.drakmyth.minecraft.manufactory.menus.screens.ScreenTextures;
 import com.drakmyth.minecraft.manufactory.menus.screens.SimpleScreen;
 import com.drakmyth.minecraft.manufactory.init.ModBlockEntityTypes;
 import com.drakmyth.minecraft.manufactory.blocks.entities.renderers.LatexCollectorRenderer;
+import com.drakmyth.minecraft.manufactory.datagen.ModLanguageProvider;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 public final class ModEventSubscriber {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -36,5 +38,11 @@ public final class ModEventSubscriber {
         event.register(ModMenuTypes.BALL_MILL_UPGRADE.get(), SimpleScreen<BallMillUpgradeMenu>::new);
         event.register(ModMenuTypes.ROCK_DRILL_UPGRADE.get(), SimpleScreen<RockDrillUpgradeMenu>::new);
         LOGGER.info(LogMarkers.REGISTRATION, "Screen registration complete");
+    }
+
+    @SubscribeEvent
+    public static void gatherClientData(GatherDataEvent.Client event) {
+        event.getGenerator().addProvider(true,
+                new ModLanguageProvider(event.getGenerator().getPackOutput(), "en_us"));
     }
 }

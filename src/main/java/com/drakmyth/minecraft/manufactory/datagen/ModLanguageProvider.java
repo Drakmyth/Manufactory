@@ -3,12 +3,12 @@ package com.drakmyth.minecraft.manufactory.datagen;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public class ModLanguageProvider extends LanguageProvider {
-    public ModLanguageProvider(DataGenerator generator, String locale) {
-        super(generator, Reference.MOD_ID, locale);
+    public ModLanguageProvider(PackOutput output, String locale) {
+        super(output, Reference.MOD_ID, locale);
     }
 
     @Override

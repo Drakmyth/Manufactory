@@ -106,11 +106,17 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-// Minecraft 26.1 replaced the legacy model/datagen provider pipeline. These
-// providers are migrated as the next isolated milestone; runtime code and the
-// modern recipe builder remain compiled normally.
+// Minecraft 26.1 replaced the legacy model provider pipeline. Keep only that
+// isolated while recipes, tags, loot, and language migrate on the normal classpath.
 tasks.named('compileJava', JavaCompile).configure {
-    exclude 'com/drakmyth/minecraft/manufactory/datagen/**'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModBlockStateProvider.java'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModItemProvider.java'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/AnimatedTextureProvider.java'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModAnimatedTextureProvider.java'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModRecipeProvider.java'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModLootTableProvider.java'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/ModTagsProvider.java'
+    exclude 'com/drakmyth/minecraft/manufactory/datagen/recipes/**'
 }
 
 idea.module {
