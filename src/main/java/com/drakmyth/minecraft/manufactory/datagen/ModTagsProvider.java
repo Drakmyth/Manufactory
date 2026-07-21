@@ -5,23 +5,24 @@ import com.drakmyth.minecraft.manufactory.init.ModBlocks;
 import com.drakmyth.minecraft.manufactory.init.ModFluids;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
 import com.drakmyth.minecraft.manufactory.init.ModTags;
-import net.minecraft.data.DataGenerator;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.FluidTagsProvider;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 
 public class ModTagsProvider {
     public static class Blocks extends BlockTagsProvider {
-        public Blocks(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-            super(generator, Reference.MOD_ID, existingFileHelper);
+        public Blocks(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+            super(output, lookupProvider, Reference.MOD_ID);
         }
 
         @Override
-        protected void addTags() {
+        protected void addTags(HolderLookup.Provider lookupProvider) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE)
                     .add(ModBlocks.AMBER_BLOCK.get())
                     .add(ModBlocks.METALOSOL_BLOCK.get())
@@ -68,33 +69,33 @@ public class ModTagsProvider {
                     .addTag(ModTags.Blocks.ROCK_DRILL_SILK_TOUCH)
                     .addTag(BlockTags.BASE_STONE_OVERWORLD)
                     .addTag(BlockTags.BASE_STONE_NETHER)
-                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.COBBLESTONE)
-                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.STONE)
-                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.SANDSTONE)
-                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.OBSIDIAN)
-                    .addTag(net.neoforged.neoforge.common.Tags.Blocks.END_STONES)
+                    .addTag(Tags.Blocks.COBBLESTONES)
+                    .addTag(Tags.Blocks.STONES)
+                    .addTag(Tags.Blocks.SANDSTONE_BLOCKS)
+                    .addTag(Tags.Blocks.OBSIDIANS)
+                    .addTag(Tags.Blocks.END_STONES)
                     .add(net.minecraft.world.level.block.Blocks.CRYING_OBSIDIAN);
         }
     }
 
     public static class Items extends ItemTagsProvider {
-        public Items(DataGenerator generator, BlockTagsProvider blockTagsProvider, ExistingFileHelper existingFileHelper) {
-            super(generator, blockTagsProvider, Reference.MOD_ID, existingFileHelper);
+        public Items(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+            super(output, lookupProvider, Reference.MOD_ID);
         }
 
         @Override
-        protected void addTags() {
+        protected void addTags(HolderLookup.Provider lookupProvider) {
             tag(ModTags.Items.UPGRADE_ACCESS_TOOL).add(ModItems.WRENCH.get());
         }
     }
 
     public static class Fluids extends FluidTagsProvider {
-        public Fluids(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-            super(generator, Reference.MOD_ID, existingFileHelper);
+        public Fluids(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+            super(output, lookupProvider, Reference.MOD_ID);
         }
 
         @Override
-        protected void addTags() {
+        protected void addTags(HolderLookup.Provider lookupProvider) {
             tag(FluidTags.WATER)
                     .add(ModFluids.SLURRIED_COAL_ORE.get())
                     .add(ModFluids.SLURRIED_COAL_ORE_FLOWING.get())
