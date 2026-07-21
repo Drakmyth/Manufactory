@@ -8,7 +8,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeUnlockAdvancementBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 
 public final class ManufactoryRecipeBuilder implements RecipeBuilder {
     private final Ingredient ingredient;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final boolean grinder;
     private final RecipeUnlockAdvancementBuilder advancementBuilder = new RecipeUnlockAdvancementBuilder();
     private float extraChance;
@@ -28,9 +28,9 @@ public final class ManufactoryRecipeBuilder implements RecipeBuilder {
     private int processTime = 200;
     private @Nullable String group;
 
-    private ManufactoryRecipeBuilder(Ingredient ingredient, ItemStack result, boolean grinder) {
+    private ManufactoryRecipeBuilder(Ingredient ingredient, ItemStackTemplate result, boolean grinder) {
         this.ingredient = ingredient;
-        this.result = result.copy();
+        this.result = result;
         this.grinder = grinder;
     }
 
@@ -39,7 +39,7 @@ public final class ManufactoryRecipeBuilder implements RecipeBuilder {
     }
 
     public static ManufactoryRecipeBuilder grinderRecipe(Ingredient ingredient, ItemLike result, int count) {
-        return new ManufactoryRecipeBuilder(ingredient, new ItemStack(result, count), true);
+        return new ManufactoryRecipeBuilder(ingredient, new ItemStackTemplate(result.asItem(), count), true);
     }
 
     public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, ItemLike result) {
@@ -47,7 +47,7 @@ public final class ManufactoryRecipeBuilder implements RecipeBuilder {
     }
 
     public static ManufactoryRecipeBuilder ballMillRecipe(Ingredient ingredient, ItemLike result, int count) {
-        return new ManufactoryRecipeBuilder(ingredient, new ItemStack(result, count), false);
+        return new ManufactoryRecipeBuilder(ingredient, new ItemStackTemplate(result.asItem(), count), false);
     }
 
     public ManufactoryRecipeBuilder withExtraChance(float chance, int amount) {

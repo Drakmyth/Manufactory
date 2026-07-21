@@ -2,7 +2,6 @@ package com.drakmyth.minecraft.manufactory.datagen.recipes;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import com.drakmyth.minecraft.manufactory.Reference;
 import com.drakmyth.minecraft.manufactory.init.ModFluids;
 import com.drakmyth.minecraft.manufactory.init.ModItems;
@@ -10,15 +9,15 @@ import com.drakmyth.minecraft.manufactory.recipes.ManufactoryRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -26,11 +25,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class OreRecipes extends RecipeProvider {
 
-    private OreRecipes(DataGenerator generator) {
-        super(generator);
+    public OreRecipes(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
-    public static void build(Consumer<FinishedRecipe> consumer) {
+    @Override
+    public void buildRecipes() {
 
         List<OreProcessingRecipeData> ores = Arrays.asList(
                 new OreProcessingRecipeData(ItemTags.COAL_ORES, ModItems.GROUND_COAL_ORE_ROUGH, ModItems.GROUND_COAL_ORE_FINE, ModFluids.SLURRIED_COAL_ORE, Items.COAL, ToolMaterial.WOOD),
@@ -66,30 +66,33 @@ public final class OreRecipes extends RecipeProvider {
             String finalOutputName = BuiltInRegistries.ITEM.getKey(finalOutput).getPath();
 
             // Ore -> Ground Ore (Rough)
-            ManufactoryRecipeBuilder.grinderRecipe(data.getOreIngredient(), data.getGrinderOutput())
+            ManufactoryRecipeBuilder.grinderRecipe(data.getOreIngredient(items), data.getGrinderOutput())
                     .withExtraChance(0.3f, data.getExtraAmounts())
                     .withTierRequired(data.getTier())
-                    .addCriterion(String.format("has_%s", data.getOreName()), data.getOreInventoryChangeTriggerInstance())
-                    .build(consumer);
+                    .addCriterion(String.format("has_%s", data.getOreName()),
+                            data.oreTag == null ? has(data.ore) : has(data.oreTag))
+                    .build(output);
 
             // Ground Ore (Rough) -> Ground Ore (Fine)
             ManufactoryRecipeBuilder.ballMillRecipe(Ingredient.of(grinderOutput), ballMillOutput)
                     .withExtraChance(0.54f, data.getExtraAmounts())
                     .withTierRequired(data.getTier())
                     .addCriterion(String.format("has_%s", grinderOutputName), has(grinderOutput))
-                    .build(consumer);
+                    .build(output);
 
             // Ground Ore (Rough) -> Ingot
-            SimpleCookingRecipeBuilder.smelting(Ingredient.of(grinderOutput), finalOutput, 0.2f, 200)
+            SimpleCookingRecipeBuilder.smelting(Ingredient.of(grinderOutput), RecipeCategory.MISC,
+                            CookingBookCategory.MISC, finalOutput, 0.2f, 200)
                     .unlockedBy(String.format("has_%s", grinderOutputName), has(grinderOutput))
                     .group(finalOutputName)
-                    .save(consumer, String.format("%s:%s_from_ground_ore_rough", Reference.MOD_ID, finalOutputName));
+                    .save(output, String.format("%s:%s_from_ground_ore_rough", Reference.MOD_ID, finalOutputName));
 
             // Ground Ore (Fine) -> Ingot
-            SimpleCookingRecipeBuilder.smelting(Ingredient.of(ballMillOutput), finalOutput, 0.2f, 200)
+            SimpleCookingRecipeBuilder.smelting(Ingredient.of(ballMillOutput), RecipeCategory.MISC,
+                            CookingBookCategory.MISC, finalOutput, 0.2f, 200)
                     .unlockedBy(String.format("has_%s", ballMillOutputName), has(ballMillOutput))
                     .group(finalOutputName)
-                    .save(consumer, String.format("%s:%s_from_ground_ore_fine", Reference.MOD_ID, finalOutputName));
+                    .save(output, String.format("%s:%s_from_ground_ore_fine", Reference.MOD_ID, finalOutputName));
         });
 
         // Nether Gold Ore -> Ground Gold Ore (Rough)
@@ -97,14 +100,14 @@ public final class OreRecipes extends RecipeProvider {
                 .withExtraChance(0.7f, -1) // 70% nothing, 30% rough ore
                 .withTierRequired(ToolMaterial.WOOD)
                 .addCriterion("has_nether_gold_ore", has(Items.NETHER_GOLD_ORE))
-                .build(consumer, String.format("%s:ground_gold_ore_rough_from_nether_gold_ore", Reference.MOD_ID));
+                .build(output, String.format("%s:ground_gold_ore_rough_from_nether_gold_ore", Reference.MOD_ID));
 
         // Gilded Blackstone -> Ground Gold Ore (Rough)
         ManufactoryRecipeBuilder.grinderRecipe(Ingredient.of(Items.GILDED_BLACKSTONE), ModItems.GROUND_GOLD_ORE_ROUGH.get())
                 .withExtraChance(0.7f, -1) // 70% nothing, 30% rough ore
                 .withTierRequired(ToolMaterial.WOOD)
                 .addCriterion("has_gilded_blackstone", has(Items.GILDED_BLACKSTONE))
-                .build(consumer, String.format("%s:ground_gold_ore_rough_from_gilded_blackstone", Reference.MOD_ID));
+                .build(output, String.format("%s:ground_gold_ore_rough_from_gilded_blackstone", Reference.MOD_ID));
     }
 
     private static class OreProcessingRecipeData {
@@ -150,16 +153,12 @@ public final class OreRecipes extends RecipeProvider {
             this(ore, stage1, stage2, stage3, /* stage4, */ stage5, tier, new int[] { 1 });
         }
 
-        public Ingredient getOreIngredient() {
-            return ore == null ? Ingredient.of(oreTag) : Ingredient.of(ore);
+        public Ingredient getOreIngredient(net.minecraft.core.HolderGetter<Item> items) {
+            return ore == null ? Ingredient.of(items.getOrThrow(oreTag)) : Ingredient.of(ore);
         }
 
         public String getOreName() {
             return ore == null ? oreTag.location().getPath() : BuiltInRegistries.ITEM.getKey(ore).getPath();
-        }
-
-        public InventoryChangeTrigger.TriggerInstance getOreInventoryChangeTriggerInstance() {
-            return ore == null ? has(oreTag) : has(ore);
         }
 
         public Item getGrinderOutput() {

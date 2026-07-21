@@ -2,6 +2,7 @@ package com.drakmyth.minecraft.manufactory.recipes;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
@@ -13,19 +14,23 @@ import net.minecraft.world.level.Level;
 
 public abstract class ManufactoryRecipe implements Recipe<SingleRecipeInput> {
     private final Ingredient ingredient;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final float extraChance;
     private final int[] extraAmounts;
     private final ToolMaterial tierRequired;
     private final int powerRequired;
     private final int processTime;
 
-    protected ManufactoryRecipe(Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts,
+    protected ManufactoryRecipe(Ingredient ingredient, ItemStackTemplate result, float extraChance, int[] extraAmounts,
             ToolMaterial tierRequired, int powerRequired, int processTime) {
         if (extraChance < 0.0F || extraChance > 1.0F) throw new IllegalArgumentException("extraChance must be in [0, 1]");
         if (powerRequired <= 0) throw new IllegalArgumentException("powerRequired must be positive");
         if (processTime <= 0) throw new IllegalArgumentException("processTime must be positive");
-        for (int amount : extraAmounts) if (amount < 0) throw new IllegalArgumentException("extraAmounts cannot contain negatives");
+        for (int amount : extraAmounts) {
+            if (result.count() + amount < 0) {
+                throw new IllegalArgumentException("extraAmounts cannot reduce the result below zero");
+            }
+        }
         this.ingredient = ingredient;
         this.result = result;
         this.extraChance = extraChance;
@@ -42,7 +47,8 @@ public abstract class ManufactoryRecipe implements Recipe<SingleRecipeInput> {
     public ToolMaterial getTierRequired() { return tierRequired; }
     public int getPowerRequired() { return powerRequired; }
     public int getProcessTime() { return processTime; }
-    public ItemStack getResultItem() { return result; }
+    public ItemStackTemplate getResultTemplate() { return result; }
+    public ItemStack getResultItem() { return result.create(); }
 
     public int getRandomExtraAmount(RandomSource random) {
         return extraAmounts[random.nextInt(extraAmounts.length)];
@@ -55,11 +61,11 @@ public abstract class ManufactoryRecipe implements Recipe<SingleRecipeInput> {
 
     @Override
     public ItemStack assemble(SingleRecipeInput input) {
-        return result.copy();
+        return result.create();
     }
 
     public ItemStack getMaxOutput() {
-        ItemStack maximum = result.copy();
+        ItemStack maximum = result.create();
         int extra = 0;
         for (int amount : extraAmounts) extra = Math.max(extra, amount);
         maximum.grow(extra);

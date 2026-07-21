@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -23,7 +23,7 @@ public final class ManufactoryRecipeSerializer {
     public static <T extends ManufactoryRecipe> RecipeSerializer<T> create(Factory<T> factory) {
         MapCodec<T> mapCodec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Ingredient.CODEC.fieldOf("ingredient").forGetter(ManufactoryRecipe::getIngredient),
-                ItemStack.CODEC.fieldOf("result").forGetter(ManufactoryRecipe::getResultItem),
+                ItemStackTemplate.CODEC.fieldOf("result").forGetter(ManufactoryRecipe::getResultTemplate),
                 Codec.FLOAT.fieldOf("extraChance").forGetter(ManufactoryRecipe::getExtraChance),
                 Codec.INT.listOf().fieldOf("extraAmounts").forGetter(recipe -> toList(recipe.getExtraAmounts())),
                 TOOL_MATERIAL_CODEC.fieldOf("tierRequired").forGetter(ManufactoryRecipe::getTierRequired),
@@ -36,7 +36,7 @@ public final class ManufactoryRecipeSerializer {
             @Override
             public T decode(RegistryFriendlyByteBuf buffer) {
                 Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-                ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
+                ItemStackTemplate result = ItemStackTemplate.STREAM_CODEC.decode(buffer);
                 float chance = buffer.readFloat();
                 int[] amounts = new int[buffer.readVarInt()];
                 for (int i = 0; i < amounts.length; i++) amounts[i] = buffer.readVarInt();
@@ -47,7 +47,7 @@ public final class ManufactoryRecipeSerializer {
             @Override
             public void encode(RegistryFriendlyByteBuf buffer, T recipe) {
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
-                ItemStack.STREAM_CODEC.encode(buffer, recipe.getResultItem());
+                ItemStackTemplate.STREAM_CODEC.encode(buffer, recipe.getResultTemplate());
                 buffer.writeFloat(recipe.getExtraChance());
                 int[] amounts = recipe.getExtraAmounts();
                 buffer.writeVarInt(amounts.length);
@@ -94,7 +94,7 @@ public final class ManufactoryRecipeSerializer {
 
     @FunctionalInterface
     public interface Factory<T extends ManufactoryRecipe> {
-        T create(Ingredient ingredient, ItemStack result, float extraChance, int[] extraAmounts,
+        T create(Ingredient ingredient, ItemStackTemplate result, float extraChance, int[] extraAmounts,
                 ToolMaterial tierRequired, int powerRequired, int processTime);
     }
 }

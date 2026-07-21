@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import com.drakmyth.minecraft.manufactory.datagen.recipes.BlockRecipes;
 import com.drakmyth.minecraft.manufactory.datagen.recipes.ItemRecipes;
 import com.drakmyth.minecraft.manufactory.datagen.recipes.MachineUpgradeRecipes;
+import com.drakmyth.minecraft.manufactory.datagen.recipes.OreRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -19,6 +20,7 @@ public final class ModRecipeProvider extends RecipeProvider {
         new BlockRecipes(registries, output).buildRecipes();
         new ItemRecipes(registries, output).buildRecipes();
         new MachineUpgradeRecipes(registries, output).buildRecipes();
+        new OreRecipes(registries, output).buildRecipes();
     }
 
     public static final class Runner extends RecipeProvider.Runner {
