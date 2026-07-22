@@ -1,26 +1,44 @@
 {
-    "ultrawarm": false,
-    "natural": false,
-    "piglin_safe": false,
-    "respawn_anchor_works": true,
-    "bed_works": true,
-    "has_raids": false,
-    "has_skylight": true,
-    "has_ceiling": false,
-    "coordinate_scale": 0.125,
     "ambient_light": 0.0,
-    "fixed_time": 18000,
-    "logical_height": 384,
-    "effects": "minecraft:overworld",
-    "infiniburn": "#minecraft:infiniburn_overworld",
-    "min_y": -64,
+    "attributes": {
+        "minecraft:audio/ambient_sounds": {
+            "mood": {
+                "block_search_extent": 8,
+                "offset": 2.0,
+                "sound": "minecraft:ambient.cave",
+                "tick_delay": 6000
+            }
+        },
+        "minecraft:gameplay/bed_rule": {
+            "can_set_spawn": "always",
+            "can_sleep": "always"
+        },
+        "minecraft:gameplay/can_start_raid": false,
+        "minecraft:gameplay/piglins_zombify": true,
+        "minecraft:gameplay/respawn_anchor_works": true,
+        "minecraft:gameplay/water_evaporates": false,
+        "minecraft:visual/ambient_light_color": "#0a0a0a",
+        "minecraft:visual/cloud_color": "#ccffffff",
+        "minecraft:visual/cloud_height": 192.33,
+        "minecraft:visual/fog_color": "#c0d8ff",
+        "minecraft:visual/sky_color": "#78a7ff",
+        "minecraft:visual/sun_angle": 0.75
+    },
+    "coordinate_scale": 0.125,
+    "has_ceiling": false,
+    "has_ender_dragon_fight": false,
+    "has_fixed_time": true,
+    "has_skylight": true,
     "height": 384,
+    "infiniburn": "#minecraft:infiniburn_overworld",
+    "logical_height": 384,
+    "min_y": -64,
+    "monster_spawn_block_light_limit": 0,
     "monster_spawn_light_level": {
         "type": "minecraft:uniform",
-        "value": {
-            "min_inclusive": 0,
-            "max_inclusive": 7
-        }
+        "max_inclusive": 7,
+        "min_inclusive": 0
     },
-    "monster_spawn_block_light_limit": 0
+    "skybox": "overworld",
+    "timelines": "#minecraft:in_overworld"
 }

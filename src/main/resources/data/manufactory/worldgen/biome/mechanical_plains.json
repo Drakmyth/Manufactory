@@ -1,17 +1,19 @@
 {
     "temperature": 0.8,
     "downfall": 0.4,
-    "precipitation": "none",
+    "has_precipitation": false,
+    "attributes": {
+        "minecraft:visual/fog_color": "#3a2a24",
+        "minecraft:visual/sky_color": "#4a3c5b"
+    },
     "effects": {
-        "sky_color": 4865115,
-        "fog_color": 3811876,
-        "water_color": 5059364,
-        "water_fog_color": 2430736
+        "water_color": "#4d3324",
+        "water_fog_color": "#251710"
     },
     "spawners": {},
     "spawn_costs": {},
-    "carvers": {
-        "air": "minecraft:cave"
-    },
+    "carvers": [
+        "minecraft:cave"
+    ],
     "features": []
 }
